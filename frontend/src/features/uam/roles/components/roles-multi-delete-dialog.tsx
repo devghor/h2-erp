@@ -6,7 +6,7 @@ import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { BaseDialog } from '@/components/dialog/base-dialog'
 import { roleService } from '@/services/role.service'
 import { type Role } from '../data/schema'
 
@@ -26,19 +26,19 @@ export function RolesMultiDeleteDialog({
   const [isDeleting, setIsDeleting] = useState(false)
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
+  const count = selectedRows.length
+
+  const hasSystemRoles = selectedRows.some((row) =>
+    ['Super Admin', 'Admin'].includes(row.original.name)
+  )
 
   const handleDelete = async () => {
     const ids = selectedRows.map((row) => row.original.id)
-    
+
     if (ids.length === 0) {
       toast.error('No roles selected')
       return
     }
-
-    // Check if any system roles are selected
-    const hasSystemRoles = selectedRows.some((row) =>
-      ['Super Admin', 'Admin'].includes(row.original.name)
-    )
 
     if (hasSystemRoles) {
       toast.error('Cannot delete system roles')
@@ -59,58 +59,52 @@ export function RolesMultiDeleteDialog({
     }
   }
 
-  const hasSystemRoles = selectedRows.some((row) =>
-    ['Super Admin', 'Admin'].includes(row.original.name)
-  )
-
   return (
-    <ConfirmDialog
+    <BaseDialog
       open={open}
-      onOpenChange={(state) => {
-        if (!isDeleting) {
-          onOpenChange(state)
-        }
-      }}
-      handleConfirm={handleDelete}
-      disabled={isDeleting || hasSystemRoles}
+      onOpenChange={onOpenChange}
       title={
         <span className='text-destructive'>
           <AlertTriangle
             className='me-1 inline-block stroke-destructive'
             size={18}
           />{' '}
-          Delete {selectedRows.length}{' '}
-          {selectedRows.length > 1 ? 'roles' : 'role'}
+          Delete {count} {count > 1 ? 'roles' : 'role'}
         </span>
       }
-      desc={
-        <div className='space-y-4'>
-          <p className='mb-2'>
-            Are you sure you want to delete {selectedRows.length}{' '}
-            {selectedRows.length > 1 ? 'roles' : 'role'}?
-            <br />
-            This action will permanently remove the selected roles from the system. This cannot be undone.
-          </p>
-
-          {hasSystemRoles ? (
-            <Alert variant='destructive'>
-              <AlertTitle>System Role Detected</AlertTitle>
-              <AlertDescription>
-                Cannot delete system roles. Please deselect system roles to continue.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Alert variant='destructive'>
-              <AlertTitle>Warning!</AlertTitle>
-              <AlertDescription>
-                Please be careful, this operation can not be rolled back.
-              </AlertDescription>
-            </Alert>
-          )}
-        </div>
-      }
-      confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+      onConfirm={handleDelete}
+      isSubmitting={isDeleting}
+      submitText='Delete'
+      submittingText='Deleting...'
+      cancelText='Cancel'
       destructive
-    />
+      disabled={hasSystemRoles}
+    >
+      <div className='space-y-4'>
+        <p className='mb-2'>
+          Are you sure you want to delete {count} {count > 1 ? 'roles' : 'role'}?
+          <br />
+          This action will permanently remove the selected roles from the
+          system. This cannot be undone.
+        </p>
+
+        {hasSystemRoles ? (
+          <Alert variant='destructive'>
+            <AlertTitle>System Role Detected</AlertTitle>
+            <AlertDescription>
+              Cannot delete system roles. Please deselect system roles to
+              continue.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert variant='destructive'>
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+    </BaseDialog>
   )
 }

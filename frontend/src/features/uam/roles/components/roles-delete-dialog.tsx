@@ -5,7 +5,7 @@ import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { BaseDialog } from '@/components/dialog/base-dialog'
 import { roleService } from '@/services/role.service'
 import { type Role } from '../data/schema'
 
@@ -24,9 +24,11 @@ export function RolesDeleteDialog({
 }: RoleDeleteDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const handleDelete = async () => {
-    if (!role) return
+  if (!role) return null
 
+  const isSystemRole = ['Super Admin', 'Admin'].includes(role.name)
+
+  const handleDelete = async () => {
     try {
       setIsDeleting(true)
       await roleService.deleteRole(role.id)
@@ -44,20 +46,10 @@ export function RolesDeleteDialog({
     }
   }
 
-  if (!role) return null
-
-  const isSystemRole = ['Super Admin', 'Admin'].includes(role.name)
-
   return (
-    <ConfirmDialog
+    <BaseDialog
       open={open}
-      onOpenChange={(state) => {
-        if (!isDeleting) {
-          onOpenChange(state)
-        }
-      }}
-      handleConfirm={handleDelete}
-      disabled={isDeleting || isSystemRole}
+      onOpenChange={onOpenChange}
       title={
         <span className='text-destructive'>
           <AlertTriangle
@@ -67,34 +59,39 @@ export function RolesDeleteDialog({
           Delete Role
         </span>
       }
-      desc={
-        <div className='space-y-4'>
-          <p className='mb-2'>
-            Are you sure you want to delete{' '}
-            <span className='font-bold'>{role.name}</span>?
-            <br />
-            This action will permanently remove the role from the system. This cannot be undone.
-          </p>
-
-          {isSystemRole ? (
-            <Alert variant='destructive'>
-              <AlertTitle>System Role</AlertTitle>
-              <AlertDescription>
-                This is a system role and cannot be deleted.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Alert variant='destructive'>
-              <AlertTitle>Warning!</AlertTitle>
-              <AlertDescription>
-                Please be careful, this operation can not be rolled back.
-              </AlertDescription>
-            </Alert>
-          )}
-        </div>
-      }
-      confirmText={isDeleting ? 'Deleting...' : 'Delete'}
+      onConfirm={handleDelete}
+      isSubmitting={isDeleting}
+      submitText='Delete'
+      submittingText='Deleting...'
+      cancelText='Cancel'
       destructive
-    />
+      disabled={isSystemRole}
+    >
+      <div className='space-y-4'>
+        <p className='mb-2'>
+          Are you sure you want to delete{' '}
+          <span className='font-bold'>{role.name}</span>?
+          <br />
+          This action will permanently remove the role from the system. This
+          cannot be undone.
+        </p>
+
+        {isSystemRole ? (
+          <Alert variant='destructive'>
+            <AlertTitle>System Role</AlertTitle>
+            <AlertDescription>
+              This is a system role and cannot be deleted.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert variant='destructive'>
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+    </BaseDialog>
   )
 }

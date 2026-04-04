@@ -7,15 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
 import { roleService } from '@/services/role.service'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { BaseDialog } from '@/components/dialog/base-dialog'
 import {
   Form,
   FormControl,
@@ -128,84 +120,76 @@ export function RolesActionDialog({
   }
 
   return (
-    <Dialog
+    <BaseDialog
       open={open}
       onOpenChange={(state) => {
-        if (!isSubmitting) {
-          form.reset()
-          onOpenChange(state)
-        }
+        form.reset()
+        onOpenChange(state)
       }}
+      title={isEdit ? 'Edit Role' : 'Add New Role'}
+      description={
+        <>
+          {isEdit ? 'Update the role here. ' : 'Create new role here. '}
+          Click save when you&apos;re done.
+        </>
+      }
+      formId='role-form'
+      isSubmitting={isSubmitting}
+      submittingText={isEdit ? 'Updating...' : 'Creating...'}
     >
-      <DialogContent className='sm:max-w-lg'>
-        <DialogHeader className='text-start'>
-          <DialogTitle>{isEdit ? 'Edit Role' : 'Add New Role'}</DialogTitle>
-          <DialogDescription>
-            {isEdit ? 'Update the role here. ' : 'Create new role here. '}
-            Click save when you&apos;re done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className='w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
-          <Form {...form}>
-            <form
-              id='role-form'
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='space-y-4 px-0.5'
-            >
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='e.g., Manager'
-                        className='col-span-4'
-                        autoComplete='off'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-start space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end pt-2'>
-                      Description
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder='Role description (optional)'
-                        className='col-span-4 resize-none'
-                        rows={3}
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                    <FormDescription className='col-span-4 col-start-3 text-xs'>
-                      Provide a brief description of this role&apos;s purpose
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-        </div>
-        <DialogFooter>
-          <Button type='submit' form='role-form' disabled={isSubmitting}>
-            {isSubmitting ? (isEdit ? 'Updating...' : 'Creating...') : 'Save changes'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <Form {...form}>
+        <form
+          id='role-form'
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='space-y-4 px-0.5'
+        >
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }) => (
+              <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                <FormLabel className='col-span-2 text-end'>
+                  Name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='e.g., Manager'
+                    className='col-span-4'
+                    autoComplete='off'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='col-span-4 col-start-3' />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='description'
+            render={({ field }) => (
+              <FormItem className='grid grid-cols-6 items-start space-y-0 gap-x-4 gap-y-1'>
+                <FormLabel className='col-span-2 text-end pt-2'>
+                  Description
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder='Role description (optional)'
+                    className='col-span-4 resize-none'
+                    rows={3}
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className='col-span-4 col-start-3' />
+                <FormDescription className='col-span-4 col-start-3 text-xs'>
+                  Provide a brief description of this role&apos;s purpose
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </BaseDialog>
   )
 }
