@@ -7,21 +7,23 @@ defineProps<{
 
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
-const { data: authData, signOut } = useAuth()
+const { user: sessionUser, clear } = useUserSession()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
 const user = computed(() => ({
-  name: (authData.value as any)?.name ?? 'User',
+  name: (sessionUser.value as any)?.name ?? 'User',
   avatar: {
     src: '',
-    alt: (authData.value as any)?.name ?? 'User'
+    alt: (sessionUser.value as any)?.name ?? 'User'
   }
 }))
 
 async function handleLogout() {
-  await signOut({ callbackUrl: '/auth/login' })
+  await $fetch('/api/auth/logout', { method: 'POST' })
+  await clear()
+  await navigateTo('/auth/login')
 }
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{

@@ -3,19 +3,15 @@ import { z } from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/'
-  },
   layout: 'auth'
 })
 
-const { signIn } = useAuth()
+const { fetch: fetchSession } = useUserSession()
 const toast = useToast()
 const loading = ref(false)
 
 const schema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.string().email({ error: 'Invalid email address' }),
   password: z.string().min(1, 'Password is required')
 })
 
@@ -29,9 +25,13 @@ const state = reactive<Schema>({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   loading.value = true
   try {
-    await signIn(event.data)
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: event.data
+    })
+    await fetchSession()
+    await navigateTo('/')
   } catch (error: any) {
-    console.log(error)
     const message = error?.data?.message || error?.message || 'Invalid email or password'
     toast.add({
       title: 'Login failed',
