@@ -101,6 +101,6 @@ const columns: TableColumn<Sale>[] = [
     :data="data"
     :columns="columns"
     class="shrink-0"
-    :ui="tableUiCompact"
+    :ui="tableCompactStyles"
   />
 </template>

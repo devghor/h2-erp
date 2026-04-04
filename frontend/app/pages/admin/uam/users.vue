@@ -206,7 +206,7 @@ watch(search, () => {
         :data="users"
         :columns="columns"
         :loading="status === 'pending'"
-        :ui="tableUi"
+        :ui="tableStyles"
       />
 
       <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
