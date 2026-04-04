@@ -28,13 +28,13 @@ class AuthService
 
     public function login(array $credentials): array
     {
-        if (!auth()->attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-
-        $user = auth()->user();
 
         $token = $user->createToken(
             'access_token',

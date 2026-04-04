@@ -7,17 +7,22 @@ defineProps<{
 
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+const { data: authData, signOut } = useAuth()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-const user = ref({
-  name: 'Benjamin Canac',
+const user = computed(() => ({
+  name: (authData.value as any)?.name ?? 'User',
   avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
+    src: '',
+    alt: (authData.value as any)?.name ?? 'User'
   }
-})
+}))
+
+async function handleLogout() {
+  await signOut({ callbackUrl: '/auth/login' })
+}
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
@@ -147,7 +152,8 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   target: '_blank'
 }, {
   label: 'Log out',
-  icon: 'i-lucide-log-out'
+  icon: 'i-lucide-log-out',
+  onSelect: handleLogout
 }]]))
 </script>
 

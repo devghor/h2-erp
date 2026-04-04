@@ -43,7 +43,11 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse|UserResource
     {
-        return new UserResource($request->user());
+        $user = $request->user()->load('tenant');
+        
+        tenancy()->initialize($user->tenant);
+
+        return new UserResource($user);
     }
 
     public function logout(Request $request): JsonResponse

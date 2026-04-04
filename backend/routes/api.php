@@ -17,6 +17,13 @@ Route::prefix('v1')->group(function () {
         });
 
     /** Protected Routes **/
+
+    // Auth endpoints that only need Sanctum — no tenant context required
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/uam/me', [AuthController::class, 'me'])->name('uam.me');
+        Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    });
+
     Route::middleware(['auth:sanctum', InitializeTenancyByRequestData::class])->group(function () {
         /**
          * Auth Module
@@ -24,7 +31,6 @@ Route::prefix('v1')->group(function () {
         Route::prefix('auth')
             ->name('auth.')
             ->group(function () {
-                Route::post('/logout', [AuthController::class, 'logout']);
                 Route::post('/refresh', [AuthController::class, 'refresh']);
                 Route::post('/change-password', [AuthController::class, 'changePassword']);
             });
@@ -35,7 +41,6 @@ Route::prefix('v1')->group(function () {
         Route::prefix('uam')
             ->name('uam.')
             ->group(function () {
-                Route::get('/me', [AuthController::class, 'me']);
 
                 // User resource routes
                 Route::get('users/export', [UserController::class, 'export'])
