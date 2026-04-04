@@ -9,8 +9,12 @@ export function useApiClient() {
   const baseURL = config.public.apiBase as string
 
   function authHeaders(): Record<string, string> {
-    const token = (user.value as Record<string, string> | null)?.access_token
-    return token ? { Authorization: `Bearer ${token}` } : {}
+    const u = user.value as Record<string, unknown> | null
+    const headers: Record<string, string> = {}
+    if (u?.access_token) headers['Authorization'] = `Bearer ${u.access_token as string}`
+    const tenantId = (u?.user as Record<string, string> | null)?.tenant_id
+    if (tenantId) headers['X-Tenant'] = tenantId
+    return headers
   }
 
   /**
