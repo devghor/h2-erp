@@ -29,6 +29,27 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'User Access',
+  icon: 'i-lucide-shield-check',
+  to: '/admin/uam',
+  type: 'trigger',
+  children: [{
+    label: 'Users',
+    to: '/admin/uam/users',
+    icon: 'i-lucide-users',
+    onSelect: () => { open.value = false }
+  }, {
+    label: 'Roles',
+    to: '/admin/uam/roles',
+    icon: 'i-lucide-key-round',
+    onSelect: () => { open.value = false }
+  }, {
+    label: 'Permissions',
+    to: '/admin/uam/permissions',
+    icon: 'i-lucide-lock',
+    onSelect: () => { open.value = false }
+  }]
+}, {
   label: 'Settings',
   to: '/settings',
   icon: 'i-lucide-settings',

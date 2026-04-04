@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -22,7 +23,8 @@ export default defineNuxtConfig({
   routeRules: {
     '/api/**': {
       cors: true
-    }
+    },
+    '/admin/**': { ssr: false }
   },
 
   compatibilityDate: '2024-07-11',

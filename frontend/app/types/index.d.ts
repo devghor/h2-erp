@@ -58,3 +58,54 @@ export interface Range {
   start: Date
   end: Date
 }
+
+// UAM types
+export interface UamUser {
+  ulid: string
+  name: string
+  email: string
+  email_verified_at: string | null
+  tenant_id: string
+  roles: string[]
+  permissions: string[]
+  created_at: string
+  updated_at: string
+}
+
+export interface UamRole {
+  id: number
+  name: string
+  guard_name: string
+  description: string | null
+  permissions: UamPermission[]
+  created_at: string
+  updated_at: string
+}
+
+export interface UamPermission {
+  id: number
+  name: string
+}
+
+export interface UamPaginationMeta {
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+}
+
+export interface UamUserListResponse {
+  data: UamUser[]
+  meta: UamPaginationMeta
+  links: Record<string, string | null>
+}
+
+export interface UamRoleListResponse {
+  data: UamRole[]
+}
+
+export interface UamPermissionsGrouped {
+  [module: string]: UamPermission[]
+}
