@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { ROUTES } from '~/constants/routes'
 
 definePageMeta({
   layout: 'auth'
@@ -30,7 +31,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       body: event.data
     })
     await fetchSession()
-    await navigateTo('/')
+    await navigateTo(ROUTES.HOME)
   } catch (error: any) {
     const message = error?.data?.message || error?.message || 'Invalid email or password'
     toast.add({

@@ -32,7 +32,7 @@ const { data, status, refresh } = await apiFetch<UamUserListResponse>(
 const users = computed(() => data.value?.data || [])
 const total = computed(() => data.value?.meta?.total || 0)
 
-const selectedRows = computed(() =>
+const selectedRows:any = computed(() =>
   table.value?.tableApi?.getFilteredSelectedRowModel().rows.map(r => r.original as UamUser) || []
 )
 const selectedUlids = computed(() => selectedRows.value.map(u => u.ulid))
