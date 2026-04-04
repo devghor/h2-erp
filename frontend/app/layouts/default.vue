@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { ROUTES } from '~/constants/routes'
 
 const open = ref(false)
 
 const links = [[{
   label: 'Home',
   icon: 'i-lucide-house',
-  to: '/',
+  to: ROUTES.HOME,
   onSelect: () => { open.value = false }
 }, {
   label: 'Inbox',
   icon: 'i-lucide-inbox',
-  to: '/inbox',
+  to: ROUTES.INBOX,
   badge: '4',
   onSelect: () => { open.value = false }
 }, {
   label: 'Customers',
   icon: 'i-lucide-users',
-  to: '/customers',
+  to: ROUTES.CUSTOMERS,
   onSelect: () => { open.value = false }
 }, {
   label: 'User Access',
@@ -25,41 +26,41 @@ const links = [[{
   type: 'trigger',
   children: [{
     label: 'Users',
-    to: '/admin/uam/users',
+    to: ROUTES.UAM.USERS,
     icon: 'i-lucide-users',
     onSelect: () => { open.value = false }
   }, {
     label: 'Roles',
-    to: '/admin/uam/roles',
+    to: ROUTES.UAM.ROLES,
     icon: 'i-lucide-key-round',
     onSelect: () => { open.value = false }
   }, {
     label: 'Permissions',
-    to: '/admin/uam/permissions',
+    to: ROUTES.UAM.PERMISSIONS,
     icon: 'i-lucide-lock',
     onSelect: () => { open.value = false }
   }]
 }, {
   label: 'Settings',
-  to: '/settings',
+  to: ROUTES.SETTINGS.INDEX,
   icon: 'i-lucide-settings',
   type: 'trigger',
   children: [{
     label: 'General',
-    to: '/settings',
+    to: ROUTES.SETTINGS.INDEX,
     exact: true,
     onSelect: () => { open.value = false }
   }, {
     label: 'Members',
-    to: '/settings/members',
+    to: ROUTES.SETTINGS.MEMBERS,
     onSelect: () => { open.value = false }
   }, {
     label: 'Notifications',
-    to: '/settings/notifications',
+    to: ROUTES.SETTINGS.NOTIFICATIONS,
     onSelect: () => { open.value = false }
   }, {
     label: 'Security',
-    to: '/settings/security',
+    to: ROUTES.SETTINGS.SECURITY,
     onSelect: () => { open.value = false }
   }]
 }]] satisfies NavigationMenuItem[][]
