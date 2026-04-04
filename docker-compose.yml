@@ -1,0 +1,108 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: h2_app
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - db
+      - redis
+    networks:
+      - h2_network
+
+  web:
+    image: nginx:latest
+    container_name: h2_web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - h2_network
+
+  db:
+    image: mysql:8.0
+    container_name: h2_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: h2_hrms
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: laravel
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - h2_network
+
+  redis:
+    image: redis:alpine
+    container_name: h2_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - h2_network
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: h2_queue
+    working_dir: /var/www
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - app
+      - redis
+      - db
+    networks:
+      - h2_network
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: h2_scheduler
+    working_dir: /var/www
+    command: >
+      sh -c "while true; do
+             php artisan schedule:run --verbose --no-interaction;
+             sleep 60;
+             done"
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - app
+      - db
+    networks:
+      - h2_network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: h2_mailhog
+    ports:
+      - "8026:8025"
+    networks:
+      - h2_network
+
+  adminer:
+    image: adminer
+    container_name: h2_adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - h2_network
+
+networks:
+  h2_network:
+
+volumes:
+  dbdata:
