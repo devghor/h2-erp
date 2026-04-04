@@ -50,11 +50,7 @@ export default defineNuxtConfig({
     },
     globalAppMiddleware: {
       isEnabled: true,
-      addDefaultCallbackUrl: '/'
-    },
-    pages: {
-      login: '/auth/login'
-    }
+      addDefaultCallbackUrl: '/',    },
   },
 
   compatibilityDate: '2024-07-11',
