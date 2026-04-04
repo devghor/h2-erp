@@ -131,7 +131,7 @@ const columns: TableColumn<UamRole>[] = [
           <UDashboardSidebarCollapse />
         </template>
         <template #right>
-          <UamRolesAddModal @created="refresh()" />
+          <AdminUamRolesAddModal @created="refresh()" />
         </template>
       </UDashboardNavbar>
     </template>
@@ -141,7 +141,7 @@ const columns: TableColumn<UamRole>[] = [
         <UInput v-model="search" class="max-w-sm" icon="i-lucide-search" placeholder="Search roles..." />
 
         <div class="flex flex-wrap items-center gap-1.5">
-          <UamRolesDeleteModal
+          <AdminUamRolesDeleteModal
             v-if="selectedIds.length"
             :count="selectedIds.length"
             :ids="selectedIds"
@@ -154,7 +154,7 @@ const columns: TableColumn<UamRole>[] = [
                 </template>
               </UButton>
             </template>
-          </UamRolesDeleteModal>
+          </AdminUamRolesDeleteModal>
 
           <UDropdownMenu
             :items="
@@ -212,7 +212,7 @@ const columns: TableColumn<UamRole>[] = [
     </template>
   </UDashboardPanel>
 
-  <UamRolesEditModal
+  <AdminUamRolesEditModal
     v-if="editingRole"
     :role="editingRole"
     :open="showEditModal"
@@ -220,7 +220,7 @@ const columns: TableColumn<UamRole>[] = [
     @updated="() => { showEditModal = false; editingRole = null; refresh() }"
   />
 
-  <UamRolesDeleteModal
+  <AdminUamRolesDeleteModal
     v-if="deletingRole"
     :role="deletingRole"
     :open="showDeleteModal"

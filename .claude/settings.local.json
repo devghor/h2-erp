@@ -4,7 +4,9 @@
       "Bash(pnpm add:*)",
       "Bash(xargs grep:*)",
       "Bash(pnpm remove:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(mv \"d:/side-project/h2-erp/frontend/app/components/uam/users/\"* \"d:/side-project/h2-erp/frontend/app/components/admin/uam/users/\")",
+      "Bash(mv \"d:/side-project/h2-erp/frontend/app/components/uam/roles/\"* \"d:/side-project/h2-erp/frontend/app/components/admin/uam/roles/\")"
     ]
   }
 }

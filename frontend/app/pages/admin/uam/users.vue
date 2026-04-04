@@ -149,7 +149,7 @@ watch(search, () => {
           <UDashboardSidebarCollapse />
         </template>
         <template #right>
-          <UamUsersAddModal @created="refresh()" />
+          <AdminUamUsersAddModal @created="refresh()" />
         </template>
       </UDashboardNavbar>
     </template>
@@ -159,7 +159,7 @@ watch(search, () => {
         <UInput v-model="search" class="max-w-sm" icon="i-lucide-search" placeholder="Search users..." />
 
         <div class="flex flex-wrap items-center gap-1.5">
-          <UamUsersDeleteModal
+          <AdminUamUsersDeleteModal
             v-if="selectedUlids.length"
             :count="selectedUlids.length"
             :ulids="selectedUlids"
@@ -172,7 +172,7 @@ watch(search, () => {
                 </template>
               </UButton>
             </template>
-          </UamUsersDeleteModal>
+          </AdminUamUsersDeleteModal>
 
           <UDropdownMenu
             :items="
@@ -230,7 +230,7 @@ watch(search, () => {
     </template>
   </UDashboardPanel>
 
-  <UamUsersEditModal
+  <AdminUamUsersEditModal
     v-if="editingUser"
     :user="editingUser"
     :open="showEditModal"
@@ -238,7 +238,7 @@ watch(search, () => {
     @updated="() => { showEditModal = false; editingUser = null; refresh() }"
   />
 
-  <UamUsersDeleteModal
+  <AdminUamUsersDeleteModal
     v-if="deletingUser"
     :user="deletingUser"
     :open="showDeleteModal"
