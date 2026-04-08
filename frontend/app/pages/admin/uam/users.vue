@@ -175,7 +175,7 @@ function clearFilters() {
             @deleted="() => { rowSelection = {}; refresh() }"
           >
             <template #default="{ openModal }">
-              <UButton label="Delete" color="error" variant="subtle" icon="i-lucide-trash" @click="openModal">
+              <UButton label="Delete" color="error" variant="outline" icon="i-lucide-trash" size="xs" @click="openModal">
                 <template #trailing>
                   <UKbd>{{ selectedUlids.length }}</UKbd>
                 </template>
