@@ -22,16 +22,16 @@ export function useApiClient() {
    */
   function apiFetch<T>(
     path: string | (() => string),
-    options: Parameters<typeof useFetch>[1] = {}
+    options: Record<string, unknown> = {}
   ) {
     const url = typeof path === 'function'
       ? computed(() => `${baseURL}${path()}`)
       : `${baseURL}${path}`
 
-    return useFetch<T>(url as string, {
+    return useFetch<T>(url as any, {
       ...options,
       headers: computed(() => ({ ...authHeaders(), ...(options.headers as object | undefined) }))
-    } as Parameters<typeof useFetch>[1])
+    } as any)
   }
 
   /**
