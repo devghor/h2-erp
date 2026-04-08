@@ -161,7 +161,7 @@ function clearFilters() {
     </template>
 
     <template #body>
-      <SharedTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
+      <CoreTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
         <template #filters>
           <UFormField label="Search">
             <UInput v-model="filters.search" icon="i-lucide-search" placeholder="Name or email..." class="w-full" />
@@ -183,7 +183,7 @@ function clearFilters() {
             </template>
           </AdminUamUsersDeleteModal>
         </template>
-      </SharedTableToolbar>
+      </CoreTableToolbar>
 
       <UTable
         ref="table"
@@ -197,7 +197,7 @@ function clearFilters() {
         :ui="tableStyles"
       />
 
-      <SharedTablePagination
+      <CoreTablePagination
         :selected="selectedUlids.length"
         :total="total"
         v-model:pagination="pagination"

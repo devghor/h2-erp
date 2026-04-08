@@ -148,7 +148,7 @@ const columns: TableColumn<UamRole>[] = [
     </template>
 
     <template #body>
-      <SharedTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
+      <CoreTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
         <template #filters>
           <UFormField label="Search">
             <UInput v-model="filters.search" icon="i-lucide-search" placeholder="Name or description..." class="w-full" />
@@ -170,7 +170,7 @@ const columns: TableColumn<UamRole>[] = [
             </template>
           </AdminUamRolesDeleteModal>
         </template>
-      </SharedTableToolbar>
+      </CoreTableToolbar>
 
       <UTable
         ref="table"
@@ -185,7 +185,7 @@ const columns: TableColumn<UamRole>[] = [
         :ui="tableStyles"
       />
 
-      <SharedTablePagination
+      <CoreTablePagination
         :selected="selectedIds.length"
         :total="filteredRoles.length"
         v-model:pagination="pagination"
