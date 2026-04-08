@@ -202,7 +202,6 @@ watch(search, () => {
         v-model:row-selection="rowSelection"
         v-model:pagination="pagination"
         :pagination-options="{ getPaginationRowModel: getPaginationRowModel() }"
-        class="shrink-0"
         :data="users"
         :columns="columns"
         :loading="status === 'pending'"
