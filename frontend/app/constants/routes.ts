@@ -15,4 +15,8 @@ export const ROUTES = {
     NOTIFICATIONS: '/settings/notifications',
     SECURITY: '/settings/security',
   },
+
+  AUTH:{
+    LOGIN: '/auth/login',
+  }
 } as const
