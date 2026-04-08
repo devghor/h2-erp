@@ -209,17 +209,12 @@ watch(search, () => {
         :ui="tableStyles"
       />
 
-      <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
-        <div class="text-sm text-muted">
-          {{ selectedUlids.length }} of {{ total }} row(s) selected.
-        </div>
-        <UPagination
-          :default-page="pagination.pageIndex + 1"
-          :items-per-page="pagination.pageSize"
-          :total="total"
-          @update:page="(p: number) => { pagination.pageIndex = p - 1; refresh() }"
-        />
-      </div>
+      <SharedTablePagination
+        :selected="selectedUlids.length"
+        :total="total"
+        v-model:pagination="pagination"
+        @update:pagination="refresh()"
+      />
     </template>
   </UDashboardPanel>
 
