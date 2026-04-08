@@ -44,7 +44,7 @@ export function useApiClient() {
     return $fetch<T>(`${baseURL}${path}`, {
       ...options,
       headers: { ...authHeaders(), ...(options.headers as object | undefined) }
-    })
+    }) as Promise<T>
   }
 
   return { apiFetch, apiCall, baseURL, authHeaders }
