@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
 import type { UamRole, UamRoleListResponse } from '~/types'
@@ -13,7 +12,19 @@ const UCheckbox = resolveComponent('UCheckbox')
 const table = useTemplateRef('table')
 const { apiFetch } = useApiClient()
 
-const search = ref('')
+const filters = reactive({ search: '' })
+const appliedFilters = reactive({ search: '' })
+
+const activeFilterCount = computed(() => [appliedFilters.search].filter(Boolean).length)
+
+function applyFilters() {
+  Object.assign(appliedFilters, filters)
+}
+
+function clearFilters() {
+  filters.search = ''
+  appliedFilters.search = ''
+}
 const columnVisibility = ref()
 const rowSelection = ref({})
 const pagination = ref({ pageIndex: 0, pageSize: 15 })
@@ -33,8 +44,8 @@ const selectedRows:any = computed(() =>
 const selectedIds = computed(() => selectedRows.value.map(r => r.id))
 
 const filteredRoles = computed(() => {
-  if (!search.value) return roles.value
-  const q = search.value.toLowerCase()
+  if (!appliedFilters.search) return roles.value
+  const q = appliedFilters.search.toLowerCase()
   return roles.value.filter(r =>
     r.name.toLowerCase().includes(q) || (r.description || '').toLowerCase().includes(q)
   )
@@ -137,10 +148,13 @@ const columns: TableColumn<UamRole>[] = [
     </template>
 
     <template #body>
-      <div class="flex flex-wrap items-center justify-between gap-1.5 mb-4">
-        <UInput v-model="search" class="max-w-sm" icon="i-lucide-search" placeholder="Search roles..." />
-
-        <div class="flex flex-wrap items-center gap-1.5">
+      <SharedTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
+        <template #filters>
+          <UFormField label="Search">
+            <UInput v-model="filters.search" icon="i-lucide-search" placeholder="Name or description..." class="w-full" />
+          </UFormField>
+        </template>
+        <template #actions>
           <AdminUamRolesDeleteModal
             v-if="selectedIds.length"
             :count="selectedIds.length"
@@ -155,28 +169,8 @@ const columns: TableColumn<UamRole>[] = [
               </UButton>
             </template>
           </AdminUamRolesDeleteModal>
-
-          <UDropdownMenu
-            :items="
-              table?.tableApi
-                ?.getAllColumns()
-                .filter((col: any) => col.getCanHide())
-                .map((col: any) => ({
-                  label: upperFirst(col.id),
-                  type: 'checkbox' as const,
-                  checked: col.getIsVisible(),
-                  onUpdateChecked(checked: boolean) {
-                    table?.tableApi?.getColumn(col.id)?.toggleVisibility(!!checked)
-                  },
-                  onSelect(e?: Event) { e?.preventDefault() }
-                }))
-            "
-            :content="{ align: 'end' }"
-          >
-            <UButton label="Display" color="neutral" variant="outline" trailing-icon="i-lucide-settings-2" />
-          </UDropdownMenu>
-        </div>
-      </div>
+        </template>
+      </SharedTableToolbar>
 
       <UTable
         ref="table"
