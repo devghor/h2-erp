@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { UamRole, UamPermissionsGrouped } from '~/types'
+import type { UamRole } from '~/types'
 
 const props = defineProps<{ role: UamRole; open?: boolean }>()
 const emit = defineEmits<{ updated: []; 'update:open': [boolean] }>()
@@ -20,25 +20,20 @@ const isOpen = computed({
 })
 
 const toast = useToast()
-const { apiCall, apiFetch } = useApiClient()
-const selectedPermissions = ref<string[]>([])
+const { apiCall } = useApiClient()
 const state = reactive<Partial<Schema>>({ name: '', description: '' })
-
-const { data: permissionsData } = await apiFetch<{ data: { permissions: UamPermissionsGrouped } }>('/uam/permissions/grouped')
-const grouped = computed(() => permissionsData.value?.data?.permissions || {})
 
 watch(isOpen, (val) => {
   if (val) {
     Object.assign(state, { name: props.role.name, description: props.role.description || '' })
-    selectedPermissions.value = props.role.permissions?.map(p => p.name) || []
   }
-})
+}, { immediate: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     await apiCall(`/uam/roles/${props.role.id}`, {
       method: 'PUT',
-      body: { ...event.data, permissions: selectedPermissions.value }
+      body: event.data
     })
     toast.add({ title: 'Role updated', description: `Role "${event.data.name}" has been updated.`, color: 'success' })
     isOpen.value = false
@@ -50,7 +45,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="isOpen" title="Edit Role" description="Update role details and permissions">
+  <UModal v-model:open="isOpen" title="Edit Role" description="Update role name and description">
     <slot :open-modal="() => (isOpen = true)" />
 
     <template #body>
@@ -61,22 +56,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UFormField label="Description" name="description">
           <UTextarea v-model="state.description" class="w-full" />
         </UFormField>
-
-        <div v-if="Object.keys(grouped).length" class="space-y-3">
-          <p class="text-sm font-medium text-highlighted">Permissions</p>
-          <div v-for="(perms, module) in grouped" :key="module" class="space-y-1">
-            <p class="text-xs font-semibold text-muted uppercase tracking-wide">{{ module }}</p>
-            <div class="flex flex-wrap gap-2">
-              <UCheckbox
-                v-for="perm in perms"
-                :key="perm.name"
-                v-model="selectedPermissions"
-                :value="perm.name"
-                :label="perm.name"
-              />
-            </div>
-          </div>
-        </div>
 
         <div class="flex justify-end gap-2 pt-2">
           <UButton label="Cancel" color="neutral" variant="subtle" @click="isOpen = false" />

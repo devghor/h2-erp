@@ -104,6 +104,8 @@ export interface UamUserListResponse {
 
 export interface UamRoleListResponse {
   data: UamRole[]
+  meta: UamPaginationMeta
+  links: Record<string, string | null>
 }
 
 export interface UamPermissionsGrouped {
