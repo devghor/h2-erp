@@ -19,7 +19,10 @@ class PermissionService
      */
     public function assignPermissionsToRole(Role $role, array $permissionNames): void
     {
-        $permissions = Permission::whereIn('name', $permissionNames)->get();
+        $permissions = Permission::whereIn('name', $permissionNames)
+            ->where('guard_name', 'api')
+            ->get();
+
         $role->syncPermissions($permissions);
 
         // Clear cache for all users with this role
@@ -48,7 +51,9 @@ class PermissionService
      */
     public function assignPermissionsToUser(User $user, array $permissionNames): void
     {
-        $permissions = Permission::whereIn('name', $permissionNames)->get();
+        $permissions = Permission::whereIn('name', $permissionNames)
+            ->where('guard_name', 'api')
+            ->get();
         $user->syncPermissions($permissions);
         $user->clearPermissionCache();
     }

@@ -17,7 +17,8 @@ use Maatwebsite\Excel\Facades\Excel;
 class RoleController extends Controller
 {
     public function __construct(
-        protected PermissionService $permissionService, protected RoleService $roleService
+        protected PermissionService $permissionService,
+        protected RoleService $roleService
     ) {}
 
     /**
