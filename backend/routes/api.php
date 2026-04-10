@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function () {
 
                 // User management
                 Route::prefix('users')->name('users.')->group(function () {
-                    Route::get('export', [UserController::class, 'export'])->name('export');
+                    Route::get('export/excel', [UserController::class, 'exportExcel'])->name('export.excel');
                     Route::post('bulk-delete', [UserController::class, 'bulkDestroy'])->name('bulk-destroy');
                     Route::apiResource('/', UserController::class)->parameters(['' => 'user']);
                 });

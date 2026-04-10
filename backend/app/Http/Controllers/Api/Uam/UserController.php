@@ -9,14 +9,17 @@ use App\Http\Resources\Uam\UserCollection;
 use App\Http\Resources\Uam\UserResource;
 use App\Models\Uam\User;
 use App\Services\Uam\UserService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\FormatService;
 
 class UserController extends Controller
 {
     public function __construct(
-        protected UserService $userService
+        protected UserService $userService,
+        protected FormatService $formatService
     ) {}
 
     public function index(Request $request): JsonResponse|UserCollection
@@ -28,8 +31,6 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // $this->authorize('create', User::class);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -43,15 +44,11 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        // $this->authorize('view', $user);
-
         return new UserResource($user);
     }
 
     public function update(Request $request, User $user)
     {
-        // $this->authorize('update', $user);
-
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
@@ -65,8 +62,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // $this->authorize('delete', $user);
-
         $this->userService->deleteUser($user);
 
         return ApiResponse::noContent();
@@ -74,8 +69,6 @@ class UserController extends Controller
 
     public function bulkDestroy(Request $request)
     {
-        // $this->authorize('delete', User::class);
-
         $validated = $request->validate([
             'ulids' => 'required|array|min:1',
             'ulids.*' => 'required|string|exists:users,ulid',
@@ -91,14 +84,10 @@ class UserController extends Controller
         );
     }
 
-    public function export(Request $request)
+    public function exportExcel(Request $request)
     {
-        // $this->authorize('export', User::class);
+        $query = $this->userService->getExportQuery($request->only(['name', 'email', 'from_date', 'to_date']));
 
-        $filters = $request->only(['search', 'role']);
-
-        $fileName = 'users_' . now()->format('Y-m-d_His') . '.xlsx';
-
-        return Excel::download(new UsersExport($filters), $fileName);
+        return Excel::download(new UsersExport($query), $this->formatService->excelFileName('users'));
     }
 }

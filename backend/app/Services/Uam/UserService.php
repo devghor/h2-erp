@@ -4,6 +4,7 @@ namespace App\Services\Uam;
 
 use App\Models\Uam\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,37 +14,20 @@ class UserService
     {
         $query = User::query();
 
-        // Apply filters manually
         if ($request->filled('ulid')) {
             $query->where('ulid', $request->input('ulid'));
-        }
-
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
-        }
-
-        if ($request->filled('email')) {
-            $query->where('email', 'like', '%' . $request->input('email') . '%');
         }
 
         if ($request->filled('tenant_id')) {
             $query->where('tenant_id', 'like', '%' . $request->input('tenant_id') . '%');
         }
 
-        if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->input('from_date'));
-        }
+        $this->applyFilters($query, $request->only(['name', 'email', 'from_date', 'to_date']));
 
-        if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->input('to_date'));
-        }
-
-        // Apply sorting
         if ($request->filled('sort_by')) {
-            $sortBy = $request->input('sort_by');
+            $sortBy    = $request->input('sort_by');
             $sortOrder = $request->input('sort_order', 'asc');
 
-            // Validate sort column
             $allowedSorts = ['ulid', 'name', 'email', 'tenant_id', 'created_at', 'updated_at'];
             if (in_array($sortBy, $allowedSorts)) {
                 $query->orderBy($sortBy, $sortOrder);
@@ -53,6 +37,34 @@ class UserService
         }
 
         return $query->paginate($request->input('per_page', 15));
+    }
+
+    public function getExportQuery(array $filters): Builder
+    {
+        $query = User::query()->with('roles');
+
+        $this->applyFilters($query, $filters);
+
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    private function applyFilters(Builder $query, array $filters): void
+    {
+        if (!empty($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
+        }
+
+        if (!empty($filters['email'])) {
+            $query->where('email', 'like', '%' . $filters['email'] . '%');
+        }
+
+        if (!empty($filters['from_date'])) {
+            $query->whereDate('created_at', '>=', $filters['from_date']);
+        }
+
+        if (!empty($filters['to_date'])) {
+            $query->whereDate('created_at', '<=', $filters['to_date']);
+        }
     }
 
     public function createUser(array $data): User

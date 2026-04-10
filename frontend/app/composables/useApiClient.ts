@@ -74,5 +74,27 @@ export function useApiClient() {
     }
   }
 
-  return { apiFetch, apiCall, baseURL, authHeaders }
+  /**
+   * Download a file from the API (handles binary responses with auth headers).
+   */
+  async function apiDownload(path: string, fileName: string, params: Record<string, string> = {}) {
+    const query = new URLSearchParams(params).toString()
+    const url = `${baseURL}${path}${query ? `?${query}` : ''}`
+
+    const response = await fetch(url, { headers: authHeaders() })
+
+    if (!response.ok) {
+      if (response.status === 401) await handleUnauthorized()
+      throw new Error(`Download failed: ${response.statusText}`)
+    }
+
+    const blob = await response.blob()
+    const anchor = document.createElement('a')
+    anchor.href = URL.createObjectURL(blob)
+    anchor.download = fileName
+    anchor.click()
+    URL.revokeObjectURL(anchor.href)
+  }
+
+  return { apiFetch, apiCall, apiDownload, baseURL, authHeaders }
 }
