@@ -36,7 +36,7 @@ const roleOptions = computed(() => (rolesData.value?.data || []).map(r => ({ lab
 watch(isOpen, (val) => {
   if (val) {
     Object.assign(state, { name: props.user.name, email: props.user.email, password: '', password_confirmation: '' })
-    selectedRoles.value = [...(props.user.roles || [])]
+    selectedRoles.value = (props.user.roles || []).map(r => r.name)
   }
 }, { immediate: true })
 

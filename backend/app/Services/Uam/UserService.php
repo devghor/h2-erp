@@ -13,6 +13,8 @@ class UserService
 {
     public function getAllUsers(Request $request): LengthAwarePaginator
     {
+        setPermissionsTeamId(tenant('id'));
+
         $query = User::query()->with('roles');
 
         if ($request->filled('ulid')) {
@@ -79,7 +81,8 @@ class UserService
         $user = User::create($data);
 
         if (!empty($roles)) {
-            $user->syncRoles(Role::whereIn('name', $roles)->get());
+            $roles = Role::whereIn('name', $roles)->pluck('id')->toArray();
+            $this->syncUserRoles($user, $roles);
         }
 
         return $user->load('roles');
@@ -97,7 +100,8 @@ class UserService
         $user->update($data);
 
         if ($roles !== null) {
-            $user->syncRoles(Role::whereIn('name', $roles)->get());
+            $roles = Role::whereIn('name', $roles)->pluck('id')->toArray();
+            $this->syncUserRoles($user, $roles);
         }
 
         return $user->fresh('roles');
@@ -111,5 +115,14 @@ class UserService
     public function bulkDeleteUsers(array $ulids): int
     {
         return User::whereIn('ulid', $ulids)->delete();
+    }
+
+    function syncUserRoles(User $user, array $roles)
+    {
+
+        app(\Spatie\Permission\PermissionRegistrar::class)
+            ->setPermissionsTeamId(tenant('id'));
+
+        $user->syncRoles($roles);
     }
 }

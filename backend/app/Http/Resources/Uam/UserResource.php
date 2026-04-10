@@ -21,11 +21,7 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at,
             'tenant_id' => tenant()->getTenantKey(),
             'tenant' => tenant(),
-            'roles' => $this->roles->pluck('name'),
-            'permissions' => [
-                'READ_UAM_USER',
-                'READ_UAM_ROLE',
-            ],
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

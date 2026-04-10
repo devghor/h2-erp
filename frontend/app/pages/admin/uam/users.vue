@@ -132,7 +132,7 @@ const columns: TableColumn<UamUser>[] = [
         'div',
         { class: 'flex flex-wrap gap-1' },
         roles.length
-          ? roles.map((r: any) => h(UBadge, { variant: 'subtle', color: 'primary', class: 'capitalize' }, () => r))
+          ? roles.map((r: any) => h(UBadge, { variant: 'subtle', color: 'primary', class: 'capitalize' }, () => r.name))
           : [h('span', { class: 'text-muted text-xs' }, 'No roles')]
       )
     }

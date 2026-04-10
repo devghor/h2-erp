@@ -66,7 +66,7 @@ export interface UamUser {
   email: string
   email_verified_at: string | null
   tenant_id: string
-  roles: string[]
+  roles: UamRole[]
   permissions: string[]
   created_at: string
   updated_at: string
