@@ -4,6 +4,10 @@ import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
 import type { UamUser, UamUserListResponse } from '~/types'
 
+definePageMeta({
+  title: 'User Management'
+})
+
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -40,10 +44,7 @@ const users = computed(() => data.value?.data || [])
 const total = computed(() => data.value?.meta?.total || 0)
 
 const selectedRows: any = computed(
-  () =>
-    table.value?.tableApi
-      ?.getFilteredSelectedRowModel()
-      .rows.map((r: any) => r.original as UamUser) || []
+  () => table.value?.tableApi?.getFilteredSelectedRowModel().rows.map((r: any) => r.original as UamUser) || []
 )
 const selectedUlids = computed(() => selectedRows.value.map((u: any) => u.ulid))
 
@@ -102,18 +103,14 @@ const columns: TableColumn<UamUser>[] = [
     id: 'select',
     header: ({ table: t }) =>
       h(UCheckbox, {
-        modelValue: t.getIsSomePageRowsSelected()
-          ? 'indeterminate'
-          : t.getIsAllPageRowsSelected(),
-        'onUpdate:modelValue': (val: boolean | 'indeterminate') =>
-          t.toggleAllPageRowsSelected(!!val),
+        modelValue: t.getIsSomePageRowsSelected() ? 'indeterminate' : t.getIsAllPageRowsSelected(),
+        'onUpdate:modelValue': (val: boolean | 'indeterminate') => t.toggleAllPageRowsSelected(!!val),
         ariaLabel: 'Select all'
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
         modelValue: row.getIsSelected(),
-        'onUpdate:modelValue': (val: boolean | 'indeterminate') =>
-          row.toggleSelected(!!val),
+        'onUpdate:modelValue': (val: boolean | 'indeterminate') => row.toggleSelected(!!val),
         ariaLabel: 'Select row'
       })
   },
@@ -135,13 +132,7 @@ const columns: TableColumn<UamUser>[] = [
         'div',
         { class: 'flex flex-wrap gap-1' },
         roles.length
-          ? roles.map((r: any) =>
-              h(
-                UBadge,
-                { variant: 'subtle', color: 'primary', class: 'capitalize' },
-                () => r
-              )
-            )
+          ? roles.map((r: any) => h(UBadge, { variant: 'subtle', color: 'primary', class: 'capitalize' }, () => r))
           : [h('span', { class: 'text-muted text-xs' }, 'No roles')]
       )
     }
@@ -150,11 +141,7 @@ const columns: TableColumn<UamUser>[] = [
     accessorKey: 'created_at',
     header: 'Created',
     cell: ({ row }) =>
-      h(
-        'span',
-        { class: 'text-sm text-muted' },
-        new Date(row.original.created_at).toLocaleDateString()
-      )
+      h('span', { class: 'text-sm text-muted' }, new Date(row.original.created_at).toLocaleDateString())
   },
   {
     id: 'actions',
@@ -182,12 +169,7 @@ const columns: TableColumn<UamUser>[] = [
 
 const activeFilterCount = computed(
   () =>
-    [
-      appliedFilters.name,
-      appliedFilters.email,
-      appliedFilters.from_date,
-      appliedFilters.to_date
-    ].filter(Boolean).length
+    [appliedFilters.name, appliedFilters.email, appliedFilters.from_date, appliedFilters.to_date].filter(Boolean).length
 )
 
 function applyFilters() {
@@ -233,20 +215,10 @@ function clearFilters() {
         <template #filters>
           <div class="grid grid-cols-4 gap-4 w-full">
             <UFormField label="Name" class="w-full">
-              <UInput
-                v-model="filters.name"
-                icon="i-lucide-user"
-                placeholder="Filter by name..."
-                class="w-full"
-              />
+              <UInput v-model="filters.name" icon="i-lucide-user" placeholder="Filter by name..." class="w-full" />
             </UFormField>
             <UFormField label="Email" class="w-full">
-              <UInput
-                v-model="filters.email"
-                icon="i-lucide-mail"
-                placeholder="Filter by email..."
-                class="w-full"
-              />
+              <UInput v-model="filters.email" icon="i-lucide-mail" placeholder="Filter by email..." class="w-full" />
             </UFormField>
             <UFormField label="From Date" class="w-full">
               <UInput v-model="filters.from_date" type="date" class="w-full" />

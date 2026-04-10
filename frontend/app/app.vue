@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
+const route = useRoute()
 
-const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
+const color = computed(() => (colorMode.value === 'dark' ? '#1b1718' : 'white'))
 
 useHead({
   meta: [
@@ -9,21 +10,25 @@ useHead({
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
-  link: [
-    { rel: 'icon', href: '/favicon.ico' }
-  ],
+  link: [{ rel: 'icon', href: '/favicon.ico' }],
   htmlAttrs: {
     lang: 'en'
   }
 })
 
-const title = 'Nuxt Dashboard Template'
-const description = 'A professional dashboard template built with Nuxt UI, featuring multiple pages, data visualization, and comprehensive management capabilities for creating powerful admin interfaces.'
+const APP_NAME = 'R2 ERP'
+
+const title = computed(() => {
+  const pageTitle = route.meta.title as string
+  return pageTitle ? `${pageTitle} - ${APP_NAME}` : APP_NAME
+})
+
+const description = 'R2 ERP is a comprehensive enterprise resource planning system.'
 
 useSeoMeta({
   title,
-  description,
   ogTitle: title,
+  description,
   ogDescription: description,
   ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
   twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
