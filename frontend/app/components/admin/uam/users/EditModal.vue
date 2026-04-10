@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { UamUser } from '~/types'
+import type { UamUser, UamRoleListResponse } from '~/types'
 
 const props = defineProps<{ user: UamUser; open?: boolean }>()
 const emit = defineEmits<{ updated: []; 'update:open': [boolean] }>()
@@ -25,17 +25,23 @@ const isOpen = computed({
 })
 
 const toast = useToast()
-const { apiCall } = useApiClient()
+const { apiCall, apiFetch } = useApiClient()
 const state = reactive<Partial<Schema>>({ name: '', email: '', password: '', password_confirmation: '' })
+
+const selectedRoles = ref<string[]>([])
+
+const { data: rolesData } = await apiFetch<UamRoleListResponse>('/uam/roles?per_page=100', { lazy: true })
+const roleOptions = computed(() => (rolesData.value?.data || []).map(r => ({ label: r.name, value: r.name })))
 
 watch(isOpen, (val) => {
   if (val) {
     Object.assign(state, { name: props.user.name, email: props.user.email, password: '', password_confirmation: '' })
+    selectedRoles.value = [...(props.user.roles || [])]
   }
 }, { immediate: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const body: Record<string, string> = { name: event.data.name, email: event.data.email }
+  const body: Record<string, any> = { name: event.data.name, email: event.data.email, roles: selectedRoles.value }
   if (event.data.password) {
     body.password = event.data.password
     body.password_confirmation = event.data.password_confirmation || ''
@@ -68,6 +74,16 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
         <UFormField label="Confirm New Password" name="password_confirmation">
           <UInput v-model="state.password_confirmation" type="password" class="w-full" />
+        </UFormField>
+        <UFormField label="Roles">
+          <USelectMenu
+            v-model="selectedRoles"
+            :items="roleOptions"
+            value-key="value"
+            multiple
+            placeholder="Select roles..."
+            class="w-full"
+          />
         </UFormField>
         <div class="flex justify-end gap-2 pt-2">
           <UButton label="Cancel" color="neutral" variant="subtle" @click="isOpen = false" />

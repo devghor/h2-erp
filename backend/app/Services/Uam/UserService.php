@@ -2,6 +2,7 @@
 
 namespace App\Services\Uam;
 
+use App\Models\Uam\Role;
 use App\Models\Uam\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,7 +13,7 @@ class UserService
 {
     public function getAllUsers(Request $request): LengthAwarePaginator
     {
-        $query = User::query();
+        $query = User::query()->with('roles');
 
         if ($request->filled('ulid')) {
             $query->where('ulid', $request->input('ulid'));
@@ -69,21 +70,37 @@ class UserService
 
     public function createUser(array $data): User
     {
+        $roles = $data['roles'] ?? [];
+        unset($data['roles']);
+
         $data['password'] = Hash::make($data['password']);
         $data['tenant_id'] = tenant('id');
 
-        return User::create($data);
+        $user = User::create($data);
+
+        if (!empty($roles)) {
+            $user->syncRoles(Role::whereIn('name', $roles)->get());
+        }
+
+        return $user->load('roles');
     }
 
     public function updateUser(User $user, array $data): User
     {
+        $roles = $data['roles'] ?? null;
+        unset($data['roles']);
+
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
 
         $user->update($data);
 
-        return $user->fresh();
+        if ($roles !== null) {
+            $user->syncRoles(Role::whereIn('name', $roles)->get());
+        }
+
+        return $user->fresh('roles');
     }
 
     public function deleteUser(User $user): void

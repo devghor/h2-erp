@@ -31,9 +31,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'roles'    => 'sometimes|array',
+            'roles.*'  => 'string|exists:roles,name',
         ]);
 
         $user = $this->userService->createUser($validated);
@@ -49,9 +51,11 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
+            'name'     => 'sometimes|required|string|max:255',
+            'email'    => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'sometimes|required|string|min:8|confirmed',
+            'roles'    => 'sometimes|array',
+            'roles.*'  => 'string|exists:roles,name',
         ]);
 
         $user = $this->userService->updateUser($user, $validated);

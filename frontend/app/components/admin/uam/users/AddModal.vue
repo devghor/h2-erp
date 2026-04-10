@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { UamRoleListResponse } from '~/types'
 
 const emit = defineEmits<{ created: [] }>()
 
@@ -18,7 +19,12 @@ type Schema = z.output<typeof schema>
 
 const open = ref(false)
 const toast = useToast()
-const { apiCall } = useApiClient()
+const { apiCall, apiFetch } = useApiClient()
+
+const selectedRoles = ref<string[]>([])
+
+const { data: rolesData } = await apiFetch<UamRoleListResponse>('/uam/roles?per_page=100', { lazy: true })
+const roleOptions = computed(() => (rolesData.value?.data || []).map(r => ({ label: r.name, value: r.name })))
 
 const state = reactive<Partial<Schema>>({
   name: '',
@@ -29,10 +35,11 @@ const state = reactive<Partial<Schema>>({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    await apiCall('/uam/users', { method: 'POST', body: event.data })
+    await apiCall('/uam/users', { method: 'POST', body: { ...event.data, roles: selectedRoles.value } })
     toast.add({ title: 'User created', description: `${event.data.name} has been added.`, color: 'success' })
     open.value = false
     Object.assign(state, { name: '', email: '', password: '', password_confirmation: '' })
+    selectedRoles.value = []
     emit('created')
   } catch (error: any) {
     toast.add({ title: 'Failed to create user', description: error?.data?.message || 'An error occurred.', color: 'error' })
@@ -57,6 +64,16 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
         <UFormField label="Confirm Password" name="password_confirmation">
           <UInput v-model="state.password_confirmation" type="password" placeholder="Repeat password" class="w-full" />
+        </UFormField>
+        <UFormField label="Roles">
+          <USelectMenu
+            v-model="selectedRoles"
+            :items="roleOptions"
+            value-key="value"
+            multiple
+            placeholder="Select roles..."
+            class="w-full"
+          />
         </UFormField>
         <div class="flex justify-end gap-2 pt-2">
           <UButton label="Cancel" color="neutral" variant="subtle" @click="open = false" />
