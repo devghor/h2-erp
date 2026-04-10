@@ -193,29 +193,15 @@ function clearFilters() {
 
 const isExporting = ref(false)
 
-function buildExportParams() {
-  const params = new URLSearchParams()
-  if (appliedFilters.name) params.set('name', appliedFilters.name)
-  if (appliedFilters.email) params.set('email', appliedFilters.email)
-  if (appliedFilters.from_date) params.set('from_date', appliedFilters.from_date)
-  if (appliedFilters.to_date) params.set('to_date', appliedFilters.to_date)
-  return params.toString()
-}
 
 async function downloadExport(path: string, filename: string) {
   isExporting.value = true
   try {
-    const { authHeaders, baseURL } = useApiClient()
-    const qs = buildExportParams()
-    const url = `${baseURL}${path}${qs ? '?' + qs : ''}`
-    const response = await fetch(url, { headers: authHeaders() })
-    if (!response.ok) throw new Error('Export failed')
-    const blob = await response.blob()
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = filename
-    link.click()
-    URL.revokeObjectURL(link.href)
+    const { apiDownload } = useApiClient()
+    const params = Object.fromEntries(
+      Object.entries(appliedFilters).filter(([, v]) => v) as [string, string][]
+    )
+    await apiDownload(path, filename, params)
   } catch {
     toast.add({ title: 'Export failed', description: 'Could not download the file.', color: 'error' })
   } finally {
