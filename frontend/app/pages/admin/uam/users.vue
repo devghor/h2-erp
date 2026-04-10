@@ -312,6 +312,25 @@ function clearFilters() {
       />
 
       <AdminUamUsersDeleteModal
+        v-if="deletingUser"
+        :user="deletingUser"
+        :open="showDeleteModal"
+        @update:open="
+          (val) => {
+            showDeleteModal = val
+            if (!val) deletingUser = null
+          }
+        "
+        @deleted="
+          () => {
+            showDeleteModal = false
+            deletingUser = null
+            refresh()
+          }
+        "
+      />
+
+      <AdminUamUsersDeleteModal
         :count="selectedUlids.length"
         :ulids="selectedUlids"
         :open="showBulkDeleteModal"
