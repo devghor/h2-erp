@@ -25,17 +25,21 @@ const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 
 const { data, status, refresh } = await apiFetch<UamUserListResponse>(
-  () => `/uam/users?page=${pagination.value.pageIndex + 1}&per_page=${pagination.value.pageSize}${appliedFilters.search ? `&search=${encodeURIComponent(appliedFilters.search)}` : ''}`,
+  () =>
+    `/uam/users?page=${pagination.value.pageIndex + 1}&per_page=${pagination.value.pageSize}${appliedFilters.search ? `&search=${encodeURIComponent(appliedFilters.search)}` : ''}`,
   { lazy: true }
 )
 
 const users = computed(() => data.value?.data || [])
 const total = computed(() => data.value?.meta?.total || 0)
 
-const selectedRows:any = computed(() =>
-  table.value?.tableApi?.getFilteredSelectedRowModel().rows.map(r => r.original as UamUser) || []
+const selectedRows: any = computed(
+  () =>
+    table.value?.tableApi
+      ?.getFilteredSelectedRowModel()
+      .rows.map((r: any) => r.original as UamUser) || []
 )
-const selectedUlids = computed(() => selectedRows.value.map(u => u.ulid))
+const selectedUlids = computed(() => selectedRows.value.map((u: any) => u.ulid))
 
 function openEdit(user: UamUser) {
   editingUser.value = user
@@ -55,21 +59,28 @@ function getRowItems(row: Row<UamUser>) {
       icon: 'i-lucide-copy',
       onSelect() {
         navigator.clipboard.writeText(row.original.ulid)
-        toast.add({ title: 'Copied to clipboard', description: 'User ULID copied.' })
+        toast.add({
+          title: 'Copied to clipboard',
+          description: 'User ULID copied.'
+        })
       }
     },
     { type: 'separator' as const },
     {
       label: 'Edit user',
       icon: 'i-lucide-pencil',
-      onSelect() { openEdit(row.original) }
+      onSelect() {
+        openEdit(row.original)
+      }
     },
     { type: 'separator' as const },
     {
       label: 'Delete user',
       icon: 'i-lucide-trash',
       color: 'error' as const,
-      onSelect() { openDelete(row.original) }
+      onSelect() {
+        openDelete(row.original)
+      }
     }
   ]
 }
@@ -79,15 +90,19 @@ const columns: TableColumn<UamUser>[] = [
     id: 'select',
     header: ({ table: t }) =>
       h(UCheckbox, {
-        'modelValue': t.getIsSomePageRowsSelected() ? 'indeterminate' : t.getIsAllPageRowsSelected(),
-        'onUpdate:modelValue': (val: boolean | 'indeterminate') => t.toggleAllPageRowsSelected(!!val),
-        'ariaLabel': 'Select all'
+        modelValue: t.getIsSomePageRowsSelected()
+          ? 'indeterminate'
+          : t.getIsAllPageRowsSelected(),
+        'onUpdate:modelValue': (val: boolean | 'indeterminate') =>
+          t.toggleAllPageRowsSelected(!!val),
+        ariaLabel: 'Select all'
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        'modelValue': row.getIsSelected(),
-        'onUpdate:modelValue': (val: boolean | 'indeterminate') => row.toggleSelected(!!val),
-        'ariaLabel': 'Select row'
+        modelValue: row.getIsSelected(),
+        'onUpdate:modelValue': (val: boolean | 'indeterminate') =>
+          row.toggleSelected(!!val),
+        ariaLabel: 'Select row'
       })
   },
   {
@@ -108,7 +123,13 @@ const columns: TableColumn<UamUser>[] = [
         'div',
         { class: 'flex flex-wrap gap-1' },
         roles.length
-          ? roles.map(r => h(UBadge, { variant: 'subtle', color: 'primary', class: 'capitalize' }, () => r))
+          ? roles.map((r: any) =>
+              h(
+                UBadge,
+                { variant: 'subtle', color: 'primary', class: 'capitalize' },
+                () => r
+              )
+            )
           : [h('span', { class: 'text-muted text-xs' }, 'No roles')]
       )
     }
@@ -117,21 +138,39 @@ const columns: TableColumn<UamUser>[] = [
     accessorKey: 'created_at',
     header: 'Created',
     cell: ({ row }) =>
-      h('span', { class: 'text-sm text-muted' }, new Date(row.original.created_at).toLocaleDateString())
+      h(
+        'span',
+        { class: 'text-sm text-muted' },
+        new Date(row.original.created_at).toLocaleDateString()
+      )
   },
   {
     id: 'actions',
     cell: ({ row }) =>
-      h('div', { class: 'text-right' },
-        h(UDropdownMenu, {
-          content: { align: 'end' },
-          items: getRowItems(row)
-        }, () => h(UButton, { icon: 'i-lucide-ellipsis-vertical', color: 'neutral', variant: 'ghost', class: 'ml-auto' }))
+      h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row)
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              class: 'ml-auto'
+            })
+        )
       )
   }
 ]
 
-const activeFilterCount = computed(() => [appliedFilters.search].filter(Boolean).length)
+const activeFilterCount = computed(
+  () => [appliedFilters.search].filter(Boolean).length
+)
 
 function applyFilters() {
   Object.assign(appliedFilters, filters)
@@ -161,10 +200,20 @@ function clearFilters() {
     </template>
 
     <template #body>
-      <CoreTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
+      <CoreTableToolbar
+        :table-api="table?.tableApi"
+        :active-filters="activeFilterCount"
+        @apply="applyFilters"
+        @clear="clearFilters"
+      >
         <template #filters>
           <UFormField label="Search">
-            <UInput v-model="filters.search" icon="i-lucide-search" placeholder="Name or email..." class="w-full" />
+            <UInput
+              v-model="filters.search"
+              icon="i-lucide-search"
+              placeholder="Name or email..."
+              class="w-full"
+            />
           </UFormField>
         </template>
         <template #actions>
@@ -172,10 +221,22 @@ function clearFilters() {
             v-if="selectedUlids.length"
             :count="selectedUlids.length"
             :ulids="selectedUlids"
-            @deleted="() => { rowSelection = {}; refresh() }"
+            @deleted="
+              () => {
+                rowSelection = {}
+                refresh()
+              }
+            "
           >
             <template #default="{ openModal }">
-              <UButton label="Delete" color="error" variant="outline" icon="i-lucide-trash" size="xs" @click="openModal">
+              <UButton
+                label="Delete"
+                color="error"
+                variant="outline"
+                icon="i-lucide-trash"
+                size="xs"
+                @click="openModal"
+              >
                 <template #trailing>
                   <UKbd>{{ selectedUlids.length }}</UKbd>
                 </template>
@@ -198,9 +259,9 @@ function clearFilters() {
       />
 
       <CoreTablePagination
+        v-model:pagination="pagination"
         :selected="selectedUlids.length"
         :total="total"
-        v-model:pagination="pagination"
         @update:pagination="refresh()"
       />
     </template>
@@ -210,15 +271,37 @@ function clearFilters() {
     v-if="editingUser"
     :user="editingUser"
     :open="showEditModal"
-    @update:open="val => { showEditModal = val; if (!val) editingUser = null }"
-    @updated="() => { showEditModal = false; editingUser = null; refresh() }"
+    @update:open="
+      (val) => {
+        showEditModal = val
+        if (!val) editingUser = null
+      }
+    "
+    @updated="
+      () => {
+        showEditModal = false
+        editingUser = null
+        refresh()
+      }
+    "
   />
 
   <AdminUamUsersDeleteModal
     v-if="deletingUser"
     :user="deletingUser"
     :open="showDeleteModal"
-    @update:open="val => { showDeleteModal = val; if (!val) deletingUser = null }"
-    @deleted="() => { showDeleteModal = false; deletingUser = null; refresh() }"
+    @update:open="
+      (val) => {
+        showDeleteModal = val
+        if (!val) deletingUser = null
+      }
+    "
+    @deleted="
+      () => {
+        showDeleteModal = false
+        deletingUser = null
+        refresh()
+      }
+    "
   />
 </template>

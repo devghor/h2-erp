@@ -39,7 +39,6 @@ class UserController extends Controller
         $user = $this->userService->createUser($validated);
 
         return new UserResource($user);
-
     }
 
     public function show(User $user)
