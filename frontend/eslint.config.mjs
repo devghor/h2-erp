@@ -7,6 +7,6 @@ export default withNuxt({
     'vue/max-attributes-per-line': ['error', { singleline: 3 }],
     '@typescript-eslint/no-explicit-any': 'off',
     '@stylistic/quote-props': ['error', 'as-needed'],
-    'operator-linebreak': ['error', 'after']
+    'operator-linebreak': 'off'
   }
 })

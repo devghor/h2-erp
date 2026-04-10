@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Base\DesignationController;
 use App\Http\Controllers\Api\Uam\UserController;
 use App\Http\Controllers\Api\Uam\RoleController;
 use App\Http\Controllers\Api\Uam\PermissionController;
@@ -16,9 +15,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/login', [AuthController::class, 'login']);
         });
 
-    /** Protected Routes **/
-
-    // Auth endpoints that only need Sanctum — no tenant context required
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/uam/me', [AuthController::class, 'me'])->name('uam.me');
         Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
@@ -36,35 +32,33 @@ Route::prefix('v1')->group(function () {
             });
 
         /**
-         * UAM (User Access Management) Module
+         * UAM Module
          */
         Route::prefix('uam')
             ->name('uam.')
             ->group(function () {
 
-                // User resource routes
-                Route::get('users/export', [UserController::class, 'export'])
-                    ->name('users.export');
-                Route::post('users/bulk-delete', [UserController::class, 'bulkDestroy'])
-                    ->name('users.bulk-destroy');
-                Route::apiResource('users', UserController::class);
+                // User management
+                Route::prefix('users')->name('users.')->group(function () {
+                    Route::get('export', [UserController::class, 'export'])->name('export');
+                    Route::post('bulk-delete', [UserController::class, 'bulkDestroy'])->name('bulk-destroy');
+                    Route::apiResource('/', UserController::class)->parameters(['' => 'user']);
+                });
 
                 // Role management
-                Route::get('roles/export', [RoleController::class, 'export'])
-                    ->name('roles.export');
-                Route::post('roles/bulk-delete', [RoleController::class, 'bulkDestroy'])
-                    ->name('roles.bulk-destroy');
-                Route::apiResource('roles', RoleController::class);
-                Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermissions'])
-                    ->name('roles.assign-permissions');
+                Route::prefix('roles')->name('roles.')->group(function () {
+                    Route::get('export', [RoleController::class, 'export'])->name('export');
+                    Route::post('bulk-delete', [RoleController::class, 'bulkDestroy'])->name('bulk-destroy');
+                    Route::post('{role}/permissions', [RoleController::class, 'assignPermissions'])->name('assign-permissions');
+                    Route::apiResource('/', RoleController::class)->parameters(['' => 'role']);
+                });
 
                 // Permission management
-                Route::get('permissions', [PermissionController::class, 'index'])
-                    ->name('permissions.index');
-                Route::get('permissions/grouped', [PermissionController::class, 'grouped'])
-                    ->name('permissions.grouped');
-                Route::get('permissions/user', [PermissionController::class, 'userPermissions'])
-                    ->name('permissions.user');
+                Route::prefix('permissions')->name('permissions.')->group(function () {
+                    Route::get('/', [PermissionController::class, 'index'])->name('index');
+                    Route::get('grouped', [PermissionController::class, 'grouped'])->name('grouped');
+                    Route::get('user', [PermissionController::class, 'userPermissions'])->name('user');
+                });
             });
     });
 });
