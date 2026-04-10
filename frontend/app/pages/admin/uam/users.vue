@@ -256,14 +256,18 @@ const exportItems = [[{ label: 'Export Excel', icon: 'i-lucide-file-spreadsheet'
           <UButton
             v-if="selectedUlids.length"
             label="Delete"
-            color="error"
+            color="neutral"
             variant="outline"
             icon="i-lucide-trash"
             size="xs"
             @click="openBulkDelete"
           >
             <template #trailing>
-              <UKbd>{{ selectedUlids.length }}</UKbd>
+              <span
+                class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-error text-white text-[9px] font-bold leading-none"
+              >
+                {{ selectedUlids.length }}
+              </span>
             </template>
           </UButton>
           <UDropdownMenu :items="exportItems" :content="{ align: 'end' }">
