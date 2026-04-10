@@ -85,6 +85,9 @@ export interface UamRole {
 export interface UamPermission {
   id: number
   name: string
+  display_name?: string | null
+  module?: string | null
+  group?: string | null
 }
 
 export interface UamPaginationMeta {
@@ -109,5 +112,7 @@ export interface UamRoleListResponse {
 }
 
 export interface UamPermissionsGrouped {
-  [module: string]: UamPermission[]
+  [module: string]: {
+    [group: string]: UamPermission[]
+  }
 }

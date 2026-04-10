@@ -55,13 +55,23 @@ class RoleController extends Controller
     }
 
     /**
+     * Get all roles without pagination (for dropdowns)
+     */
+    public function all(): JsonResponse
+    {
+        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
+
+        return ApiResponse::success('All roles retrieved', ['roles' => $roles]);
+    }
+
+    /**
      * Display the specified role
      */
     public function show(Role $role)
     {
         // $this->authorize('view', $role);
 
-        return new RoleResource($role);
+        return new RoleResource($role->load('permissions'));
     }
 
     /**

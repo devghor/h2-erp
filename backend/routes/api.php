@@ -47,6 +47,7 @@ Route::prefix('v1')->group(function () {
 
                 // Role management
                 Route::prefix('roles')->name('roles.')->group(function () {
+                    Route::get('all', [RoleController::class, 'all'])->name('all');
                     Route::get('export', [RoleController::class, 'export'])->name('export');
                     Route::post('bulk-delete', [RoleController::class, 'bulkDestroy'])->name('bulk-destroy');
                     Route::post('{role}/permissions', [RoleController::class, 'assignPermissions'])->name('assign-permissions');
