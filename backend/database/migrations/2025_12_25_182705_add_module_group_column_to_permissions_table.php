@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('display_name')->nullable();
             $table->string('module')->nullable();
             $table->string('group')->nullable();
+            $table->integer('order')->nullable();
         });
     }
 
@@ -24,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->dropColumn(['module', 'group', 'display_name']);
+            $table->dropColumn(['module', 'group', 'display_name', 'order']);
         });
     }
 };
