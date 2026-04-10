@@ -13,8 +13,8 @@ const toast = useToast()
 const table = useTemplateRef('table')
 const { apiFetch } = useApiClient()
 
-const filters = reactive({ search: '' })
-const appliedFilters = reactive({ search: '' })
+const filters = reactive({ name: '', email: '', from_date: '', to_date: '' })
+const appliedFilters = reactive({ name: '', email: '', from_date: '', to_date: '' })
 const columnVisibility = ref()
 const rowSelection = ref({})
 const pagination = ref({ pageIndex: 0, pageSize: 15 })
@@ -26,7 +26,7 @@ const showDeleteModal = ref(false)
 
 const { data, status, refresh } = await apiFetch<UamUserListResponse>(
   () =>
-    `/uam/users?page=${pagination.value.pageIndex + 1}&per_page=${pagination.value.pageSize}${appliedFilters.search ? `&search=${encodeURIComponent(appliedFilters.search)}` : ''}`,
+    `/uam/users?page=${pagination.value.pageIndex + 1}&per_page=${pagination.value.pageSize}${appliedFilters.name ? `&name=${encodeURIComponent(appliedFilters.name)}` : ''}${appliedFilters.email ? `&email=${encodeURIComponent(appliedFilters.email)}` : ''}${appliedFilters.from_date ? `&from_date=${appliedFilters.from_date}` : ''}${appliedFilters.to_date ? `&to_date=${appliedFilters.to_date}` : ''}`,
   { lazy: true }
 )
 
@@ -169,7 +169,7 @@ const columns: TableColumn<UamUser>[] = [
 ]
 
 const activeFilterCount = computed(
-  () => [appliedFilters.search].filter(Boolean).length
+  () => [appliedFilters.name, appliedFilters.email, appliedFilters.from_date, appliedFilters.to_date].filter(Boolean).length
 )
 
 function applyFilters() {
@@ -179,8 +179,14 @@ function applyFilters() {
 }
 
 function clearFilters() {
-  filters.search = ''
-  appliedFilters.search = ''
+  filters.name = ''
+  filters.email = ''
+  filters.from_date = ''
+  filters.to_date = ''
+  appliedFilters.name = ''
+  appliedFilters.email = ''
+  appliedFilters.from_date = ''
+  appliedFilters.to_date = ''
   pagination.value.pageIndex = 0
   refresh()
 }
@@ -207,11 +213,33 @@ function clearFilters() {
         @clear="clearFilters"
       >
         <template #filters>
-          <UFormField label="Search">
+          <UFormField label="Name">
             <UInput
-              v-model="filters.search"
-              icon="i-lucide-search"
-              placeholder="Name or email..."
+              v-model="filters.name"
+              icon="i-lucide-user"
+              placeholder="Filter by name..."
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Email">
+            <UInput
+              v-model="filters.email"
+              icon="i-lucide-mail"
+              placeholder="Filter by email..."
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="From Date">
+            <UInput
+              v-model="filters.from_date"
+              type="date"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="To Date">
+            <UInput
+              v-model="filters.to_date"
+              type="date"
               class="w-full"
             />
           </UFormField>
