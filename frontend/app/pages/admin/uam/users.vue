@@ -28,6 +28,7 @@ const editingUser = ref<UamUser | null>(null)
 const deletingUser = ref<UamUser | null>(null)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
+const showBulkDeleteModal = ref(false)
 
 const { data, status, refresh } = await apiFetch<UamUserListResponse>(
   () =>
@@ -46,14 +47,20 @@ const selectedRows: any = computed(
 )
 const selectedUlids = computed(() => selectedRows.value.map((u: any) => u.ulid))
 
-function openEdit(user: UamUser) {
+async function openEdit(user: UamUser) {
   editingUser.value = user
+  await nextTick()
   showEditModal.value = true
 }
 
-function openDelete(user: UamUser) {
+async function openDelete(user: UamUser) {
   deletingUser.value = user
+  await nextTick()
   showDeleteModal.value = true
+}
+
+function openBulkDelete() {
+  showBulkDeleteModal.value = true
 }
 
 function getRowItems(row: Row<UamUser>) {
@@ -250,32 +257,19 @@ function clearFilters() {
           </div>
         </template>
         <template #actions>
-          <AdminUamUsersDeleteModal
+          <UButton
             v-if="selectedUlids.length"
-            :count="selectedUlids.length"
-            :ulids="selectedUlids"
-            @deleted="
-              () => {
-                rowSelection = {}
-                refresh()
-              }
-            "
+            label="Delete"
+            color="error"
+            variant="outline"
+            icon="i-lucide-trash"
+            size="xs"
+            @click="openBulkDelete"
           >
-            <template #default="{ openModal }">
-              <UButton
-                label="Delete"
-                color="error"
-                variant="outline"
-                icon="i-lucide-trash"
-                size="xs"
-                @click="openModal"
-              >
-                <template #trailing>
-                  <UKbd>{{ selectedUlids.length }}</UKbd>
-                </template>
-              </UButton>
+            <template #trailing>
+              <UKbd>{{ selectedUlids.length }}</UKbd>
             </template>
-          </AdminUamUsersDeleteModal>
+          </UButton>
         </template>
       </CoreTableToolbar>
 
@@ -297,44 +291,43 @@ function clearFilters() {
         :total="total"
         @update:pagination="refresh()"
       />
+
+      <AdminUamUsersEditModal
+        v-if="editingUser"
+        :user="editingUser"
+        :open="showEditModal"
+        @update:open="
+          (val) => {
+            showEditModal = val
+            if (!val) editingUser = null
+          }
+        "
+        @updated="
+          () => {
+            showEditModal = false
+            editingUser = null
+            refresh()
+          }
+        "
+      />
+
+      <AdminUamUsersDeleteModal
+        :count="selectedUlids.length"
+        :ulids="selectedUlids"
+        :open="showBulkDeleteModal"
+        @update:open="
+          (val) => {
+            showBulkDeleteModal = val
+          }
+        "
+        @deleted="
+          () => {
+            showBulkDeleteModal = false
+            rowSelection = {}
+            refresh()
+          }
+        "
+      />
     </template>
   </UDashboardPanel>
-
-  <AdminUamUsersEditModal
-    v-if="editingUser"
-    :user="editingUser"
-    :open="showEditModal"
-    @update:open="
-      (val) => {
-        showEditModal = val
-        if (!val) editingUser = null
-      }
-    "
-    @updated="
-      () => {
-        showEditModal = false
-        editingUser = null
-        refresh()
-      }
-    "
-  />
-
-  <AdminUamUsersDeleteModal
-    v-if="deletingUser"
-    :user="deletingUser"
-    :open="showDeleteModal"
-    @update:open="
-      (val) => {
-        showDeleteModal = val
-        if (!val) deletingUser = null
-      }
-    "
-    @deleted="
-      () => {
-        showDeleteModal = false
-        deletingUser = null
-        refresh()
-      }
-    "
-  />
 </template>

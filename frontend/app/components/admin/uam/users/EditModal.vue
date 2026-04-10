@@ -32,7 +32,7 @@ watch(isOpen, (val) => {
   if (val) {
     Object.assign(state, { name: props.user.name, email: props.user.email, password: '', password_confirmation: '' })
   }
-})
+}, { immediate: true })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   const body: Record<string, string> = { name: event.data.name, email: event.data.email }
