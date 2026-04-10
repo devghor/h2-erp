@@ -18,7 +18,6 @@ const showFilters = ref(false)
   <div>
     <!-- Top bar -->
     <div class="flex items-center justify-between gap-2">
-
       <!-- Left -->
       <div class="flex items-center gap-1.5">
         <UButton
@@ -26,12 +25,16 @@ const showFilters = ref(false)
           :variant="activeFilters ? 'subtle' : 'ghost'"
           size="xs"
           leading-icon="i-lucide-sliders-horizontal"
-          :trailing-icon="showFilters ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+          :trailing-icon="
+            showFilters ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
+          "
           @click="showFilters = !showFilters"
         >
           Filters
           <template v-if="activeFilters" #trailing>
-            <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-primary text-white text-[9px] font-bold leading-none">
+            <span
+              class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-primary text-white text-[9px] font-bold leading-none"
+            >
               {{ activeFilters }}
             </span>
           </template>
@@ -40,7 +43,14 @@ const showFilters = ref(false)
         <template v-if="activeFilters">
           <USeparator orientation="vertical" class="h-3.5" />
           <span class="text-xs text-muted">{{ activeFilters }} applied</span>
-          <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-x" class="text-muted" @click="$emit('clear')" />
+          <UButton
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-x"
+            class="text-muted"
+            @click="$emit('clear')"
+          />
         </template>
       </div>
 
@@ -48,7 +58,11 @@ const showFilters = ref(false)
       <div class="flex items-center gap-1.5">
         <slot name="actions" />
 
-        <USeparator v-if="$slots.actions" orientation="vertical" class="h-3.5" />
+        <USeparator
+          v-if="$slots.actions"
+          orientation="vertical"
+          class="h-3.5"
+        />
 
         <UDropdownMenu
           v-if="tableApi"
@@ -63,12 +77,20 @@ const showFilters = ref(false)
                 onUpdateChecked(checked: boolean) {
                   tableApi.getColumn(col.id)?.toggleVisibility(!!checked)
                 },
-                onSelect(e?: Event) { e?.preventDefault() }
+                onSelect(e?: Event) {
+                  e?.preventDefault()
+                }
               }))
           "
           :content="{ align: 'end' }"
         >
-          <UButton size="xs" color="neutral" variant="ghost" trailing-icon="i-lucide-columns-3" class="text-muted">
+          <UButton
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            trailing-icon="i-lucide-columns-3"
+            class="text-muted"
+          >
             Columns
           </UButton>
         </UDropdownMenu>
@@ -89,17 +111,39 @@ const showFilters = ref(false)
         class="mt-2 rounded-lg border border-default bg-elevated/50 overflow-hidden"
         @submit.prevent="$emit('apply')"
       >
-        <div class="px-3 py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="px-3 py-2 grid grid-cols-1">
           <slot name="filters" />
         </div>
 
-        <div class="px-3 py-2 border-t border-default bg-elevated flex items-center justify-between">
+        <div
+          class="px-3 py-2 border-t border-default bg-elevated flex items-center justify-between"
+        >
           <p class="text-xs text-muted hidden sm:block">
-            Press <kbd class="px-1 py-px rounded bg-accented text-[10px] font-mono border border-default">↵ Enter</kbd> to apply
+            Press
+            <kbd
+              class="px-1 py-px rounded bg-accented text-[10px] font-mono border border-default"
+            >
+              ↵ Enter
+            </kbd>
+            to apply
           </p>
           <div class="flex items-center gap-1.5 ml-auto">
-            <UButton type="button" size="xs" color="neutral" variant="ghost" label="Reset" @click="$emit('clear')" />
-            <UButton type="submit" size="xs" color="primary" variant="solid" label="Apply" icon="i-lucide-check" />
+            <UButton
+              type="button"
+              size="xs"
+              color="neutral"
+              variant="ghost"
+              label="Reset"
+              @click="$emit('clear')"
+            />
+            <UButton
+              type="submit"
+              size="xs"
+              color="primary"
+              variant="solid"
+              label="Apply"
+              icon="i-lucide-check"
+            />
           </div>
         </div>
       </form>

@@ -14,7 +14,12 @@ const table = useTemplateRef('table')
 const { apiFetch } = useApiClient()
 
 const filters = reactive({ name: '', email: '', from_date: '', to_date: '' })
-const appliedFilters = reactive({ name: '', email: '', from_date: '', to_date: '' })
+const appliedFilters = reactive({
+  name: '',
+  email: '',
+  from_date: '',
+  to_date: ''
+})
 const columnVisibility = ref()
 const rowSelection = ref({})
 const pagination = ref({ pageIndex: 0, pageSize: 15 })
@@ -169,7 +174,13 @@ const columns: TableColumn<UamUser>[] = [
 ]
 
 const activeFilterCount = computed(
-  () => [appliedFilters.name, appliedFilters.email, appliedFilters.from_date, appliedFilters.to_date].filter(Boolean).length
+  () =>
+    [
+      appliedFilters.name,
+      appliedFilters.email,
+      appliedFilters.from_date,
+      appliedFilters.to_date
+    ].filter(Boolean).length
 )
 
 function applyFilters() {
@@ -213,36 +224,30 @@ function clearFilters() {
         @clear="clearFilters"
       >
         <template #filters>
-          <UFormField label="Name">
-            <UInput
-              v-model="filters.name"
-              icon="i-lucide-user"
-              placeholder="Filter by name..."
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField label="Email">
-            <UInput
-              v-model="filters.email"
-              icon="i-lucide-mail"
-              placeholder="Filter by email..."
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField label="From Date">
-            <UInput
-              v-model="filters.from_date"
-              type="date"
-              class="w-full"
-            />
-          </UFormField>
-          <UFormField label="To Date">
-            <UInput
-              v-model="filters.to_date"
-              type="date"
-              class="w-full"
-            />
-          </UFormField>
+          <div class="grid grid-cols-4 gap-4 w-full">
+            <UFormField label="Name" class="w-full">
+              <UInput
+                v-model="filters.name"
+                icon="i-lucide-user"
+                placeholder="Filter by name..."
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField label="Email" class="w-full">
+              <UInput
+                v-model="filters.email"
+                icon="i-lucide-mail"
+                placeholder="Filter by email..."
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField label="From Date" class="w-full">
+              <UInput v-model="filters.from_date" type="date" class="w-full" />
+            </UFormField>
+            <UFormField label="To Date" class="w-full">
+              <UInput v-model="filters.to_date" type="date" class="w-full" />
+            </UFormField>
+          </div>
         </template>
         <template #actions>
           <AdminUamUsersDeleteModal
