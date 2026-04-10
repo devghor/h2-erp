@@ -22,7 +22,7 @@ const showFilters = ref(false)
       <div class="flex items-center gap-1.5">
         <UButton
           :color="activeFilters ? 'primary' : 'neutral'"
-          :variant="activeFilters ? 'subtle' : 'ghost'"
+          :variant="activeFilters ? 'subtle' : 'outline'"
           size="xs"
           leading-icon="i-lucide-sliders-horizontal"
           :trailing-icon="
@@ -87,9 +87,8 @@ const showFilters = ref(false)
           <UButton
             size="xs"
             color="neutral"
-            variant="ghost"
+            variant="outline"
             trailing-icon="i-lucide-columns-3"
-            class="text-muted"
           >
             Columns
           </UButton>
