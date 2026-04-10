@@ -227,15 +227,8 @@ function exportToExcel() {
   downloadExport('/uam/users/export/excel', `users_${new Date().toISOString().slice(0, 10)}.xlsx`)
 }
 
-function exportToPDF() {
-  downloadExport('/uam/users/export/pdf', `users_${new Date().toISOString().slice(0, 10)}.pdf`)
-}
-
 const exportItems = [
-  [
-    { label: 'Export Excel', icon: 'i-lucide-file-spreadsheet', onSelect: exportToExcel },
-    { label: 'Export PDF', icon: 'i-lucide-file-text', onSelect: exportToPDF }
-  ]
+  [{ label: 'Export Excel', icon: 'i-lucide-file-spreadsheet', onSelect: exportToExcel }]
 ]
 </script>
 

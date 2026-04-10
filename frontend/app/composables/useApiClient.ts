@@ -1,4 +1,4 @@
-import { ROUTES } from "~/constants/routes"
+import { ROUTES } from '~/constants/routes'
 
 /**
  * Provides a thin wrapper around $fetch and useFetch that automatically
@@ -31,40 +31,35 @@ export function useApiClient() {
   /**
    * Reactive useFetch wrapper — headers refresh automatically when session changes.
    */
-  function apiFetch<T>(
-    path: string | (() => string),
-    options: Record<string, unknown> = {}
-  ) {
-    const url = typeof path === 'function'
-      ? computed(() => `${baseURL}${path()}`)
-      : `${baseURL}${path}`
+  function apiFetch<T>(path: string | (() => string), options: Record<string, unknown> = {}) {
+    const url = typeof path === 'function' ? computed(() => `${baseURL}${path()}`) : `${baseURL}${path}`
 
-    return useFetch<T>(url as any, {
-      ...options,
-      headers: computed(() => ({ ...authHeaders(), ...(options.headers as object | undefined) })),
-      onResponseError: async ({ response }: { response: { status: number } }) => {
-        if (response.status === 401) {
-          await handleUnauthorized()
+    return useFetch<T>(
+      url as any,
+      {
+        ...options,
+        headers: computed(() => ({ ...authHeaders(), ...(options.headers as object | undefined) })),
+        onResponseError: async ({ response }: { response: { status: number } }) => {
+          if (response.status === 401) {
+            await handleUnauthorized()
+          }
+          if (typeof options.onResponseError === 'function') {
+            ;(options.onResponseError as (...args: unknown[]) => void)({ response } as any)
+          }
         }
-        if (typeof options.onResponseError === 'function') {
-          ;(options.onResponseError as (...args: unknown[]) => void)({ response } as any)
-        }
-      }
-    } as any)
+      } as any
+    )
   }
 
   /**
    * One-shot $fetch wrapper for mutations (POST, PUT, DELETE).
    */
-  async function apiCall<T = unknown>(
-    path: string,
-    options: Parameters<typeof $fetch>[1] = {}
-  ): Promise<T> {
+  async function apiCall<T = unknown>(path: string, options: Parameters<typeof $fetch>[1] = {}): Promise<T> {
     try {
-      return await $fetch<T>(`${baseURL}${path}`, {
+      return (await $fetch<T>(`${baseURL}${path}`, {
         ...options,
         headers: { ...authHeaders(), ...(options.headers as object | undefined) }
-      }) as Promise<T>
+      })) as Promise<T>
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status
       if (status === 401) {

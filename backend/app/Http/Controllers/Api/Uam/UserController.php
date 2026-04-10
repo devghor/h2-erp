@@ -9,7 +9,6 @@ use App\Http\Resources\Uam\UserCollection;
 use App\Http\Resources\Uam\UserResource;
 use App\Models\Uam\User;
 use App\Services\Uam\UserService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
