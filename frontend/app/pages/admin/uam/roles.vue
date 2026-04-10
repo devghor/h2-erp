@@ -4,6 +4,10 @@ import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
 import type { UamRole, UamRoleListResponse } from '~/types'
 
+definePageMeta({
+  title: 'Roles'
+})
+
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -62,14 +66,18 @@ function getRowItems(row: Row<UamRole>) {
     {
       label: 'Edit role',
       icon: 'i-lucide-pencil',
-      onSelect() { openEdit(row.original) }
+      onSelect() {
+        openEdit(row.original)
+      }
     },
     { type: 'separator' as const },
     {
       label: 'Delete role',
       icon: 'i-lucide-trash',
       color: 'error' as const,
-      onSelect() { openDelete(row.original) }
+      onSelect() {
+        openDelete(row.original)
+      }
     }
   ]
 }
@@ -79,35 +87,37 @@ const columns: TableColumn<UamRole>[] = [
     id: 'select',
     header: ({ table: t }) =>
       h(UCheckbox, {
-        'modelValue': t.getIsSomePageRowsSelected() ? 'indeterminate' : t.getIsAllPageRowsSelected(),
+        modelValue: t.getIsSomePageRowsSelected() ? 'indeterminate' : t.getIsAllPageRowsSelected(),
         'onUpdate:modelValue': (val: boolean | 'indeterminate') => t.toggleAllPageRowsSelected(!!val),
-        'ariaLabel': 'Select all'
+        ariaLabel: 'Select all'
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        'modelValue': row.getIsSelected(),
+        modelValue: row.getIsSelected(),
         'onUpdate:modelValue': (val: boolean | 'indeterminate') => row.toggleSelected(!!val),
-        'ariaLabel': 'Select row'
+        ariaLabel: 'Select row'
       })
   },
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row }) =>
-      h('p', { class: 'font-medium text-highlighted capitalize' }, row.original.name)
+    cell: ({ row }) => h('p', { class: 'font-medium text-highlighted capitalize' }, row.original.name)
   },
   {
     accessorKey: 'description',
     header: 'Description',
-    cell: ({ row }) =>
-      h('p', { class: 'text-sm text-muted' }, row.original.description || '—')
+    cell: ({ row }) => h('p', { class: 'text-sm text-muted' }, row.original.description || '—')
   },
   {
     accessorKey: 'permissions',
     header: 'Permissions',
     cell: ({ row }) => {
       const count = row.original.permissions?.length || 0
-      return h(UBadge, { variant: 'subtle', color: count > 0 ? 'success' : 'neutral' }, () => `${count} permission${count !== 1 ? 's' : ''}`)
+      return h(
+        UBadge,
+        { variant: 'subtle', color: count > 0 ? 'success' : 'neutral' },
+        () => `${count} permission${count !== 1 ? 's' : ''}`
+      )
     }
   },
   {
@@ -119,17 +129,25 @@ const columns: TableColumn<UamRole>[] = [
   {
     id: 'actions',
     cell: ({ row }) =>
-      h('div', { class: 'text-right' },
-        h(UDropdownMenu, {
-          content: { align: 'end' },
-          items: getRowItems(row)
-        }, () => h(UButton, { icon: 'i-lucide-ellipsis-vertical', color: 'neutral', variant: 'ghost', class: 'ml-auto' }))
+      h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row)
+          },
+          () => h(UButton, { icon: 'i-lucide-ellipsis-vertical', color: 'neutral', variant: 'ghost', class: 'ml-auto' })
+        )
       )
   }
 ]
 
 const activeFilterCount = computed(
-  () => [appliedFilters.name, appliedFilters.description, appliedFilters.from_date, appliedFilters.to_date].filter(Boolean).length
+  () =>
+    [appliedFilters.name, appliedFilters.description, appliedFilters.from_date, appliedFilters.to_date].filter(Boolean)
+      .length
 )
 
 function applyFilters() {
@@ -157,9 +175,7 @@ async function downloadExport(path: string, filename: string) {
   isExporting.value = true
   try {
     const { apiDownload } = useApiClient()
-    const params = Object.fromEntries(
-      Object.entries(appliedFilters).filter(([, v]) => v) as [string, string][]
-    )
+    const params = Object.fromEntries(Object.entries(appliedFilters).filter(([, v]) => v) as [string, string][])
     await apiDownload(path, filename, params)
   } catch {
     toast.add({ title: 'Export failed', description: 'Could not download the file.', color: 'error' })
@@ -189,14 +205,24 @@ const exportItems = [[{ label: 'Export Excel', icon: 'i-lucide-file-spreadsheet'
     </template>
 
     <template #body>
-      <CoreTableToolbar :table-api="table?.tableApi" :active-filters="activeFilterCount" @apply="applyFilters" @clear="clearFilters">
+      <CoreTableToolbar
+        :table-api="table?.tableApi"
+        :active-filters="activeFilterCount"
+        @apply="applyFilters"
+        @clear="clearFilters"
+      >
         <template #filters>
           <div class="grid grid-cols-4 gap-4 w-full">
             <UFormField label="Name" class="w-full">
               <UInput v-model="filters.name" icon="i-lucide-shield" placeholder="Filter by name..." class="w-full" />
             </UFormField>
             <UFormField label="Description" class="w-full">
-              <UInput v-model="filters.description" icon="i-lucide-search" placeholder="Filter by description..." class="w-full" />
+              <UInput
+                v-model="filters.description"
+                icon="i-lucide-search"
+                placeholder="Filter by description..."
+                class="w-full"
+              />
             </UFormField>
             <UFormField label="From Date" class="w-full">
               <UInput v-model="filters.from_date" type="date" class="w-full" />
@@ -264,23 +290,55 @@ const exportItems = [[{ label: 'Export Excel', icon: 'i-lucide-file-spreadsheet'
     v-if="editingRole"
     :role="editingRole"
     :open="showEditModal"
-    @update:open="val => { showEditModal = val; if (!val) editingRole = null }"
-    @updated="() => { showEditModal = false; editingRole = null; refresh() }"
+    @update:open="
+      (val) => {
+        showEditModal = val
+        if (!val) editingRole = null
+      }
+    "
+    @updated="
+      () => {
+        showEditModal = false
+        editingRole = null
+        refresh()
+      }
+    "
   />
 
   <AdminUamRolesDeleteModal
     v-if="deletingRole"
     :role="deletingRole"
     :open="showDeleteModal"
-    @update:open="val => { showDeleteModal = val; if (!val) deletingRole = null }"
-    @deleted="() => { showDeleteModal = false; deletingRole = null; refresh() }"
+    @update:open="
+      (val) => {
+        showDeleteModal = val
+        if (!val) deletingRole = null
+      }
+    "
+    @deleted="
+      () => {
+        showDeleteModal = false
+        deletingRole = null
+        refresh()
+      }
+    "
   />
 
   <AdminUamRolesDeleteModal
     :count="selectedIds.length"
     :ids="selectedIds"
     :open="showBulkDeleteModal"
-    @update:open="val => { showBulkDeleteModal = val }"
-    @deleted="() => { showBulkDeleteModal = false; rowSelection = {}; refresh() }"
+    @update:open="
+      (val) => {
+        showBulkDeleteModal = val
+      }
+    "
+    @deleted="
+      () => {
+        showBulkDeleteModal = false
+        rowSelection = {}
+        refresh()
+      }
+    "
   />
 </template>

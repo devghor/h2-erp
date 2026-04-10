@@ -5,7 +5,7 @@ import type { Row } from '@tanstack/table-core'
 import type { UamUser, UamUserListResponse } from '~/types'
 
 definePageMeta({
-  title: 'User'
+  title: 'Users'
 })
 
 const UBadge = resolveComponent('UBadge')
@@ -193,14 +193,11 @@ function clearFilters() {
 
 const isExporting = ref(false)
 
-
 async function downloadExport(path: string, filename: string) {
   isExporting.value = true
   try {
     const { apiDownload } = useApiClient()
-    const params = Object.fromEntries(
-      Object.entries(appliedFilters).filter(([, v]) => v) as [string, string][]
-    )
+    const params = Object.fromEntries(Object.entries(appliedFilters).filter(([, v]) => v) as [string, string][])
     await apiDownload(path, filename, params)
   } catch {
     toast.add({ title: 'Export failed', description: 'Could not download the file.', color: 'error' })
