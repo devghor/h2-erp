@@ -5,7 +5,7 @@ import type { Row } from '@tanstack/table-core'
 import type { UamUser, UamUserListResponse } from '~/types'
 
 definePageMeta({
-  title: 'User Management'
+  title: 'User'
 })
 
 const UBadge = resolveComponent('UBadge')
