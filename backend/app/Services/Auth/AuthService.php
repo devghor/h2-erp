@@ -39,7 +39,7 @@ class AuthService
         $token = $user->createToken(
             'access_token',
             ['*'],
-            now()->addMinutes(5)
+            now()->addMinutes(30)
         );
 
         tenancy()->initialize($user->tenant);
