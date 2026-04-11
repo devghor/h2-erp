@@ -23,29 +23,29 @@ class PermissionsTableSeeder extends Seeder
              */
 
             // Dashboard
-            ['module' => 'General', 'group' => 'General > Dashboard', 'name' => 'READ_GENERAL_DASHBOARD', 'display_name' => self::KEY_READ],
+            ['module' => 'General', 'group' => 'Dashboard', 'name' => 'READ_GENERAL_DASHBOARD', 'display_name' => self::KEY_READ],
 
             /**
              * UAM Module
              */
 
             // User
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'CREATE_UAM_USER', 'display_name' => self::KEY_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'READ_UAM_USER',   'display_name' => self::KEY_READ],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'UPDATE_UAM_USER', 'display_name' => self::KEY_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'DELETE_UAM_USER', 'display_name' => self::KEY_DELETE],
+            ['module' => 'Uam', 'group' => 'Users', 'name' => 'CREATE_UAM_USER', 'display_name' => self::KEY_CREATE],
+            ['module' => 'Uam', 'group' => 'Users', 'name' => 'READ_UAM_USER',   'display_name' => self::KEY_READ],
+            ['module' => 'Uam', 'group' => 'Users', 'name' => 'UPDATE_UAM_USER', 'display_name' => self::KEY_UPDATE],
+            ['module' => 'Uam', 'group' => 'Users', 'name' => 'DELETE_UAM_USER', 'display_name' => self::KEY_DELETE],
 
             // Role
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'CREATE_UAM_ROLE', 'display_name' => self::KEY_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'READ_UAM_ROLE',   'display_name' => self::KEY_READ],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'UPDATE_UAM_ROLE', 'display_name' => self::KEY_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'DELETE_UAM_ROLE', 'display_name' => self::KEY_DELETE],
+            ['module' => 'Uam', 'group' => 'Roles', 'name' => 'CREATE_UAM_ROLE', 'display_name' => self::KEY_CREATE],
+            ['module' => 'Uam', 'group' => 'Roles', 'name' => 'READ_UAM_ROLE',   'display_name' => self::KEY_READ],
+            ['module' => 'Uam', 'group' => 'Roles', 'name' => 'UPDATE_UAM_ROLE', 'display_name' => self::KEY_UPDATE],
+            ['module' => 'Uam', 'group' => 'Roles', 'name' => 'DELETE_UAM_ROLE', 'display_name' => self::KEY_DELETE],
 
             // Permission
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'CREATE_UAM_PERMISSION', 'display_name' => self::KEY_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'READ_UAM_PERMISSION',   'display_name' => self::KEY_READ],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'UPDATE_UAM_PERMISSION', 'display_name' => self::KEY_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'DELETE_UAM_PERMISSION', 'display_name' => self::KEY_DELETE],
+            ['module' => 'Uam', 'group' => 'Permissions', 'name' => 'CREATE_UAM_PERMISSION', 'display_name' => self::KEY_CREATE],
+            ['module' => 'Uam', 'group' => 'Permissions', 'name' => 'READ_UAM_PERMISSION',   'display_name' => self::KEY_READ],
+            ['module' => 'Uam', 'group' => 'Permissions', 'name' => 'UPDATE_UAM_PERMISSION', 'display_name' => self::KEY_UPDATE],
+            ['module' => 'Uam', 'group' => 'Permissions', 'name' => 'DELETE_UAM_PERMISSION', 'display_name' => self::KEY_DELETE],
         ];
 
         foreach ($permissions as $i => $permission) {
