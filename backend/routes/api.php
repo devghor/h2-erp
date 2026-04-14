@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Tenancy\TenancyController;
 use App\Http\Controllers\Api\Uam\UserController;
 use App\Http\Controllers\Api\Uam\RoleController;
 use App\Http\Controllers\Api\Uam\PermissionController;
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')
@@ -20,7 +20,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
     });
 
-    Route::middleware(['auth:sanctum', InitializeTenancyByRequestData::class])->group(function () {
+    Route::middleware(['auth:sanctum', 'initialize_tenancy_by_request_data', 'set_tenant_permissions'])->group(function () {
         /**
          * Auth Module
          */
@@ -60,6 +60,17 @@ Route::prefix('v1')->group(function () {
                     Route::get('grouped', [PermissionController::class, 'grouped'])->name('grouped');
                     Route::get('user', [PermissionController::class, 'userPermissions'])->name('user');
                 });
+            });
+
+        /**
+         * Tenancy Module
+         */
+        Route::prefix('tenancy')
+            ->name('tenancy.')
+            ->group(function () {
+                Route::get('/', [TenancyController::class, 'index'])->name('index');
+                Route::get('{id}', [TenancyController::class, 'show'])->name('show');
+                Route::post('/switch', [TenancyController::class, 'switch'])->name('tenancy.switch');
             });
     });
 });

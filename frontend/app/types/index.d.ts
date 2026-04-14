@@ -59,6 +59,27 @@ export interface Range {
   end: Date
 }
 
+// Tenancy types
+export interface Tenant {
+  id: string
+  ulid: string
+  name: string
+  slug: string
+  created_at: string
+  updated_at: string
+}
+
+export interface TenantListResponse {
+  data: Tenant[]
+}
+
+export interface TenantSwitchResponse {
+  access_token: string
+  token_type: string
+  expires_at: string
+  tenant: Tenant
+}
+
 // UAM types
 export interface UamUser {
   ulid: string

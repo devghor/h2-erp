@@ -5,41 +5,21 @@ defineProps<{
   collapsed?: boolean
 }>()
 
-const teams = ref([{
-  label: 'Nuxt',
-  avatar: {
-    src: 'https://github.com/nuxt.png',
-    alt: 'Nuxt'
-  }
-}, {
-  label: 'NuxtHub',
-  avatar: {
-    src: 'https://github.com/nuxt-hub.png',
-    alt: 'NuxtHub'
-  }
-}, {
-  label: 'NuxtLabs',
-  avatar: {
-    src: 'https://github.com/nuxtlabs.png',
-    alt: 'NuxtLabs'
-  }
-}])
-const selectedTeam = ref(teams.value[0])
+const { tenants, switching, currentTenant, fetchTenants, switchTenant } = useTenancy()
 
-const items = computed<DropdownMenuItem[][]>(() => {
-  return [teams.value.map(team => ({
-    ...team,
+await fetchTenants()
+
+const items = computed<DropdownMenuItem[][]>(() => [
+  tenants.value.map(tenant => ({
+    label: tenant.name,
+    icon: currentTenant.value?.id === tenant.id ? 'i-lucide-check' : undefined,
     onSelect() {
-      selectedTeam.value = team
+      switchTenant(tenant.id)
     }
-  })), [{
-    label: 'Create team',
-    icon: 'i-lucide-circle-plus'
-  }, {
-    label: 'Manage teams',
-    icon: 'i-lucide-cog'
-  }]]
-})
+  }))
+])
+
+const displayLabel = computed(() => currentTenant.value?.name ?? 'Select Tenant')
 </script>
 
 <template>
@@ -49,20 +29,16 @@ const items = computed<DropdownMenuItem[][]>(() => {
     :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }"
   >
     <UButton
-      v-bind="{
-        ...selectedTeam,
-        label: collapsed ? undefined : selectedTeam?.label,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
-      }"
+      :label="collapsed ? undefined : displayLabel"
+      :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
+      :loading="switching"
       color="neutral"
       variant="ghost"
       block
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
       :class="[!collapsed && 'py-2']"
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }"
+      :ui="{ trailingIcon: 'text-dimmed' }"
     />
   </UDropdownMenu>
 </template>
