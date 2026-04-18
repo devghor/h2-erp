@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Configuration\Tenant;
-use App\Models\User;
+use App\Models\Uam\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

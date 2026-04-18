@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Uam;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\Uam\PermissionEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -43,5 +45,12 @@ class User extends Authenticatable implements OAuthenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        app(\Spatie\Permission\PermissionRegistrar::class)
+            ->setPermissionsTeamId($this->tenant_id);
+        return $this->hasPermissionTo(PermissionEnum::SuperAdmin->value);
     }
 }
