@@ -21,6 +21,18 @@ class User extends Authenticatable implements OAuthenticatable
     use HasFactory, Notifiable, HasRoles,  HasApiTokens;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'tenant_id',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

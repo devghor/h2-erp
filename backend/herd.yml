@@ -1,0 +1,10 @@
+name: backend
+php: '8.4'
+secured: false
+aliases: {  }
+services:
+    mysql:
+        version: 9.4.0
+        port: '${DB_PORT}'
+integrations:
+    forge: {  }

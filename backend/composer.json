@@ -13,7 +13,8 @@
         "laravel/framework": "^13.0",
         "laravel/passport": "^13.0",
         "laravel/tinker": "^3.0",
-        "spatie/laravel-permission": "*"
+        "spatie/laravel-permission": "*",
+        "stancl/tenancy": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -88,6 +89,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
