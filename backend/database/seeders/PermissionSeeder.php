@@ -9,8 +9,6 @@ use Illuminate\Database\Seeder;
 class PermissionSeeder extends Seeder
 {
 
-    const LABEL_SUPER_ADMIN = 'Super Admin';
-    const LABEL_COMPANY_ADMIN = 'Company Admin';
     const LABEL_CREATE = 'Create';
     const LABEL_READ = 'Read';
     const LABEL_UPDATE = 'Update';
@@ -26,8 +24,9 @@ class PermissionSeeder extends Seeder
             /**
              * UnGrouped Permissions
              */
-            ['module' => '', 'group' => '', 'name' => PermissionEnum::SuperAdmin->value, 'label' => self::LABEL_SUPER_ADMIN],
-            ['module' => '', 'group' => '', 'name' => PermissionEnum::TenantAdmin->value, 'label' => self::LABEL_COMPANY_ADMIN],
+            ['module' => '', 'group' => '', 'name' => PermissionEnum::SuperAdmin->value, 'label' => PermissionEnum::SuperAdmin->name],
+            ['module' => '', 'group' => '', 'name' => PermissionEnum::Admin->value, 'label' => PermissionEnum::Admin->name],
+            ['module' => '', 'group' => '', 'name' => PermissionEnum::TenantAdmin->value, 'label' => PermissionEnum::TenantAdmin->name],
 
             /**
              * General Module

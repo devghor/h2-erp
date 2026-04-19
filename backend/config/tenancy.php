@@ -73,7 +73,7 @@ return [
          *
          * If you use multiple forms of identification, you can set this to the "main" approach you use.
          */
-        'default_middleware' => Middleware\InitializeTenancyByDomain::class,
+        'default_middleware' => null,
 
         /**
          * All of the identification middleware used by the package.
@@ -81,12 +81,12 @@ return [
          * If you write your own, make sure to add them to this array.
          */
         'middleware' => [
-            Middleware\InitializeTenancyByDomain::class,
-            Middleware\InitializeTenancyBySubdomain::class,
-            Middleware\InitializeTenancyByDomainOrSubdomain::class,
-            Middleware\InitializeTenancyByPath::class,
-            Middleware\InitializeTenancyByRequestData::class,
-            Middleware\InitializeTenancyByOriginHeader::class,
+            // Middleware\InitializeTenancyByDomain::class,
+            // Middleware\InitializeTenancyBySubdomain::class,
+            // Middleware\InitializeTenancyByDomainOrSubdomain::class,
+            // Middleware\InitializeTenancyByPath::class,
+            // Middleware\InitializeTenancyByRequestData::class,
+            // Middleware\InitializeTenancyByOriginHeader::class,
         ],
 
         /**
@@ -170,16 +170,16 @@ return [
      */
     'bootstrappers' => [
         // Basic Laravel features
-        Bootstrappers\DatabaseTenancyBootstrapper::class,
-        Bootstrappers\CacheTenancyBootstrapper::class,
+        // Bootstrappers\DatabaseTenancyBootstrapper::class,
+        // Bootstrappers\CacheTenancyBootstrapper::class,
         // Bootstrappers\CacheTagsBootstrapper::class, // Alternative to CacheTenancyBootstrapper
         // Bootstrappers\DatabaseCacheBootstrapper::class, // Separates cache by DB rather than by prefix, must run after DatabaseTenancyBootstrapper
-        Bootstrappers\FilesystemTenancyBootstrapper::class,
-        Bootstrappers\QueueTenancyBootstrapper::class,
+        // Bootstrappers\FilesystemTenancyBootstrapper::class,
+        // Bootstrappers\QueueTenancyBootstrapper::class,
         // Bootstrappers\RedisTenancyBootstrapper::class, // Note: phpredis is needed
 
         // Adds support for the database session driver
-        Bootstrappers\DatabaseSessionBootstrapper::class,
+        // Bootstrappers\DatabaseSessionBootstrapper::class,
 
         // Configurable bootstrappers
         // Bootstrappers\TenantConfigBootstrapper::class,

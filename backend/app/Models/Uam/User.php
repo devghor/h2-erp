@@ -14,25 +14,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'tenant_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements OAuthenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles,  HasApiTokens;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'tenant_id',
-    ];
+    use HasFactory, Notifiable, HasRoles,  HasApiTokens, BelongsToTenant;
 
     /**
      * Get the attributes that should be cast.
@@ -47,10 +36,15 @@ class User extends Authenticatable implements OAuthenticatable
         ];
     }
 
-    public function isSuperAdmin(): bool
+    protected string $guard_name = 'web';
+
+    protected function getDefaultGuardName(): string
     {
-        app(\Spatie\Permission\PermissionRegistrar::class)
-            ->setPermissionsTeamId($this->tenant_id);
-        return $this->hasPermissionTo(PermissionEnum::SuperAdmin->value);
+        return $this->guard_name;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasPermissionTo(PermissionEnum::Admin->value) || $this->hasPermissionTo(PermissionEnum::SuperAdmin->value);
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\Uam\PermissionEnum;
 use App\Models\Configuration\Tenant;
+use App\Models\Uam\Permission;
 use App\Models\Uam\Role;
 use App\Models\Uam\User;
 use Illuminate\Database\Seeder;
@@ -54,27 +55,27 @@ class AdminSeeder extends Seeder
                 ]
             );
 
-            // Set company context
-            app(PermissionRegistrar::class)->setPermissionsTeamId($tenant->id);
-
             $role = null;
 
             if (PermissionEnum::SuperAdmin === $admin['permission']) {
                 $role = Role::firstOrCreate([
                     'name' => 'Super Admin',
-                    'tenant_id' => $tenant->id,
                 ]);
 
-                $role->syncPermissions([PermissionEnum::SuperAdmin->value]);
+                $permissions = Permission::whereIn('name', [PermissionEnum::SuperAdmin->value])->get();
+                $role->syncPermissions($permissions);
             }
 
             if (PermissionEnum::TenantAdmin === $admin['permission']) {
+                setPermissionsTeamId($tenant->id);
+
                 $role = Role::firstOrCreate([
                     'name' => 'Company Admin',
                     'tenant_id' => $tenant->id,
                 ]);
 
-                $role->syncPermissions([PermissionEnum::TenantAdmin->value]);
+                $permissions = Permission::whereIn('name', [PermissionEnum::TenantAdmin->value])->get();
+                $role->syncPermissions($permissions);
             }
 
             if ($role) {

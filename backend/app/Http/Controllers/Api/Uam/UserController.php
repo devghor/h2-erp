@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\Uam;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Uam\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -12,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return User::paginate();
     }
 
     /**
@@ -52,6 +54,8 @@ class UserController extends Controller
      */
     public function me()
     {
-        //
+        $details = auth()->user()->toArray();
+        $details['roles'] = auth()->user()->roles;
+        return ApiResponseHelper::success($details, 'User details');
     }
 }
