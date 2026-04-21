@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Configuration\Tenant;
+use App\Models\Configuration\Company;
 use Stancl\Tenancy\Middleware;
 use Stancl\Tenancy\Resolvers;
 use Stancl\Tenancy\Bootstrappers;
@@ -29,7 +29,7 @@ return [
      * Configuration for the models used by Tenancy.
      */
     'models' => [
-        'tenant' => Tenant::class,
+        'tenant' => Company::class,
         'domain' => Stancl\Tenancy\Database\Models\Domain::class,
         'impersonation_token' => Stancl\Tenancy\Database\Models\ImpersonationToken::class,
 
@@ -38,7 +38,7 @@ return [
          *
          * This is used by the HasDomains trait, and models that use the BelongsToTenant trait (used in single-database tenancy).
          */
-        'tenant_key_column' => 'tenant_id',
+        'tenant_key_column' => 'company_id',
 
         /**
          * Used for generating tenant IDs.
@@ -73,7 +73,7 @@ return [
          *
          * If you use multiple forms of identification, you can set this to the "main" approach you use.
          */
-        'default_middleware' => null,
+        'default_middleware' => Middleware\InitializeTenancyByRequestData::class,
 
         /**
          * All of the identification middleware used by the package.

@@ -20,11 +20,11 @@ class LogingController extends Controller
 
         if (auth()->attempt($input)) {
             $user = auth()->user();
+
             $token = $user->createToken('authToken')->accessToken;
 
             return ApiResponseHelper::success([
                 ...$user->toArray(),
-                'roles' => $user->roles,
                 'access_token' => $token,
             ], 'Login successful');
         } else {

@@ -2,86 +2,94 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Uam\GlobalRoleEnum;
 use App\Enums\Uam\PermissionEnum;
-use App\Models\Configuration\Tenant;
-use App\Models\Uam\Permission;
+use App\Models\Configuration\Company;
 use App\Models\Uam\Role;
 use App\Models\Uam\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\PermissionRegistrar;
 
 class AdminSeeder extends Seeder
 {
-    private array $admins = [
+    private array $data = [
         [
             'user_name' => 'Super Admin',
             'email' => 'superadmin@app.com',
-            'company_name' => 'Demo Company',
+            'company_name' => 'Super Company',
             'short_name' => 'DC',
-            'permission' => PermissionEnum::SuperAdmin,
             'address' => '123 Main St, Anytown, USA',
             'phone' => '555-1234',
+            'global_role' => GlobalRoleEnum::SuperAdmin->value,
+            'role' => null
         ],
         [
-            'user_name' => 'Company Admin',
-            'email' => 'companyadmin@app.com',
+            'user_name' => 'Dummy Admin',
+            'email' => 'dummyadmin@app.com',
             'company_name' => 'Dummy Company',
             'short_name' => 'dummy',
-            'permission' => PermissionEnum::TenantAdmin,
             'address' => '456 Elm St, Othertown, USA',
             'phone' => '555-5678',
+            'global_role' => null,
+            'role' => 'Company Admin'
         ],
     ];
 
     public function run(): void
     {
-        foreach ($this->admins as $admin) {;
-            $tenant = Tenant::create([
-                'name' => $admin['company_name'],
-                'short_name' => $admin['short_name'],
-                'email' => $admin['email'],
-                'address' => $admin['address'],
-                'phone' => $admin['phone'],
-            ]);
-
-
-            $user = User::updateOrCreate(
-                ['email' => $admin['email']],
-                [
-                    'name' => $admin['user_name'],
-                    'password' => Hash::make('password'),
-                    'tenant_id' => $tenant->id,
-                ]
-            );
-
-            $role = null;
-
-            if (PermissionEnum::SuperAdmin === $admin['permission']) {
-                $role = Role::firstOrCreate([
-                    'name' => 'Super Admin',
+        foreach ($this->data as $d) {;
+            if ($d['global_role'] === GlobalRoleEnum::SuperAdmin->value) {
+                $company = Company::create([
+                    'name' => $d['company_name'],
+                    'short_name' => $d['short_name'],
+                    'email' => $d['email'],
+                    'address' => $d['address'],
+                    'phone' => $d['phone'],
                 ]);
 
-                $permissions = Permission::whereIn('name', [PermissionEnum::SuperAdmin->value])->get();
-                $role->syncPermissions($permissions);
+                $user = User::updateOrCreate(
+                    ['email' => $d['email']],
+                    [
+                        'name' => $d['user_name'],
+                        'password' => Hash::make('password'),
+                        'company_id' => $company->id,
+                        'global_role' => $d['global_role'],
+                    ]
+                );
             }
 
-            if (PermissionEnum::TenantAdmin === $admin['permission']) {
-                setPermissionsTeamId($tenant->id);
-
-                $role = Role::firstOrCreate([
-                    'name' => 'Company Admin',
-                    'tenant_id' => $tenant->id,
+            if (!$d['global_role']) {
+                $company = Company::create([
+                    'name' => $d['company_name'],
+                    'short_name' => $d['short_name'],
+                    'email' => $d['email'],
+                    'address' => $d['address'],
+                    'phone' => $d['phone'],
                 ]);
 
-                $permissions = Permission::whereIn('name', [PermissionEnum::TenantAdmin->value])->get();
-                $role->syncPermissions($permissions);
-            }
+                $user = User::updateOrCreate(
+                    ['email' => $d['email']],
+                    [
+                        'name' => $d['user_name'],
+                        'password' => Hash::make('password'),
+                        'company_id' => $company->id,
+                        'global_role' => $d['global_role'],
+                    ]
+                );
 
-            if ($role) {
-                if (!$user->hasRole($role->name)) {
-                    $user->assignRole($role);
-                }
+                setPermissionsTeamId($company->id);
+
+                $role = Role::updateOrCreate(
+                    ['name' => $d['role']],
+                    [
+                        'name' => $d['role'],
+                        'company_id' => $company->id,
+                    ]
+                );
+
+                $role->syncPermissions(PermissionEnum::cases());
+
+                $user->assignRole($role->id);
             }
         }
     }

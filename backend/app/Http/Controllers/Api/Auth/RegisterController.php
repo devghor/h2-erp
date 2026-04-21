@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Configuration\Tenant;
+use App\Models\Configuration\Company;
 use App\Models\Uam\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,25 +20,25 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
-            'tenant_name' => 'required|string|max:255',
-            'tenant_short_name' => 'required|string|max:255',
-            'tenant_address' => 'required|string|max:255',
-            'tenant_phone' => 'required|string|max:255',
-            'tenant_email' => 'required|string|email|max:255',
+            'company_name' => 'required|string|max:255',
+            'company_short_name' => 'required|string|max:255',
+            'company_address' => 'required|string|max:255',
+            'company_phone' => 'required|string|max:255',
+            'company_email' => 'required|string|email|max:255',
         ]);
 
         try {
             DB::beginTransaction();
-            $tenant = Tenant::create([
-                'name' => $input['tenant_name'],
-                'short_name' => $input['tenant_short_name'],
-                'email' => $input['tenant_email'],
-                'address' => $input['tenant_address'],
-                'phone' => $input['tenant_phone'],
+            $tenant = Company::create([
+                'name' => $input['company_name'],
+                'short_name' => $input['company_short_name'],
+                'email' => $input['company_email'],
+                'address' => $input['company_address'],
+                'phone' => $input['company_phone'],
             ]);
             $user = User::create([
                 'name' => $input['name'],
-                'tenant_id' => $tenant->id,
+                'comapany_id' => $tenant->id,
                 'email' => $input['email'],
                 'password' => bcrypt($input['password']),
             ]);

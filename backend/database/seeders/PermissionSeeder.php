@@ -21,40 +21,30 @@ class PermissionSeeder extends Seeder
     {
 
         $permissions = [
-            /**
-             * UnGrouped Permissions
-             */
-            ['module' => '', 'group' => '', 'name' => PermissionEnum::SuperAdmin->value, 'label' => PermissionEnum::SuperAdmin->name],
-            ['module' => '', 'group' => '', 'name' => PermissionEnum::Admin->value, 'label' => PermissionEnum::Admin->name],
-            ['module' => '', 'group' => '', 'name' => PermissionEnum::TenantAdmin->value, 'label' => PermissionEnum::TenantAdmin->name],
-
-            /**
-             * General Module
-             */
             // Dashboard
-            ['module' => 'General', 'group' => 'General > Dashboard', 'name' => 'ReadGeneralDashboard', 'label' => self::LABEL_READ],
+            ['module' => 'General', 'group' => 'General > Dashboard', 'name' => PermissionEnum::ReadGeneralDashboard->value, 'label' => self::LABEL_READ],
 
             /**
              * Uam Module
              */
 
             // User
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'CreateUamUser', 'label' => self::LABEL_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'ReadUamUser', 'label' => self::LABEL_READ],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'UpdateUamUser', 'label' => self::LABEL_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => 'DeleteUamUser', 'label' => self::LABEL_DELETE],
+            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::CreateUamUser->value, 'label' => self::LABEL_CREATE],
+            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::ReadUamUser->value, 'label' => self::LABEL_READ],
+            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::UpdateUamUser->value, 'label' => self::LABEL_UPDATE],
+            ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::DeleteUamUser->value, 'label' => self::LABEL_DELETE],
 
             // Role
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'CreateUamRole', 'label' => self::LABEL_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'ReadUamRole', 'label' => self::LABEL_READ],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'UpdateUamRole', 'label' => self::LABEL_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => 'DeleteUamRole', 'label' => self::LABEL_DELETE],
+            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => PermissionEnum::CreateUamRole->value, 'label' => self::LABEL_CREATE],
+            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => PermissionEnum::ReadUamRole->value, 'label' => self::LABEL_READ],
+            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => PermissionEnum::UpdateUamRole->value, 'label' => self::LABEL_UPDATE],
+            ['module' => 'Uam', 'group' => 'Uam > Role', 'name' => PermissionEnum::DeleteUamRole->value, 'label' => self::LABEL_DELETE],
 
             // Permission
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'CreateUamPermission', 'label' => self::LABEL_CREATE],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'ReadUamPermission', 'label' => self::LABEL_READ],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'UpdateUamPermission', 'label' => self::LABEL_UPDATE],
-            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => 'DeleteUamPermission', 'label' => self::LABEL_DELETE],
+            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::CreateUamPermission->value, 'label' => self::LABEL_CREATE],
+            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::ReadUamPermission->value, 'label' => self::LABEL_READ],
+            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::UpdateUamPermission->value, 'label' => self::LABEL_UPDATE],
+            ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::DeleteUamPermission->value, 'label' => self::LABEL_DELETE],
 
         ];
 

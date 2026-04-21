@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\Tenancy;
+namespace App\Http\Controllers\Api\Configuration;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Configuration\Tenant;
+use App\Models\Configuration\Company;
 use Illuminate\Http\Request;
 
-class TenantController extends Controller
+class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class TenantController extends Controller
     {
         $authUser = auth()->user();
 
-        if ($authUser->isAdmin()) {
-            return ApiResponseHelper::success(Tenant::all(), 'Tenants list');
+        if ($authUser->isSuperAdmin()) {
+            return ApiResponseHelper::success(Company::all(), 'Tenants list');
         } else {
             return ApiResponseHelper::success([tenant()], 'Tenant list');
         }
@@ -25,18 +25,13 @@ class TenantController extends Controller
 
     public function switch(Request $request)
     {
-        $request->validate([
-            'tenant_id' => 'required|exists:tenants,id',
+        $input = $request->validate([
+            'company_id' => 'required|exists:companies,id',
         ]);
 
-        $tenantId = $request->input('tenant_id');
-        if (auth()->user()->isAdmin()) {
-            tenancy()->initialize($tenantId);
+        tenancy()->initialize($input['company_id']);
 
-            setPermissionsTeamId($tenantId);
-
-            auth()->user()->update(['tenant_id' => $tenantId]);
-        }
+        setPermissionsTeamId($input['company_id']);
 
         return ApiResponseHelper::success(tenant(), 'Switched tenant successfully');
     }

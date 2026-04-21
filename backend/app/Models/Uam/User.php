@@ -4,8 +4,7 @@ namespace App\Models\Uam;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enums\Uam\PermissionEnum;
-use Database\Factories\UserFactory;
+use App\Enums\Uam\GlobalRoleEnum;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +15,7 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-#[Fillable(['name', 'email', 'password', 'tenant_id'])]
+#[Fillable(['name', 'email', 'password', 'company_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements OAuthenticatable
 {
@@ -43,8 +42,8 @@ class User extends Authenticatable implements OAuthenticatable
         return $this->guard_name;
     }
 
-    public function isAdmin(): bool
+    public function isSuperAdmin(): bool
     {
-        return $this->hasPermissionTo(PermissionEnum::Admin->value) || $this->hasPermissionTo(PermissionEnum::SuperAdmin->value);
+        return $this->global_role === GlobalRoleEnum::SuperAdmin->value;
     }
 }

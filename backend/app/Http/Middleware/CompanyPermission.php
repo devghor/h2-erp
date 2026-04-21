@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class InitializeTenancy
+class CompanyPermission
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,9 @@ class InitializeTenancy
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!empty(auth()->user())) {
-            tenancy()->initialize(auth()->user()->tenant_id);
+        $user = auth()->user();
+        if (!empty($user)) {
+            setPermissionsTeamId(tenant('id'));
         }
 
         return $next($request);

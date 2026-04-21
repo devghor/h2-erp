@@ -4,9 +4,9 @@ namespace App\Models\Configuration;
 
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
-class Tenant extends BaseTenant
+class Company extends BaseTenant
 {
-    protected $table = 'tenants';
+    protected $table = 'companies';
 
     public static function getCustomColumns(): array
     {

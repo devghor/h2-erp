@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Api\Auth\LogingController;
 use App\Http\Controllers\Api\Auth\RegisterController;
-use App\Http\Controllers\Api\Tenancy\TenantController;
+use App\Http\Controllers\Api\Configuration\CompanyController;
 use App\Http\Controllers\Api\Uam\UserController;
-use App\Http\Middleware\InitializeTenancy;
-use App\Http\Middleware\TenantPermission;
+use App\Http\Middleware\CompanyPermission;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')
@@ -16,7 +16,7 @@ Route::prefix('v1')->group(function () {
             Route::post('login', [LogingController::class, 'login'])->name('login');
         });
 
-    Route::middleware(['auth:api', InitializeTenancy::class, TenantPermission::class])->group(function () {
+    Route::middleware(['auth:api', InitializeTenancyByRequestData::class, CompanyPermission::class])->group(function () {
         /**
          * Uam Module
          */
@@ -29,13 +29,13 @@ Route::prefix('v1')->group(function () {
 
 
         /**
-         * Tenancy Module
+         * Configuration Module
          */
-        Route::prefix('tenancy')
-            ->name('tenancy.')
+        Route::prefix('configuration')
+            ->name('configuration.')
             ->group(function () {
-                Route::apiResource('tenants', TenantController::class);
-                Route::post('tenants/switch', [TenantController::class, 'switch'])->name('tenants.switch');
+                Route::post('companies/switch', [CompanyController::class, 'switch'])->name('companies.switch');
+                Route::apiResource('companies', CompanyController::class);
             });
     });
 });

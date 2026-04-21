@@ -55,6 +55,7 @@ class UserController extends Controller
     public function me()
     {
         $details = auth()->user()->toArray();
+        $details['company_id'] = tenant('id');
         $details['roles'] = auth()->user()->roles;
         return ApiResponseHelper::success($details, 'User details');
     }
