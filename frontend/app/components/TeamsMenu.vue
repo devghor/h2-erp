@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Tenant, TenantListResponse } from '~/types/index.d.ts'
+import type { SessionUser } from '~/types/auth'
 
 defineProps<{
   collapsed?: boolean
@@ -13,17 +14,15 @@ const toast = useToast()
 const tenants = ref<Tenant[]>([])
 const switching = ref(false)
 
-const currentTenantId = computed(() => {
-  const u = user.value as Record<string, unknown> | null
-  return (u?.user as Record<string, string> | null)?.tenant_id ?? null
+const currentTenantId = computed<string | null>(() => {
+  const u = user.value as SessionUser | null
+  return u?.company_id ?? null
 })
 
-const currentTenant = computed<Tenant | null>(() =>
-  tenants.value.find(t => t.id === currentTenantId.value) ?? null
-)
+const currentTenant = computed<Tenant | null>(() => tenants.value.find((t) => t.id === currentTenantId.value) ?? null)
 
 try {
-  const response = await apiCall<TenantListResponse>('/tenancy')
+  const response = await apiCall<TenantListResponse>('/configuration/companies')
   tenants.value = response.data
 } catch {
   // silently fail — menu stays empty
@@ -33,7 +32,7 @@ async function switchTenant(tenantId: string) {
   if (switching.value || tenantId === currentTenantId.value) return
   switching.value = true
   try {
-    await apiCall('/tenancy/switch', { method: 'POST', body: { tenant_id: tenantId } })
+    await $fetch('/api/auth/switch-tenant', { method: 'POST', body: { company_id: tenantId } })
     await fetchSession()
   } catch (err: unknown) {
     const message = (err as { data?: { message?: string } })?.data?.message ?? 'Failed to switch tenant'
@@ -44,7 +43,7 @@ async function switchTenant(tenantId: string) {
 }
 
 const items = computed<DropdownMenuItem[][]>(() => [
-  tenants.value.map(tenant => ({
+  tenants.value.map((tenant) => ({
     label: tenant.name,
     icon: currentTenant.value?.id === tenant.id ? 'i-lucide-check' : undefined,
     onSelect() {

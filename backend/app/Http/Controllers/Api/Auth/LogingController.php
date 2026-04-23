@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Auth\AuthUserResource;
 use Illuminate\Http\Request;
 
 class LogingController extends Controller
@@ -21,12 +22,7 @@ class LogingController extends Controller
         if (auth()->attempt($input)) {
             $user = auth()->user();
 
-            $token = $user->createToken('authToken')->accessToken;
-
-            return ApiResponseHelper::success([
-                ...$user->toArray(),
-                'access_token' => $token,
-            ], 'Login successful');
+            return new AuthUserResource($user);
         } else {
             return ApiResponseHelper::error('Invalid email or password', 401);
         }

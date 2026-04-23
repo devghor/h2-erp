@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Configuration;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Auth\AuthUserResource;
 use App\Models\Configuration\Company;
 use Illuminate\Http\Request;
 
@@ -29,11 +30,10 @@ class CompanyController extends Controller
             'company_id' => 'required|exists:companies,id',
         ]);
 
-        tenancy()->initialize($input['company_id']);
+        $user = auth()->user();
+        $user->company_id = $input['company_id'];
 
-        setPermissionsTeamId($input['company_id']);
-
-        return ApiResponseHelper::success(tenant(), 'Switched tenant successfully');
+        return new AuthUserResource($user);
     }
 
     /**

@@ -1,13 +1,6 @@
 import { ROUTES } from '~/constants/routes'
+import type { SessionUser } from '~/types/auth'
 
-/**
- * Provides a thin wrapper around $fetch and useFetch that automatically
- * injects the Bearer token from the user session. Intended for use in
- * client-side (SSR=false) pages under /admin.
- *
- * When the API returns 401 (token expired / unauthorized), the session is
- * cleared and the user is redirected to the login page automatically.
- */
 export function useApiClient() {
   const { user, clear } = useUserSession()
   const config = useRuntimeConfig()
@@ -15,11 +8,10 @@ export function useApiClient() {
   const router = useRouter()
 
   function authHeaders(): Record<string, string> {
-    const u = user.value as Record<string, unknown> | null
+    const u = user.value as SessionUser | null
     const headers: Record<string, string> = {}
-    if (u?.access_token) headers['Authorization'] = `Bearer ${u.access_token as string}`
-    const tenantId = (u?.user as Record<string, string> | null)?.tenant_id
-    if (tenantId) headers['X-Tenant'] = tenantId
+    if (u?.access_token) headers['Authorization'] = `Bearer ${u.access_token}`
+    if (u?.company_id) headers['X-Tenant'] = u.company_id
     return headers
   }
 

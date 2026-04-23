@@ -1,8 +1,10 @@
+import type { SessionUser } from '~/types/auth'
+
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   const config = useRuntimeConfig(event)
 
-  const response = await $fetch<{ data: Record<string, unknown> }>(
+  const response = await $fetch<{ data: SessionUser }>(
     `${config.public.apiBase}/auth/login`,
     {
       method: 'POST',
