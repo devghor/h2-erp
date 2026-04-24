@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
@@ -72,8 +73,15 @@ class UserService extends BaseService
         return $user->load('roles');
     }
 
+    public function bulkDelete(array $ulids): void
+    {
+        DB::transaction(function () use ($ulids): void {
+            User::whereIn('ulid', $ulids)->delete();
+        });
+    }
+
     public function all(): Collection
     {
-        return User::select('id', 'name', 'email')->orderBy('name')->get();
+        return User::select('id', 'ulid', 'name', 'email')->orderBy('name')->get();
     }
 }

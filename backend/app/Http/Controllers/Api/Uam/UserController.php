@@ -68,7 +68,7 @@ class UserController extends Controller
 
     public function bulkDelete(BulkDeleteUserRequest $request)
     {
-        $this->userService->bulkDelete($request->validated()['ids']);
+        $this->userService->bulkDelete($request->validated()['ulids']);
 
         return ApiResponseHelper::success([], 'Users deleted');
     }

@@ -14,8 +14,8 @@ class BulkDeleteUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ids' => ['required', 'array'],
-            'ids.*' => ['integer', 'exists:users,id'],
+            'ulids' => ['required', 'array'],
+            'ulids.*' => ['string', 'exists:users,ulid'],
         ];
     }
 }
