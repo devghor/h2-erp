@@ -26,6 +26,9 @@ Route::prefix('v1')->group(function () {
             ->name('uam.')
             ->group(function () {
                 Route::get('me', [UserController::class, 'me'])->name('me');
+                Route::get('users/all', [UserController::class, 'all'])->name('users.all');
+                Route::post('users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
+                Route::get('users/export', [UserController::class, 'export'])->name('users.export');
                 Route::apiResource('users', UserController::class);
                 Route::get('roles/all', [RoleController::class, 'all'])->name('roles.all');
                 Route::post('roles/bulk-delete', [RoleController::class, 'bulkDelete'])->name('roles.bulk-delete');
