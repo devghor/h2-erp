@@ -185,7 +185,7 @@ async function downloadExport(path: string, filename: string) {
 }
 
 function exportToExcel() {
-  downloadExport('/uam/roles/export', `roles_${new Date().toISOString().slice(0, 10)}.xlsx`)
+  downloadExport('/uam/roles/export', `roles_${new Date().toISOString().slice(0, 10)}.csv`)
 }
 
 const exportItems = [[{ label: 'Export Excel', icon: 'i-lucide-file-spreadsheet', onSelect: exportToExcel }]]

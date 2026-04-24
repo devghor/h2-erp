@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Auth\LogingController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Configuration\CompanyController;
+use App\Http\Controllers\Api\Uam\PermissionController;
+use App\Http\Controllers\Api\Uam\RoleController;
 use App\Http\Controllers\Api\Uam\UserController;
 use App\Http\Middleware\CompanyPermission;
 use Illuminate\Support\Facades\Route;
@@ -25,8 +27,12 @@ Route::prefix('v1')->group(function () {
             ->group(function () {
                 Route::get('me', [UserController::class, 'me'])->name('me');
                 Route::apiResource('users', UserController::class);
+                Route::get('roles/all', [RoleController::class, 'all'])->name('roles.all');
+                Route::post('roles/bulk-delete', [RoleController::class, 'bulkDelete'])->name('roles.bulk-delete');
+                Route::get('roles/export', [RoleController::class, 'export'])->name('roles.export');
+                Route::apiResource('roles', RoleController::class);
+                Route::get('permissions/grouped', [PermissionController::class, 'grouped'])->name('permissions.grouped');
             });
-
 
         /**
          * Configuration Module
