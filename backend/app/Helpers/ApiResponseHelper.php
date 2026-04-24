@@ -2,40 +2,25 @@
 
 namespace App\Helpers;
 
+use Illuminate\Http\JsonResponse;
+
 class ApiResponseHelper
 {
-    /**
-     * Success response method.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public static function success($result, $message, $code = 200)
+    public static function success(mixed $result, string $message, int $code = 200): JsonResponse
     {
-        $response = [
-            'data'    => $result,
+        return response()->json([
+            'data' => $result,
             'message' => $message,
-        ];
-
-        return response()->json($response, $code);
+        ], $code);
     }
 
-
-    /**
-     * Error response method.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public static function error($error, $errorMessages = [], $code = 404)
+    public static function error(string $message, int $code = 500, array $errors = []): JsonResponse
     {
-        $response = [
-            'message' => $error,
-        ];
+        $response = ['message' => $message];
 
-
-        if (!empty($errorMessages)) {
-            $response['data'] = $errorMessages;
+        if (! empty($errors)) {
+            $response['errors'] = $errors;
         }
-
 
         return response()->json($response, $code);
     }
