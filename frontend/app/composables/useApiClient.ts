@@ -3,6 +3,7 @@ import type { SessionUser } from '~/types/auth'
 
 export function useApiClient() {
   const { user, clear } = useUserSession()
+  const companyStore = useCompanyStore()
   const config = useRuntimeConfig()
   const baseURL = config.public.apiBase as string
   const router = useRouter()
@@ -11,7 +12,7 @@ export function useApiClient() {
     const u = user.value as SessionUser | null
     const headers: Record<string, string> = {}
     if (u?.access_token) headers['Authorization'] = `Bearer ${u.access_token}`
-    if (u?.company_id) headers['X-Tenant'] = u.company_id
+    if (companyStore.companyId) headers['X-Tenant'] = companyStore.companyId
     return headers
   }
 

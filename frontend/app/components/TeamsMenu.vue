@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Tenant, TenantListResponse } from '~/types/index.d.ts'
-import type { SessionUser } from '~/types/auth'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
-const { user, fetch: fetchSession } = useUserSession()
+const { fetch: fetchSession } = useUserSession()
 const { apiCall } = useApiClient()
+const companyStore = useCompanyStore()
 const toast = useToast()
 
 const tenants = ref<Tenant[]>([])
 const switching = ref(false)
 
-const currentTenantId = computed<string | null>(() => {
-  const u = user.value as SessionUser | null
-  return u?.company_id ?? null
-})
+const currentTenantId = computed<string | null>(() => companyStore.companyId)
 
 const currentTenant = computed<Tenant | null>(() => tenants.value.find((t) => t.id === currentTenantId.value) ?? null)
 
@@ -33,6 +30,7 @@ async function switchTenant(tenantId: string) {
   switching.value = true
   try {
     await $fetch('/api/auth/switch-tenant', { method: 'POST', body: { company_id: tenantId } })
+    companyStore.setCompanyId(tenantId)
     await fetchSession()
   } catch (err: unknown) {
     const message = (err as { data?: { message?: string } })?.data?.message ?? 'Failed to switch tenant'
