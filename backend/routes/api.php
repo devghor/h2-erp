@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LogingController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Configuration\CompanyController;
+use App\Http\Controllers\Api\Product\CategoryController;
 use App\Http\Controllers\Api\Uam\PermissionController;
 use App\Http\Controllers\Api\Uam\RoleController;
 use App\Http\Controllers\Api\Uam\UserController;
@@ -35,6 +36,18 @@ Route::prefix('v1')->group(function () {
                 Route::get('roles/export', [RoleController::class, 'export'])->name('roles.export');
                 Route::apiResource('roles', RoleController::class);
                 Route::get('permissions/grouped', [PermissionController::class, 'grouped'])->name('permissions.grouped');
+            });
+
+        /**
+         * Product Module
+         */
+        Route::prefix('product')
+            ->name('product.')
+            ->group(function () {
+                Route::get('categories/tree', [CategoryController::class, 'tree'])->name('categories.tree');
+                Route::post('categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
+                Route::get('categories/export', [CategoryController::class, 'export'])->name('categories.export');
+                Route::apiResource('categories', CategoryController::class);
             });
 
         /**
