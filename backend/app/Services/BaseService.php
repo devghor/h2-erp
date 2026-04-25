@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Media\MediaCollectionEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -42,14 +43,28 @@ abstract class BaseService
         return $this->applyFilters($this->newQuery(), $request)->get();
     }
 
-    public function create(array $data): Model
+    public function create(array $data): ?Model
     {
-        return $this->model()::create($data);
+        $model = null;
+        DB::transaction(function () use ($data) {
+            $model = $this->model()::create($data);
+            if (isset($data['image'])) {
+                $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+            }
+        });
+        return $model;
     }
 
-    public function update(Model $model, array $data): Model
+    public function update(Model $model, array $data): ?Model
     {
-        $model->update($data);
+        DB::transaction(function () use ($model, $data) {
+            $model->update($data);
+
+            if (isset($data['image'])) {
+                $model->clearMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+                $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+            }
+        });
 
         return $model->fresh();
     }
@@ -57,6 +72,7 @@ abstract class BaseService
     public function delete(Model $model): void
     {
         $model->delete();
+        $model->clearMediaCollection(MediaCollectionEnum::ProductCategogy->value);
     }
 
     public function bulkDelete(array $ids): void
