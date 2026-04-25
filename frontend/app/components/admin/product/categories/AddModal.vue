@@ -24,7 +24,7 @@ const { apiCall, apiFetch } = useApiClient()
 const state = reactive<Partial<Schema>>({ name: '' })
 const selectedParentId = ref<number | null>(null)
 
-const { data: treeData } = await apiFetch<{ data: { data: Category[] } }>('/product/categories/tree', { lazy: true })
+const { data: treeData } = await apiFetch<{ data: Category[] }>('/product/categories/tree', { lazy: true })
 
 const parentOptions = computed(() => {
   const result: Array<{ label: string; value: number }> = []
@@ -34,7 +34,7 @@ const parentOptions = computed(() => {
       if (cat.children?.length) flatten(cat.children)
     }
   }
-  flatten(treeData.value?.data || [])
+  flatten(treeData.value?.data ?? [])
   return result
 })
 
