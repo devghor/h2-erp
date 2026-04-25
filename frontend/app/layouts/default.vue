@@ -18,6 +18,22 @@ const links = computed(
           }
         },
         {
+          label: 'Product',
+          icon: 'i-lucide-package',
+          type: 'trigger',
+          defaultOpen: route.path.startsWith('/admin/product'),
+          children: [
+            {
+              label: 'Categories',
+              to: ROUTES.PRODUCT.CATEGORIES,
+              icon: 'i-lucide-tags',
+              onSelect: () => {
+                open.value = false
+              }
+            }
+          ]
+        },
+        {
           label: 'User Access',
           icon: 'i-lucide-shield-check',
           type: 'trigger',

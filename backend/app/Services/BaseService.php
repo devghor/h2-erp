@@ -45,26 +45,26 @@ abstract class BaseService
 
     public function create(array $data): ?Model
     {
-        $model = null;
-        DB::transaction(function () use ($data) {
-            $model = $this->model()::create($data);
-            if (isset($data['image'])) {
-                $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
-            }
-        });
+        DB::beginTransaction();
+        $model = $this->model()::create($data);
+        if (isset($data['image'])) {
+            $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+        }
+        DB::commit();
+
         return $model;
     }
 
     public function update(Model $model, array $data): ?Model
     {
-        DB::transaction(function () use ($model, $data) {
-            $model->update($data);
+        DB::beginTransaction();
+        $model->update($data);
+        if (isset($data['image'])) {
+            $model->clearMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+            $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
+        }
 
-            if (isset($data['image'])) {
-                $model->clearMediaCollection(MediaCollectionEnum::ProductCategogy->value);
-                $model->addMedia($data['image'])->toMediaCollection(MediaCollectionEnum::ProductCategogy->value);
-            }
-        });
+        DB::commit();
 
         return $model->fresh();
     }
@@ -77,9 +77,7 @@ abstract class BaseService
 
     public function bulkDelete(array $ids): void
     {
-        DB::transaction(function () use ($ids) {
-            $this->model()::whereIn('id', $ids)->delete();
-        });
+        $this->model()::whereIn('id', $ids)->delete();
     }
 
     /**

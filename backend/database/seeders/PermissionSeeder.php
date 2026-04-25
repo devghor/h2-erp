@@ -46,6 +46,16 @@ class PermissionSeeder extends Seeder
             ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::UpdateUamPermission->value, 'label' => self::LABEL_UPDATE],
             ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::DeleteUamPermission->value, 'label' => self::LABEL_DELETE],
 
+            /**
+             * Product Module
+             */
+
+            // Category
+            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::CreateProductCategory->value, 'label' => self::LABEL_CREATE],
+            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::ReadProductCategory->value, 'label' => self::LABEL_READ],
+            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::UpdateProductCategory->value, 'label' => self::LABEL_UPDATE],
+            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::DeleteProductCategory->value, 'label' => self::LABEL_DELETE],
+
         ];
 
 

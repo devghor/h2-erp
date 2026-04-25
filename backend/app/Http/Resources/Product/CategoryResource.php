@@ -13,8 +13,8 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'parent_category_id' => $this->parent_category_id,
-            'parent' => $this->whenLoaded('parent', fn () => new CategoryResource($this->parent)),
-            'children' => $this->whenLoaded('children', fn () => CategoryResource::collection($this->children)),
+            'parent' => $this->whenLoaded('parent', fn() => new CategoryResource($this->parent)),
+            'children' => $this->whenLoaded('children', fn() => CategoryResource::collection($this->children)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

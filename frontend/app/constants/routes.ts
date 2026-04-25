@@ -9,6 +9,10 @@ export const ROUTES = {
     PERMISSIONS: '/admin/uam/permissions',
   },
 
+  PRODUCT: {
+    CATEGORIES: '/admin/product/categories',
+  },
+
   SETTINGS: {
     INDEX: '/settings',
     MEMBERS: '/settings/members',

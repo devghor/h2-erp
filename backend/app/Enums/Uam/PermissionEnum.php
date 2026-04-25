@@ -29,4 +29,14 @@ enum PermissionEnum: string
     case ReadUamPermission = 'ReadUamPermission';
     case UpdateUamPermission = 'UpdateUamPermission';
     case DeleteUamPermission = 'DeleteUamPermission';
+
+    /**
+     * Product Module
+     **/
+
+        // Category
+    case CreateProductCategory = 'CreateProductCategory';
+    case ReadProductCategory = 'ReadProductCategory';
+    case UpdateProductCategory = 'UpdateProductCategory';
+    case DeleteProductCategory = 'DeleteProductCategory';
 }
