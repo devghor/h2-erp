@@ -72,6 +72,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Structure', 'name' => PermissionEnum::UpdatePayrollSalaryStructure->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Structure', 'name' => PermissionEnum::DeletePayrollSalaryStructure->value, 'display_name' => self::LABEL_DELETE],
 
+            // Employee Salary Profile
+            ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::CreatePayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::ReadPayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::UpdatePayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::DeletePayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Configuration Module
              */
