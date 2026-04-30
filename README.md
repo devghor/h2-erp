@@ -1,6 +1,6 @@
-# H2-HRMS
+# H2-ERP
 
-**H2-HRMS** is a community-driven, open-source SaaS HRMS built for Bangladesh — supporting local fiscal year, NBR tax rules, and BDT. It is built as a multi-tenant Laravel monolith with a React + Inertia.js frontend.
+**H2-ERP** is a community-driven, open-source SaaS ERP built for Bangladesh — supporting local fiscal year, NBR tax rules, and BDT. It is built as a multi-tenant Laravel monolith with a React + Inertia.js frontend.
 
 > **Note:** This project is under active development. Features are incomplete and the API surface may change.
 
@@ -34,8 +34,8 @@
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/devghor/h2-hrms.git
-cd h2-hrms
+git clone https://github.com/devghor/h2-erp.git
+cd h2-erp
 ```
 
 2. **Install dependencies**
@@ -58,7 +58,7 @@ php artisan key:generate
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=h2_hrms
+DB_DATABASE=h2_erp
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
 ```
