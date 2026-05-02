@@ -90,4 +90,13 @@ enum PermissionEnum: string
     case ReadConfigurationDesignation = 'READ_CONFIGURATION_DESIGNATION';
     case UpdateConfigurationDesignation = 'UPDATE_CONFIGURATION_DESIGNATION';
     case DeleteConfigurationDesignation = 'DELETE_CONFIGURATION_DESIGNATION';
+
+    /**
+     * Product Module
+     */
+        // Product > Category
+    case CreateProductCategory = 'CREATE_PRODUCT_CATEGORY';
+    case ReadProductCategory = 'READ_PRODUCT_CATEGORY';
+    case UpdateProductCategory = 'UPDATE_PRODUCT_CATEGORY';
+    case DeleteProductCategory = 'DELETE_PRODUCT_CATEGORY';
 }

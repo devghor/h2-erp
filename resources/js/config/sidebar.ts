@@ -10,6 +10,7 @@ import {
     LayoutDashboard,
     Lock,
     MonitorCog,
+    Tag,
     UserCog,
     UserRound,
     Users,
@@ -127,6 +128,18 @@ export const sidebarData: SidebarData = {
                     url: '/configuration/desks',
                     icon: MonitorCog,
                     can: 'READ_CONFIGURATION_DESK',
+                },
+            ],
+        },
+        {
+            title: 'Product',
+            can: 'READ_PRODUCT',
+            items: [
+                {
+                    title: 'Categories',
+                    url: '/product/categories',
+                    icon: Tag,
+                    can: 'READ_PRODUCT_CATEGORY',
                 },
             ],
         },
