@@ -50,7 +50,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->users as $data) {
-            $company = Company::where('name', '=', $data['company_name'])->first();
+            $company = Company::where('name', $data['company_name'])->first();
             if (!$company) {
                 $company = Company::create([
                     'name' => $data['company_name'],
