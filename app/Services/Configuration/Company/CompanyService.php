@@ -19,6 +19,8 @@ class CompanyService extends CoreService
     {
         $company = $this->model->create($data);
 
+        $company->users()->attach(Auth::id());
+
         return $company;
     }
 

@@ -15,11 +15,19 @@ class AdminSeeder extends Seeder
     private array $users = [
         [
             'user_name' => 'Super Admin',
-            'email' => 'superadmin@app.com',
-            'company_name' => 'Super Admin Company',
-            'short_name' => 'sac',
+            'email' => 'sa@app.com',
+            'company_name' => 'Intellygo',
+            'short_name' => 'intellygo',
             'global_role' => GlobalRoleEnum::SuperAdmin,
-            'role_name' => '',
+            'role_name' => null,
+        ],
+        [
+            'user_name' => 'Admin One',
+            'email' => 'admin1@app.com',
+            'company_name' => 'Intellygo',
+            'short_name' => 'intellygo',
+            'global_role' => GlobalRoleEnum::Admin,
+            'role_name' => null,
         ],
         [
             'user_name' => 'Company Admin',
@@ -29,15 +37,26 @@ class AdminSeeder extends Seeder
             'global_role' => null,
             'role_name' => 'Company Admin',
         ],
+        [
+            'user_name' => 'Company User',
+            'email' => 'companyuser@app.com',
+            'company_name' => 'Dummy Company',
+            'short_name' => 'dummy',
+            'global_role' => null,
+            'role_name' => 'Company User',
+        ],
     ];
 
     public function run(): void
     {
         foreach ($this->users as $data) {
-            $company = Company::create([
-                'name' => $data['company_name'],
-                'short_name' => $data['short_name']
-            ]);
+            $company = Company::where('name', '=', $data['company_name'])->first();
+            if (!$company) {
+                $company = Company::create([
+                    'name' => $data['company_name'],
+                    'short_name' => $data['short_name']
+                ]);
+            }
 
             $user = User::updateOrCreate(
                 ['email' => $data['email']],
@@ -48,9 +67,9 @@ class AdminSeeder extends Seeder
                 ]
             );
 
-            $user->companies()->sync($company);
+            $user->companies()->attach($company);
 
-            if ($data['global_role'] == GlobalRoleEnum::SuperAdmin) {
+            if ($data['global_role'] == GlobalRoleEnum::SuperAdmin || $data['global_role'] == GlobalRoleEnum::Admin) {
                 $user->global_role = $data['global_role'];
                 $user->save();
             } else {

@@ -1,4 +1,19 @@
-import { Briefcase, Building, Building2, DollarSign, FileSpreadsheet, IdCard, Key, Landmark, LayoutDashboard, Lock, MonitorCog, UserCog, UserRound, Users } from 'lucide-react';
+import {
+    Briefcase,
+    Building,
+    Building2,
+    DollarSign,
+    FileSpreadsheet,
+    IdCard,
+    Key,
+    Landmark,
+    LayoutDashboard,
+    Lock,
+    MonitorCog,
+    UserCog,
+    UserRound,
+    Users,
+} from 'lucide-react';
 
 type BaseNavItem = {
     title: string;
@@ -39,7 +54,7 @@ export const sidebarData: SidebarData = {
                     title: 'Dashboard',
                     url: '/dashboard',
                     icon: LayoutDashboard,
-                    can: 'READ_DASHBOARD',
+                    can: 'READ_GENERAL_DASHBOARD',
                 },
             ],
         },

@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->global_role == GlobalRoleEnum::SuperAdmin->value;
     }
+
+    public function isAdmin()
+    {
+        return $this->global_role == GlobalRoleEnum::Admin->value;
+    }
 }

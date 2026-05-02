@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\Uam\PermissionEnum;
 use App\Models\Configuration\Company\Company;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -52,9 +51,15 @@ class HandleInertiaRequests extends Middleware
         $selectedCompany = tenant();
 
         if ($user) {
-            $permissions = $user->isSuperAdmin() ? PermissionEnum::cases() : $user->getPermissionsViaRoles()->pluck('name')->toArray();
-            $companies =  $user->isSuperAdmin() ? Company::all() : $user->companies;
             $unreadNotificationsCount = $user->unreadNotifications()->count();
+
+            if ($user->isSuperAdmin() || $user->isAdmin()) {
+                $permissions =  config('global-permission')[$user->global_role] ?? [];
+                $companies = Company::all();
+            } else {
+                $permissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
+                $companies = $user->companies;
+            }
         }
 
         return [
