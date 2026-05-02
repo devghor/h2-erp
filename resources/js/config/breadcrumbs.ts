@@ -17,4 +17,5 @@ export const breadcrumbItems = {
     notificationIndex: { title: 'Notifications', href: route('notification.index') },
     productCategories: { title: 'Categories', href: route('product.categories.index') },
     productBrands: { title: 'Brands', href: route('product.brands.index') },
+    productUnits: { title: 'Units', href: route('product.units.index') },
 };

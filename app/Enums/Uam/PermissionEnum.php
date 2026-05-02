@@ -105,4 +105,10 @@ enum PermissionEnum: string
     case ReadProductBrand = 'READ_PRODUCT_BRAND';
     case UpdateProductBrand = 'UPDATE_PRODUCT_BRAND';
     case DeleteProductBrand = 'DELETE_PRODUCT_BRAND';
+
+        // Product > Unit
+    case CreateProductUnit = 'CREATE_PRODUCT_UNIT';
+    case ReadProductUnit = 'READ_PRODUCT_UNIT';
+    case UpdateProductUnit = 'UPDATE_PRODUCT_UNIT';
+    case DeleteProductUnit = 'DELETE_PRODUCT_UNIT';
 }
