@@ -16,8 +16,8 @@ class BranchesDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('company', fn (Branch $b) => $b->company?->name ?? '')
-            ->editColumn('created_at', fn (Branch $b) => $b->created_at->format('Y-m-d H:i:s'))
+            ->addColumn('company', fn(Branch $b) => $b->company?->name ?? '')
+            ->editColumn('created_at', fn(Branch $b) => $b->created_at->format('Y-m-d H:i:s'))
             ->setRowId('id');
     }
 

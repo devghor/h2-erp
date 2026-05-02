@@ -41,15 +41,20 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $unreadNotificationsCount = 0;
+
         $permissions = [];
 
         $companies = [];
 
         $user = $request->user() ?? [];
 
+        $selectedCompany = tenant();
+
         if ($user) {
             $permissions = $user->isSuperAdmin() ? PermissionEnum::cases() : $user->getPermissionsViaRoles()->pluck('name')->toArray();
-            $companies =  $user->isSuperAdmin() ? Company::all() : collect()->push(tenant());
+            $companies =  $user->isSuperAdmin() ? Company::all() : $user->companies;
+            $unreadNotificationsCount = $user->unreadNotifications()->count();
         }
 
         return [
@@ -59,9 +64,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'companies' => $companies,
-                'company' => tenant(),
+                'company' => $selectedCompany,
                 'permissions' => $permissions,
-                'unread_notifications_count' => $user ? $user->unreadNotifications()->count() : 0,
+                'unread_notifications_count' => $unreadNotificationsCount,
             ],
             'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),

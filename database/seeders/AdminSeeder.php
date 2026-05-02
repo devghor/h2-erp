@@ -48,6 +48,8 @@ class AdminSeeder extends Seeder
                 ]
             );
 
+            $user->companies()->sync($company);
+
             if ($data['global_role'] == GlobalRoleEnum::SuperAdmin) {
                 $user->global_role = $data['global_role'];
                 $user->save();

@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $company = Auth::user()->company;
+        $company = Auth::user()->defaultCompany;
 
         if ($company) {
             session([config('tenancy.company_id_session_key') => $company->id]);
