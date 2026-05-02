@@ -53,12 +53,12 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $unreadNotificationsCount = $user->unreadNotifications()->count();
 
+            $companies = $user->companies;
+
             if ($user->isSuperAdmin() || $user->isAdmin()) {
                 $permissions =  config('global-permission')[$user->global_role] ?? [];
-                $companies = Company::all();
             } else {
                 $permissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
-                $companies = $user->companies;
             }
         }
 
