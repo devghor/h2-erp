@@ -16,13 +16,14 @@ class CompaniesDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('created_at', fn (Company $c) => $c->created_at->format('Y-m-d H:i:s'))
+            ->editColumn('created_at', fn(Company $c) => $c->created_at->format('Y-m-d H:i:s'))
             ->setRowId('id');
     }
 
     public function query(Company $model): QueryBuilder
     {
-        return $model->select(['id', 'name', 'short_name', 'created_at']);
+        return $model->query()
+            ->select(['id', 'name', 'short_name', 'created_at']);
     }
 
     public function getColumns(): array
