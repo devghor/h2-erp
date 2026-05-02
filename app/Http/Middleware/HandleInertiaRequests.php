@@ -72,6 +72,7 @@ class HandleInertiaRequests extends Middleware
                 'company' => $selectedCompany,
                 'permissions' => $permissions,
                 'unread_notifications_count' => $unreadNotificationsCount,
+                'impersonating' => $request->session()->has('impersonator_id'),
             ],
             'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),

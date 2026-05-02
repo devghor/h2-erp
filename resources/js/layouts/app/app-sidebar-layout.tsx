@@ -3,11 +3,12 @@ import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { ImpersonationBanner } from '@/components/impersonation-banner';
 import { NavUser } from '@/components/nav-user';
 import { Notification } from '@/components/notification';
 import { SearchProvider } from '@/context/search-provider';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 export default function AppSidebarLayout({
@@ -17,6 +18,8 @@ export default function AppSidebarLayout({
     description,
     actions,
 }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[]; title: string; description?: string; actions?: React.ReactNode }>) {
+    const { auth } = usePage<SharedData>().props;
+
     return (
         <AppShell variant="sidebar">
             <Head title={title} />
@@ -25,6 +28,7 @@ export default function AppSidebarLayout({
                 <SearchProvider>
                     <AppSidebarHeader fixed>
                         <div className="ms-auto flex items-center space-x-4">
+                            {auth.impersonating && <ImpersonationBanner />}
                             <Notification />
                             <NavUser />
                         </div>

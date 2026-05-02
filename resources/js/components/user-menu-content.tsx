@@ -1,9 +1,9 @@
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
-import { type User } from '@/types';
-import { Link, router } from '@inertiajs/react';
-import { LogOut, Settings } from 'lucide-react';
+import { type SharedData, type User } from '@/types';
+import { Link, router, usePage } from '@inertiajs/react';
+import { LogOut, Settings, UserRoundX } from 'lucide-react';
 
 interface UserMenuContentProps {
     user: User;
@@ -11,10 +11,16 @@ interface UserMenuContentProps {
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
+    const { auth } = usePage<SharedData>().props;
 
     const handleLogout = () => {
         cleanup();
         router.flushAll();
+    };
+
+    const handleLeaveImpersonation = () => {
+        cleanup();
+        router.post(route('uam.impersonate.leave'));
     };
 
     return (
@@ -25,6 +31,15 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {auth.impersonating && (
+                <>
+                    <DropdownMenuItem onClick={handleLeaveImpersonation} className="text-amber-600 focus:text-amber-600 dark:text-amber-400">
+                        <UserRoundX className="mr-2 h-4 w-4" />
+                        Leave Impersonation
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                </>
+            )}
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                     <Link className="block w-full cursor-pointer" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>

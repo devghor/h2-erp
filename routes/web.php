@@ -21,6 +21,7 @@ use App\Http\Controllers\Payroll\PayrollSalaryHeadController;
 use App\Http\Controllers\Payroll\PayrollSalaryStructureController;
 use App\Http\Controllers\Uam\Permission\PermissionController;
 use App\Http\Controllers\Uam\Role\RoleController;
+use App\Http\Controllers\Uam\User\ImpersonateController;
 use App\Http\Controllers\Uam\User\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -73,6 +74,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->group(function (): void {
             Route::delete('users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
             Route::resource('users', UserController::class);
+            Route::post('users/{user}/impersonate', [ImpersonateController::class, 'impersonate'])->name('users.impersonate');
+            Route::post('impersonate/leave', [ImpersonateController::class, 'leave'])->name('impersonate.leave');
             Route::delete('roles/bulk-delete', [RoleController::class, 'bulkDelete'])->name('roles.bulk-delete');
             Route::resource('roles', RoleController::class);
             Route::delete('permissions/bulk-delete', [PermissionController::class, 'bulkDelete'])->name('permissions.bulk-delete');

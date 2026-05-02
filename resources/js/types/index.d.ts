@@ -14,6 +14,7 @@ export interface Auth {
     company: Company | null;
     permissions: string[];
     unread_notifications_count: number;
+    impersonating: boolean;
 }
 
 export interface BreadcrumbItem {
@@ -53,5 +54,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    global_role: string;
     [key: string]: unknown; // This allows for additional properties...
 }

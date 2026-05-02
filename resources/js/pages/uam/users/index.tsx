@@ -2,18 +2,69 @@ import BulkDeleteButton from '@/components/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
+import { DeleteConfirmDialog } from '@/components/dialog/delete-confirmation-dialog';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import axios from 'axios';
+import { MoreHorizontal, Pencil, Trash2, UserRoundCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.uamUsers];
+
+function UserActionsMenu({
+    row,
+    currentUserId,
+    onEdit,
+    onDelete,
+    onImpersonate,
+}: {
+    row: User;
+    currentUserId: number;
+    onEdit: () => void;
+    onDelete: () => void;
+    onImpersonate: () => void;
+}) {
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const isSelf = row.id === currentUserId;
+
+    return (
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Actions</span>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={onEdit}>
+                        <Pencil className="mr-2 h-3.5 w-3.5" />
+                        Edit
+                    </DropdownMenuItem>
+                    {!isSelf && (
+                        <DropdownMenuItem onClick={onImpersonate}>
+                            <UserRoundCheck className="mr-2 h-3.5 w-3.5" />
+                            Impersonate
+                        </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
+                        <Trash2 className="mr-2 h-3.5 w-3.5" />
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <DeleteConfirmDialog onConfirm={onDelete} open={deleteOpen} onOpenChange={setDeleteOpen} />
+        </>
+    );
+}
 
 interface User {
     id: number;
@@ -25,8 +76,9 @@ interface User {
 }
 
 export default function Index() {
-    const { errors } = usePage().props;
+    const { auth } = usePage<SharedData>().props;
     const tableRef = useRef<{ refetch: () => void }>(null);
+    const canImpersonate = (auth.user.global_role === 'super-admin' || auth.user.global_role === 'admin') && !auth.impersonating;
 
     const columns = [
         {
@@ -60,7 +112,18 @@ export default function Index() {
             sortable: false,
             searchable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleOpenEdit(row as User)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) =>
+                canImpersonate ? (
+                    <UserActionsMenu
+                        row={row as User}
+                        currentUserId={auth.user.id}
+                        onEdit={() => handleOpenEdit(row as User)}
+                        onDelete={() => handleDelete(row.id)}
+                        onImpersonate={() => handleImpersonate(row.id)}
+                    />
+                ) : (
+                    <RowActions onEdit={() => handleOpenEdit(row as User)} onDelete={() => handleDelete(row.id)} />
+                ),
         },
     ];
 
@@ -136,6 +199,17 @@ export default function Index() {
                 },
             );
         }
+    };
+
+    const handleImpersonate = (userId: number) => {
+        router.post(
+            route('uam.users.impersonate', userId),
+            {},
+            {
+                onSuccess: () => toast.success('Now impersonating user'),
+                onError: () => toast.error('Failed to impersonate user'),
+            },
+        );
     };
 
     const handleDelete = (userId: number) => {
