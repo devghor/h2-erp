@@ -46,6 +46,14 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         });
 
 
+    /**
+     * Product Module
+     */
+    Route::name('product.')
+        ->prefix('product')
+        ->group(function (): void {});
+
+
     /*
      * User Access Management Module
      * This module handles user management functionalities such as creating, updating, and deleting users.
