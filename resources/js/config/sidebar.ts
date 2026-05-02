@@ -1,4 +1,5 @@
 import {
+    Award,
     Briefcase,
     Building,
     Building2,
@@ -140,6 +141,12 @@ export const sidebarData: SidebarData = {
                     url: '/product/categories',
                     icon: Tag,
                     can: 'READ_PRODUCT_CATEGORY',
+                },
+                {
+                    title: 'Brands',
+                    url: '/product/brands',
+                    icon: Award,
+                    can: 'READ_PRODUCT_BRAND',
                 },
             ],
         },

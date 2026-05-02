@@ -10,27 +10,17 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-class Category extends Model implements HasMedia
+class Brand extends Model implements HasMedia
 {
     use HasFactory, BelongsToTenant, InteractsWithMedia, HasUlid;
 
-    protected $table = 'product_categories';
+    protected $table = 'product_brands';
 
-    protected $fillable = ['name', 'parent_id', 'company_id'];
+    protected $fillable = ['name', 'company_id'];
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaCollectionEnum::ProductCategoryImage->value)
+        $this->addMediaCollection(MediaCollectionEnum::ProductBrandLogo->value)
             ->singleFile();
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(Category::class, 'parent_id');
     }
 }

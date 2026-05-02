@@ -99,4 +99,10 @@ enum PermissionEnum: string
     case ReadProductCategory = 'READ_PRODUCT_CATEGORY';
     case UpdateProductCategory = 'UPDATE_PRODUCT_CATEGORY';
     case DeleteProductCategory = 'DELETE_PRODUCT_CATEGORY';
+
+        // Product > Brand
+    case CreateProductBrand = 'CREATE_PRODUCT_BRAND';
+    case ReadProductBrand = 'READ_PRODUCT_BRAND';
+    case UpdateProductBrand = 'UPDATE_PRODUCT_BRAND';
+    case DeleteProductBrand = 'DELETE_PRODUCT_BRAND';
 }
