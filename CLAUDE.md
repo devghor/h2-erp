@@ -4,18 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-**Laravel 12 + React 19 + Inertia.js v2** monolith with SSR.
+**Laravel 12 + React 19 + Inertia.js v3** monolith with SSR.
 
-- **Backend**: Laravel 12, Yajra DataTables, Spatie Permission, Stancl Tenancy
+- **Backend**: Laravel 12, Yajra DataTables, Spatie Permission, Spatie MediaLibrary, Stancl Tenancy
 - **Frontend**: React 19, TypeScript 5, Tailwind CSS 4, Shadcn/ui, Lucide + Tabler icons, Sonner
 - **Bridge**: Inertia.js + Laravel Wayfinder (typed route helpers auto-generated in `resources/js/wayfinder/`)
 
 ## Commands
 
 ```bash
+composer run setup      # first-time setup: install deps, .env, key, migrate, npm build
 composer run dev        # PHP + queue + logs + Vite in parallel (primary dev command)
 npm run dev             # frontend only
-npm run build
+npm run build           # client bundle
+npm run build:ssr       # client + SSR bundles
 npm run types           # TypeScript check
 npm run lint            # ESLint auto-fix
 npm run format          # Prettier
@@ -56,13 +58,20 @@ MigrationHelper::commonFields($table);   // created_by, updated_by, timestamps
 
 ### Frontend
 
-**Pages** (`resources/js/pages/<module>/<entity>/index.tsx`) — one file per entity containing list + CRUD dialogs. Standard state: `open`, `isEdit`, `form`, `formErrors`, `selectedIds`, `tableRef`. Mutations use `router.post/put/delete`; bulk delete uses `axios.delete`. On success: call `tableRef.current?.refetch()` to reload the DataTable.
+**Pages** (`resources/js/pages/<module>/<entity>/index.tsx`) — one file per entity containing list + CRUD dialogs. Standard state: `open`, `isEdit`, `form`, `formErrors`, `selectedIds`, `tableRef`. Mutations use `router.post()` (create) / `router.put()` (update) / `router.delete()`; bulk delete uses `axios.delete`. On success: call `tableRef.current?.refetch()` to reload the DataTable. Use `FormData` when uploading files (e.g., images). Some entities also have `show.tsx` for detail views with sub-tabs (e.g., employees, roles, salary profiles) — these use tabs instead of modal dialogs.
+
+**Form pattern**: Standard is manual `useState` for `form` + `formErrors`, passing to `router.post/put` `onError` callback. `useForm` from Inertia is only used in profile/settings pages.
+
+**Hooks**: `useDialogState<T>` (`hooks/use-dialog-state.tsx`) — manages open state + selected row for dialogs; commonly used in index pages.
 
 **Skill**: Use the `inertia-react-development` skill when building pages and the `wayfinder-development` skill when wiring frontend to backend routes.
 
 **Components**:
-- `DataTable` (`components/data-table/`) — server-side table with sorting, searching, pagination, exports
-- `BaseDialog` (`components/dialog/base-dialog.tsx`) — modal wrapper for add/edit forms
+- `DataTable` (`components/data-table/data-table.tsx`) — server-side table; key props: `columns: ColumnDef[]`, `dataUrl: string`, `extraParams?`, `extraFilters?`, `onClearExtraFilters?`, `onSelectionChange?`, `exportTitle?`. Pass a `ref` to call `ref.current?.refetch()`.
+- `ColumnDef` fields: `accessorKey`, `header?`, `sortable?`, `searchable?`, `filterType?: 'text'|'date'|'select'`, `filterOptions?`, `visible?`, `exportable?`, `cell?: ({row}) => ReactNode`
+- `RowActions` (`components/data-table/row-actions.tsx`) — dropdown with Edit/Delete + delete confirmation; props: `onEdit`, `onDelete`
+- `BulkDeleteButton` (`components/bulk-delete-button.tsx`) — bulk delete UI tied to `selectedIds`
+- `BaseDialog` (`components/dialog/base-dialog.tsx`) — modal wrapper; props: `open`, `onOpenChange`, `title`, `description?`, `onSubmit`, `submitLabel?`, `cancelLabel?`, `className?`
 - `<AppLayout title breadcrumbs actions>` — page shell with header slots
 
 **Navigation**:
@@ -97,4 +106,5 @@ Produces: `module.entity.index`, `module.entity.store`, `module.entity.update`, 
 - `UAM`: users, roles, permissions
 - `Employee`: employees (with sub-tabs: contacts, documents, education, experience)
 - `Payroll`: salary-heads, salary-structures, employee-salary-profiles
-- `Product`: categories, brands
+- `Product`: categories, brands, units, products
+- `Notification`: notifications (index, show, mark-read)
