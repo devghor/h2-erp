@@ -94,11 +94,7 @@ export default function Edit({
     profitMarginTypes,
     durationTypes,
 }: Props) {
-    const breadcrumbs: BreadcrumbItem[] = [
-        breadcrumbItems.dashboard,
-        breadcrumbItems.productProducts,
-        { title: product.name, href: '#' },
-    ];
+    const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.productProducts, { title: product.name, href: '#' }];
 
     const [form, setForm] = useState({
         name: product.name,
@@ -193,10 +189,7 @@ export default function Edit({
     };
 
     const filteredProducts = allProducts.filter(
-        (p) =>
-            p.id !== product.id &&
-            p.name.toLowerCase().includes(comboSearch.toLowerCase()) &&
-            !comboItems.some((i) => i.item_product_id === p.id),
+        (p) => p.id !== product.id && p.name.toLowerCase().includes(comboSearch.toLowerCase()) && !comboItems.some((i) => i.item_product_id === p.id),
     );
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -290,6 +283,121 @@ export default function Edit({
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Combo Items */}
+                {form.type === 'Combo' && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Combo Items</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div>
+                                <Label>Search Products</Label>
+                                <Input value={comboSearch} onChange={(e) => setComboSearch(e.target.value)} placeholder="Search by product name…" />
+                            </div>
+                            {comboSearch && filteredProducts.length > 0 && (
+                                <div className="max-h-48 overflow-y-auto rounded border">
+                                    {filteredProducts.map((p) => (
+                                        <button
+                                            key={p.id}
+                                            type="button"
+                                            onClick={() => handleToggleComboItem(p)}
+                                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                                        >
+                                            <span className="flex-1">{p.name}</span>
+                                            <span className="text-muted-foreground">Cost: {p.product_cost ?? '—'}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {comboItems.length > 0 && (
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b text-left text-muted-foreground">
+                                                <th className="pr-3 pb-2 font-medium">Product</th>
+                                                <th className="pr-3 pb-2 font-medium">Qty</th>
+                                                <th className="pr-3 pb-2 font-medium">Unit Cost</th>
+                                                <th className="pr-3 pb-2 font-medium">Unit Price</th>
+                                                <th className="pr-3 pb-2 font-medium">Wastage %</th>
+                                                <th className="pr-3 pb-2 font-medium">Sub Total</th>
+                                                <th className="pb-2 font-medium"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {comboItems.map((item) => (
+                                                <tr key={item.item_product_id} className="border-b">
+                                                    <td className="py-2 pr-3">{item.item_product_name}</td>
+                                                    <td className="py-2 pr-3">
+                                                        <Input
+                                                            type="number"
+                                                            step="0.0001"
+                                                            min="0.0001"
+                                                            value={item.quantity}
+                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'quantity', e.target.value)}
+                                                            className="h-7 w-20 text-sm"
+                                                        />
+                                                    </td>
+                                                    <td className="py-2 pr-3">
+                                                        <Input
+                                                            type="number"
+                                                            step="0.0001"
+                                                            min="0"
+                                                            value={item.unit_cost}
+                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'unit_cost', e.target.value)}
+                                                            className="h-7 w-24 text-sm"
+                                                        />
+                                                    </td>
+                                                    <td className="py-2 pr-3">
+                                                        <Input
+                                                            type="number"
+                                                            step="0.0001"
+                                                            min="0"
+                                                            value={item.unit_price}
+                                                            onChange={(e) =>
+                                                                handleComboItemChange(item.item_product_id, 'unit_price', e.target.value)
+                                                            }
+                                                            className="h-7 w-24 text-sm"
+                                                        />
+                                                    </td>
+                                                    <td className="py-2 pr-3">
+                                                        <Input
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                            max="100"
+                                                            value={item.wastage_percent}
+                                                            onChange={(e) =>
+                                                                handleComboItemChange(item.item_product_id, 'wastage_percent', e.target.value)
+                                                            }
+                                                            className="h-7 w-20 text-sm"
+                                                        />
+                                                    </td>
+                                                    <td className="py-2 pr-3 text-muted-foreground">{computeSubTotal(item)}</td>
+                                                    <td className="py-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setComboItems((prev) =>
+                                                                    prev.filter((i) => i.item_product_id !== item.item_product_id),
+                                                                )
+                                                            }
+                                                            className="text-muted-foreground hover:text-red-500"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                            {formErrors['combo_items'] && <p className="text-sm text-red-500">{formErrors['combo_items']}</p>}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Classification */}
                 <Card>
@@ -416,7 +524,14 @@ export default function Edit({
                         </div>
                         <div>
                             <Label htmlFor="daily_sale_objective">Daily Sale Objective</Label>
-                            <Input name="daily_sale_objective" type="number" step="0.0001" min="0" value={form.daily_sale_objective} onChange={handleChange} />
+                            <Input
+                                name="daily_sale_objective"
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                value={form.daily_sale_objective}
+                                onChange={handleChange}
+                            />
                         </div>
                     </CardContent>
                 </Card>
@@ -469,7 +584,14 @@ export default function Edit({
                         <div className="flex items-end gap-2">
                             <div className="flex-1">
                                 <Label htmlFor="warranty_value">Warranty</Label>
-                                <Input name="warranty_value" type="number" min="0" value={form.warranty_value} onChange={handleChange} placeholder="Value" />
+                                <Input
+                                    name="warranty_value"
+                                    type="number"
+                                    min="0"
+                                    value={form.warranty_value}
+                                    onChange={handleChange}
+                                    placeholder="Value"
+                                />
                             </div>
                             <div className="w-32">
                                 <Select value={form.warranty_duration_type} onValueChange={(v) => handleSelect('warranty_duration_type', v)}>
@@ -489,7 +611,14 @@ export default function Edit({
                         <div className="flex items-end gap-2">
                             <div className="flex-1">
                                 <Label htmlFor="guarantee_value">Guarantee</Label>
-                                <Input name="guarantee_value" type="number" min="0" value={form.guarantee_value} onChange={handleChange} placeholder="Value" />
+                                <Input
+                                    name="guarantee_value"
+                                    type="number"
+                                    min="0"
+                                    value={form.guarantee_value}
+                                    onChange={handleChange}
+                                    placeholder="Value"
+                                />
                             </div>
                             <div className="w-32">
                                 <Select value={form.guarantee_duration_type} onValueChange={(v) => handleSelect('guarantee_duration_type', v)}>
@@ -563,126 +692,11 @@ export default function Edit({
                                 value={form.product_details}
                                 onChange={handleChange}
                                 rows={4}
-                                className="border-input bg-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                         </div>
                     </CardContent>
                 </Card>
-
-                {/* Combo Items */}
-                {form.type === 'Combo' && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Combo Items</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <Label>Search Products</Label>
-                                <Input
-                                    value={comboSearch}
-                                    onChange={(e) => setComboSearch(e.target.value)}
-                                    placeholder="Search by product name…"
-                                />
-                            </div>
-                            {comboSearch && filteredProducts.length > 0 && (
-                                <div className="max-h-48 overflow-y-auto rounded border">
-                                    {filteredProducts.map((p) => (
-                                        <button
-                                            key={p.id}
-                                            type="button"
-                                            onClick={() => handleToggleComboItem(p)}
-                                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
-                                        >
-                                            <span className="flex-1">{p.name}</span>
-                                            <span className="text-muted-foreground">Cost: {p.product_cost ?? '—'}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-
-                            {comboItems.length > 0 && (
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="border-b text-left text-muted-foreground">
-                                                <th className="pb-2 pr-3 font-medium">Product</th>
-                                                <th className="pb-2 pr-3 font-medium">Qty</th>
-                                                <th className="pb-2 pr-3 font-medium">Unit Cost</th>
-                                                <th className="pb-2 pr-3 font-medium">Unit Price</th>
-                                                <th className="pb-2 pr-3 font-medium">Wastage %</th>
-                                                <th className="pb-2 pr-3 font-medium">Sub Total</th>
-                                                <th className="pb-2 font-medium"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {comboItems.map((item) => (
-                                                <tr key={item.item_product_id} className="border-b">
-                                                    <td className="py-2 pr-3">{item.item_product_name}</td>
-                                                    <td className="py-2 pr-3">
-                                                        <Input
-                                                            type="number"
-                                                            step="0.0001"
-                                                            min="0.0001"
-                                                            value={item.quantity}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'quantity', e.target.value)}
-                                                            className="h-7 w-20 text-sm"
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-3">
-                                                        <Input
-                                                            type="number"
-                                                            step="0.0001"
-                                                            min="0"
-                                                            value={item.unit_cost}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'unit_cost', e.target.value)}
-                                                            className="h-7 w-24 text-sm"
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-3">
-                                                        <Input
-                                                            type="number"
-                                                            step="0.0001"
-                                                            min="0"
-                                                            value={item.unit_price}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'unit_price', e.target.value)}
-                                                            className="h-7 w-24 text-sm"
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-3">
-                                                        <Input
-                                                            type="number"
-                                                            step="0.01"
-                                                            min="0"
-                                                            max="100"
-                                                            value={item.wastage_percent}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'wastage_percent', e.target.value)}
-                                                            className="h-7 w-20 text-sm"
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-3 text-muted-foreground">{computeSubTotal(item)}</td>
-                                                    <td className="py-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                setComboItems((prev) =>
-                                                                    prev.filter((i) => i.item_product_id !== item.item_product_id),
-                                                                )
-                                                            }
-                                                            className="text-muted-foreground hover:text-red-500"
-                                                        >
-                                                            <X className="h-4 w-4" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                            {formErrors['combo_items'] && <p className="text-sm text-red-500">{formErrors['combo_items']}</p>}
-                        </CardContent>
-                    </Card>
-                )}
 
                 <div className="flex justify-end gap-3 pb-6">
                     <Button type="button" variant="outline" onClick={() => router.visit(route('product.products.index'))}>
