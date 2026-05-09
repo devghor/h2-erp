@@ -1,5 +1,6 @@
 import {
     Award,
+    Banknote,
     Briefcase,
     Building,
     Building2,
@@ -197,6 +198,12 @@ export const sidebarData: SidebarData = {
                     url: '/payroll/employee-salary-profiles',
                     icon: UserCog,
                     can: 'READ_PAYROLL_EMPLOYEE_SALARY_PROFILE',
+                },
+                {
+                    title: 'Salary Disbursement',
+                    url: '/payroll/salary-disbursement-batches',
+                    icon: Banknote,
+                    can: 'READ_PAYROLL_SALARY_DISBURSEMENT_BATCH',
                 },
             ],
         },

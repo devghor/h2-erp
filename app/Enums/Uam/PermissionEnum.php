@@ -58,6 +58,15 @@ enum PermissionEnum: string
     case UpdatePayrollEmployeeSalaryProfile = 'UPDATE_PAYROLL_EMPLOYEE_SALARY_PROFILE';
     case DeletePayrollEmployeeSalaryProfile = 'DELETE_PAYROLL_EMPLOYEE_SALARY_PROFILE';
 
+        // Payroll > Salary Disbursement Batch
+    case ReadPayrollSalaryDisbursementBatch = 'READ_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case CreatePayrollSalaryDisbursementBatch = 'CREATE_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case UpdatePayrollSalaryDisbursementBatch = 'UPDATE_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case DeletePayrollSalaryDisbursementBatch = 'DELETE_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case ProcessPayrollSalaryDisbursementBatch = 'PROCESS_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case ApprovePayrollSalaryDisbursementBatch = 'APPROVE_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+    case DisbursePayrollSalaryDisbursementBatch = 'DISBURSE_PAYROLL_SALARY_DISBURSEMENT_BATCH';
+
     /**
      * Configuration Module
      */

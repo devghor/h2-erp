@@ -18,6 +18,7 @@ use App\Http\Controllers\Product\Category\CategoryController;
 use App\Http\Controllers\Product\Product\ProductController;
 use App\Http\Controllers\Product\Unit\UnitController as ProductUnitController;
 use App\Http\Controllers\Payroll\PayrollEmployeeSalaryProfileController;
+use App\Http\Controllers\Payroll\PayrollSalaryDisbursementBatchController;
 use App\Http\Controllers\Payroll\PayrollSalaryHeadController;
 use App\Http\Controllers\Payroll\PayrollSalaryStructureController;
 use App\Http\Controllers\Uam\Permission\PermissionController;
@@ -162,6 +163,22 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
                 ->name('employee-salary-profiles.show');
             Route::post('employee-salary-profiles', [PayrollEmployeeSalaryProfileController::class, 'store'])
                 ->name('employee-salary-profiles.store');
+
+            // Salary Disbursement Batches
+            Route::post('salary-disbursement-batches/{id}/process', [PayrollSalaryDisbursementBatchController::class, 'process'])
+                ->name('salary-disbursement-batches.process');
+            Route::post('salary-disbursement-batches/{id}/send-for-approval', [PayrollSalaryDisbursementBatchController::class, 'sendForApproval'])
+                ->name('salary-disbursement-batches.send-for-approval');
+            Route::post('salary-disbursement-batches/{id}/revert-from-approval', [PayrollSalaryDisbursementBatchController::class, 'revertFromApproval'])
+                ->name('salary-disbursement-batches.revert-from-approval');
+            Route::post('salary-disbursement-batches/{id}/send-for-disbursement', [PayrollSalaryDisbursementBatchController::class, 'sendForDisbursement'])
+                ->name('salary-disbursement-batches.send-for-disbursement');
+            Route::post('salary-disbursement-batches/{id}/disburse', [PayrollSalaryDisbursementBatchController::class, 'disburse'])
+                ->name('salary-disbursement-batches.disburse');
+            Route::post('salary-disbursement-batches/{id}/employees/{empId}/adjustments', [PayrollSalaryDisbursementBatchController::class, 'storeAdjustment'])
+                ->name('salary-disbursement-batches.employees.adjustments.store');
+            Route::resource('salary-disbursement-batches', PayrollSalaryDisbursementBatchController::class)
+                ->except(['create', 'edit']);
         });
 });
 
