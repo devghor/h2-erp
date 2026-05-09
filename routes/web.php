@@ -15,6 +15,7 @@ use App\Http\Controllers\Employee\EmployeeExperience\EmployeeExperienceControlle
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Product\Brand\BrandController;
 use App\Http\Controllers\Product\Category\CategoryController;
+use App\Http\Controllers\Product\Product\ProductController;
 use App\Http\Controllers\Product\Unit\UnitController as ProductUnitController;
 use App\Http\Controllers\Payroll\PayrollEmployeeSalaryProfileController;
 use App\Http\Controllers\Payroll\PayrollSalaryHeadController;
@@ -62,6 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::resource('brands', BrandController::class);
             Route::delete('units/bulk-delete', [ProductUnitController::class, 'bulkDelete'])->name('units.bulk-delete');
             Route::resource('units', ProductUnitController::class);
+            Route::delete('products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulk-delete');
+            Route::resource('products', ProductController::class);
         });
 
 

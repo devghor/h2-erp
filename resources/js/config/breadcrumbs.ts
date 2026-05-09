@@ -18,4 +18,5 @@ export const breadcrumbItems = {
     productCategories: { title: 'Categories', href: route('product.categories.index') },
     productBrands: { title: 'Brands', href: route('product.brands.index') },
     productUnits: { title: 'Units', href: route('product.units.index') },
+    productProducts: { title: 'Products', href: route('product.products.index') },
 };
