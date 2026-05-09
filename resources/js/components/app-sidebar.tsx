@@ -164,6 +164,15 @@ export function AppSidebar() {
     const currentCompany = props.auth.company;
     const permissions = props.auth.permissions || [];
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const sidebarContent = document.querySelector('[data-sidebar="content"]');
+            const activeEl = sidebarContent?.querySelector('[data-active="true"]');
+            activeEl?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }, 0);
+        return () => clearTimeout(timer);
+    }, [url]);
+
     // Filter nav groups and items
     const filteredNavGroups = sidebarData.navGroups
         .map((group) => ({
