@@ -112,6 +112,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Designation', 'name' => PermissionEnum::UpdateConfigurationDesignation->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Designation', 'name' => PermissionEnum::DeleteConfigurationDesignation->value, 'display_name' => self::LABEL_DELETE],
 
+            // Desk
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::CreateConfigurationDesk->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::ReadConfigurationDesk->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::UpdateConfigurationDesk->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::DeleteConfigurationDesk->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Product Module
              */

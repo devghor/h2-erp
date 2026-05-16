@@ -100,6 +100,12 @@ enum PermissionEnum: string
     case UpdateConfigurationDesignation = 'UPDATE_CONFIGURATION_DESIGNATION';
     case DeleteConfigurationDesignation = 'DELETE_CONFIGURATION_DESIGNATION';
 
+        // Configuration > Desk
+    case CreateConfigurationDesk = 'CREATE_CONFIGURATION_DESK';
+    case ReadConfigurationDesk = 'READ_CONFIGURATION_DESK';
+    case UpdateConfigurationDesk = 'UPDATE_CONFIGURATION_DESK';
+    case DeleteConfigurationDesk = 'DELETE_CONFIGURATION_DESK';
+
     /**
      * Product Module
      */
