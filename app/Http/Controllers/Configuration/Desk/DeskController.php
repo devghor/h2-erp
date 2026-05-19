@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Configuration\Desk;
 
 use App\DataTables\Configuration\Desk\DesksDataTable;
+use App\Enums\Configuration\Desk\DeskGroupEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Configuration\Desk\StoreDeskRequest;
 use App\Http\Requests\Configuration\Desk\UpdateDeskRequest;
+use App\Models\Configuration\Branch\Branch;
+use App\Models\Configuration\Department\Department;
+use App\Models\Configuration\Division\Division;
 use App\Services\Configuration\Desk\DeskService;
 use Illuminate\Http\Request;
 
@@ -15,7 +19,12 @@ class DeskController extends Controller
 
     public function index(DesksDataTable $dataTable)
     {
-        return $dataTable->renderInertia('configuration/desks/index');
+        return $dataTable->renderInertia('configuration/desks/index', [
+            'branches' => Branch::select(['id', 'name'])->get(),
+            'divisions' => Division::select(['id', 'name'])->get(),
+            'departments' => Department::select(['id', 'name'])->get(),
+            'deskGroups' => DeskGroupEnum::options(),
+        ]);
     }
 
     public function create() {}
