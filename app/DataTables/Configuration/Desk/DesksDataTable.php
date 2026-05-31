@@ -17,18 +17,18 @@ class DesksDataTable extends BaseDataTable
     {
         return (new EloquentDataTable($query))
             ->editColumn('created_at', fn (Desk $d) => $d->created_at->format('Y-m-d H:i:s'))
-            ->editColumn('desk_group', fn (Desk $d) => $d->desk_group?->label())
             ->addColumn('branch_name', fn (Desk $d) => $d->branch?->name)
             ->addColumn('division_name', fn (Desk $d) => $d->division?->name)
             ->addColumn('department_name', fn (Desk $d) => $d->department?->name)
+            ->addColumn('desk_group_name', fn (Desk $d) => $d->deskGroup?->name)
             ->setRowId('id');
     }
 
     public function query(Desk $model): QueryBuilder
     {
         $query = $model
-            ->with(['branch', 'division', 'department'])
-            ->select(['id', 'name', 'description', 'branch_id', 'division_id', 'department_id', 'desk_group', 'created_at']);
+            ->with(['branch', 'division', 'department', 'deskGroup'])
+            ->select(['id', 'name', 'description', 'branch_id', 'division_id', 'department_id', 'desk_group_id', 'created_at']);
 
         if ($branchId = request('branch_id')) {
             $query->where('branch_id', $branchId);
@@ -39,8 +39,8 @@ class DesksDataTable extends BaseDataTable
         if ($departmentId = request('department_id')) {
             $query->where('department_id', $departmentId);
         }
-        if ($deskGroup = request('desk_group_filter')) {
-            $query->where('desk_group', $deskGroup);
+        if ($deskGroupId = request('desk_group_filter')) {
+            $query->where('desk_group_id', $deskGroupId);
         }
 
         return $query;
@@ -54,7 +54,7 @@ class DesksDataTable extends BaseDataTable
             Column::make('branch_name')->title('Branch'),
             Column::make('division_name')->title('Division'),
             Column::make('department_name')->title('Department'),
-            Column::make('desk_group')->title('Desk Group'),
+            Column::make('desk_group_name')->title('Desk Group'),
             Column::make('description')->title('Description'),
             Column::make('created_at')->title('Created At'),
         ];

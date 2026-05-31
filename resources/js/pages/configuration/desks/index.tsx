@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItem
 type Branch = { id: number; name: string };
 type Division = { id: number; name: string };
 type Department = { id: number; name: string };
-type DeskGroup = { value: number; label: string };
+type DeskGroup = { id: number; name: string };
 
 export default function Index({
     branches,
@@ -47,7 +47,7 @@ export default function Index({
         branch_id: '',
         division_id: '',
         department_id: '',
-        desk_group: '',
+        desk_group_id: '',
     });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
@@ -59,13 +59,13 @@ export default function Index({
     const [filterBranchId, setFilterBranchId] = useState('');
     const [filterDivisionId, setFilterDivisionId] = useState('');
     const [filterDepartmentId, setFilterDepartmentId] = useState('');
-    const [filterDeskGroup, setFilterDeskGroup] = useState('');
+    const [filterDeskGroupId, setFilterDeskGroupId] = useState('');
 
     const extraParams = {
         ...(filterBranchId ? { branch_id: filterBranchId } : {}),
         ...(filterDivisionId ? { division_id: filterDivisionId } : {}),
         ...(filterDepartmentId ? { department_id: filterDepartmentId } : {}),
-        ...(filterDeskGroup ? { desk_group_filter: filterDeskGroup } : {}),
+        ...(filterDeskGroupId ? { desk_group_filter: filterDeskGroupId } : {}),
     };
 
     const columns = [
@@ -74,7 +74,7 @@ export default function Index({
         { accessorKey: 'branch_name', header: 'Branch', sortable: true },
         { accessorKey: 'division_name', header: 'Division', sortable: true },
         { accessorKey: 'department_name', header: 'Department', sortable: true },
-        { accessorKey: 'desk_group', header: 'Desk Group', sortable: true },
+        { accessorKey: 'desk_group_name', header: 'Desk Group', sortable: true },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
@@ -95,7 +95,7 @@ export default function Index({
         branch_id: '',
         division_id: '',
         department_id: '',
-        desk_group: '',
+        desk_group_id: '',
     });
 
     const handleOpenAdd = () => {
@@ -114,7 +114,7 @@ export default function Index({
             branch_id: row.branch_id ? row.branch_id.toString() : '',
             division_id: row.division_id ? row.division_id.toString() : '',
             department_id: row.department_id ? row.department_id.toString() : '',
-            desk_group: row.desk_group ? row.desk_group.toString() : '',
+            desk_group_id: row.desk_group_id ? row.desk_group_id.toString() : '',
         });
         setIsEdit(true);
         setOpen(true);
@@ -156,7 +156,7 @@ export default function Index({
             branch_id: form.branch_id || null,
             division_id: form.division_id || null,
             department_id: form.department_id || null,
-            desk_group: form.desk_group || null,
+            desk_group_id: form.desk_group_id ? Number(form.desk_group_id) : null,
         };
         if (isEdit && form.id) {
             router.put(route('configuration.desks.update', form.id), data, {
@@ -186,12 +186,12 @@ export default function Index({
                 onSelectionChange={setSelectedIds}
                 extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
                 extraParams={extraParams}
-                extraFilterCount={[filterBranchId, filterDivisionId, filterDepartmentId, filterDeskGroup].filter(Boolean).length}
+                extraFilterCount={[filterBranchId, filterDivisionId, filterDepartmentId, filterDeskGroupId].filter(Boolean).length}
                 onClearExtraFilters={() => {
                     setFilterBranchId('');
                     setFilterDivisionId('');
                     setFilterDepartmentId('');
-                    setFilterDeskGroup('');
+                    setFilterDeskGroupId('');
                 }}
                 extraFilters={
                     <>
@@ -303,7 +303,7 @@ export default function Index({
                                 <PopoverTrigger asChild>
                                     <Button variant="outline" role="combobox" aria-expanded={deskGroupOpen} className="h-8 justify-between text-sm font-normal">
                                         <span className="truncate">
-                                            {filterDeskGroup ? deskGroups.find((g) => String(g.value) === filterDeskGroup)?.label : 'All desk groups…'}
+                                            {filterDeskGroupId ? deskGroups.find((g) => String(g.id) === filterDeskGroupId)?.name : 'All desk groups…'}
                                         </span>
                                         <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
                                     </Button>
@@ -314,14 +314,14 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No desk group found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterDeskGroup(''); setDeskGroupOpen(false); }}>
-                                                    <Check className={cn('mr-2 h-3.5 w-3.5', !filterDeskGroup ? 'opacity-100' : 'opacity-0')} />
+                                                <CommandItem value="__all__" onSelect={() => { setFilterDeskGroupId(''); setDeskGroupOpen(false); }}>
+                                                    <Check className={cn('mr-2 h-3.5 w-3.5', !filterDeskGroupId ? 'opacity-100' : 'opacity-0')} />
                                                     All
                                                 </CommandItem>
                                                 {deskGroups.map((g) => (
-                                                    <CommandItem key={g.value} value={g.label} onSelect={() => { setFilterDeskGroup(String(g.value)); setDeskGroupOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterDeskGroup === String(g.value) ? 'opacity-100' : 'opacity-0')} />
-                                                        {g.label}
+                                                    <CommandItem key={g.id} value={g.name} onSelect={() => { setFilterDeskGroupId(String(g.id)); setDeskGroupOpen(false); }}>
+                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterDeskGroupId === String(g.id) ? 'opacity-100' : 'opacity-0')} />
+                                                        {g.name}
                                                     </CommandItem>
                                                 ))}
                                             </CommandGroup>
@@ -405,23 +405,23 @@ export default function Index({
                     {formErrors.department_id && <p className="text-sm text-red-500">{formErrors.department_id}</p>}
                 </div>
                 <div>
-                    <Label htmlFor="desk_group">Desk Group</Label>
+                    <Label htmlFor="desk_group_id">Desk Group</Label>
                     <Select
-                        value={form.desk_group}
-                        onValueChange={(value) => setForm((prev) => ({ ...prev, desk_group: value }))}
+                        value={form.desk_group_id}
+                        onValueChange={(value) => setForm((prev) => ({ ...prev, desk_group_id: value }))}
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="Select a desk group" />
                         </SelectTrigger>
                         <SelectContent>
                             {deskGroups.map((group) => (
-                                <SelectItem key={group.value} value={group.value.toString()}>
-                                    {group.label}
+                                <SelectItem key={group.id} value={group.id.toString()}>
+                                    {group.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                    {formErrors.desk_group && <p className="text-sm text-red-500">{formErrors.desk_group}</p>}
+                    {formErrors.desk_group_id && <p className="text-sm text-red-500">{formErrors.desk_group_id}</p>}
                 </div>
                 <div>
                     <Label htmlFor="parent_id">Parent Desk</Label>

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Configuration\Desk;
 
 use App\DataTables\Configuration\Desk\DesksDataTable;
-use App\Enums\Configuration\Desk\DeskGroupEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Configuration\Desk\StoreDeskRequest;
 use App\Http\Requests\Configuration\Desk\UpdateDeskRequest;
 use App\Models\Configuration\Branch\Branch;
 use App\Models\Configuration\Department\Department;
+use App\Models\Configuration\DeskGroup\DeskGroup;
 use App\Models\Configuration\Division\Division;
 use App\Services\Configuration\Desk\DeskService;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class DeskController extends Controller
             'branches' => Branch::select(['id', 'name'])->get(),
             'divisions' => Division::select(['id', 'name'])->get(),
             'departments' => Department::select(['id', 'name'])->get(),
-            'deskGroups' => DeskGroupEnum::options(),
+            'deskGroups' => DeskGroup::select(['id', 'name'])->get(),
         ]);
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Models\Configuration\Desk;
 
-use App\Enums\Configuration\Desk\DeskGroupEnum;
 use App\Models\Configuration\Branch\Branch;
 use App\Models\Configuration\Department\Department;
+use App\Models\Configuration\DeskGroup\DeskGroup;
 use App\Models\Configuration\Division\Division;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
@@ -23,11 +23,7 @@ class Desk extends Model
         'branch_id',
         'division_id',
         'department_id',
-        'desk_group',
-    ];
-
-    protected $casts = [
-        'desk_group' => DeskGroupEnum::class,
+        'desk_group_id',
     ];
 
     public function branch()
@@ -43,5 +39,10 @@ class Desk extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function deskGroup()
+    {
+        return $this->belongsTo(DeskGroup::class);
     }
 }

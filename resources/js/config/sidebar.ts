@@ -9,6 +9,7 @@ import {
     IdCard,
     Key,
     Landmark,
+    Layers,
     LayoutDashboard,
     Lock,
     MonitorCog,
@@ -126,6 +127,12 @@ export const sidebarData: SidebarData = {
                     url: '/configuration/designations',
                     icon: IdCard,
                     can: 'READ_CONFIGURATION_DESIGNATION',
+                },
+                {
+                    title: 'Desk Groups',
+                    url: '/configuration/desk-groups',
+                    icon: Layers,
+                    can: 'READ_CONFIGURATION_DESK_GROUP',
                 },
                 {
                     title: 'Desks',
