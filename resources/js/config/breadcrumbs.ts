@@ -11,6 +11,7 @@ export const breadcrumbItems = {
     configurationDesignations: { title: 'Designations', href: route('configuration.designations.index') },
     configurationDeskGroups: { title: 'Desk Groups', href: route('configuration.desk-groups.index') },
     configurationDesks: { title: 'Desks', href: route('configuration.desks.index') },
+    configurationFunctionAssignments: { title: 'Function Assignments', href: route('configuration.function-assignments.index') },
     employeeEmployees: { title: 'Employees', href: route('employee.employees.index') },
     payrollSalaryHeads: { title: 'Salary Heads', href: route('payroll.salary-heads.index') },
     payrollSalaryStructures: { title: 'Salary Structures', href: route('payroll.salary-structures.index') },
