@@ -140,6 +140,12 @@ export const sidebarData: SidebarData = {
                     icon: MonitorCog,
                     can: 'READ_CONFIGURATION_DESK',
                 },
+                {
+                    title: 'Function Assignments',
+                    url: '/configuration/function-assignments',
+                    icon: UserCog,
+                    can: 'READ_CONFIGURATION_FUNCTION_ASSIGNMENT',
+                },
             ],
         },
         {
