@@ -19,6 +19,7 @@ class FunctionAssignment extends Model
         'user_ids',
         'description',
         'type',
+        'company_id',
     ];
 
     protected $casts = [
