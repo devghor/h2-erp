@@ -20,7 +20,7 @@ import { Check, ChevronsUpDown, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.configurationFunctionAssignments];
+const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationFunctionAssignments];
 
 type User = { id: number; name: string; email: string };
 type TypeOption = { value: number; label: string };
@@ -174,18 +174,13 @@ export default function Index({ users, typeOptions }: { users: User[]; typeOptio
     };
 
     return (
-        <AppLayout title="Function Assignments" breadcrumbs={breadcrumbs}>
+        <AppLayout title="Function Assignments" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Function Assignment</Button>}>
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('configuration.function-assignments.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={
-                    <div className="flex gap-2">
-                        <BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />
-                        <Button onClick={handleOpenAdd}>Add Function Assignment</Button>
-                    </div>
-                }
+                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
             />
             <BaseDialog
                 open={open}
