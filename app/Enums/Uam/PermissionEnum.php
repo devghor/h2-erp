@@ -112,6 +112,12 @@ enum PermissionEnum: string
     case UpdateConfigurationDeskGroup = 'UPDATE_CONFIGURATION_DESK_GROUP';
     case DeleteConfigurationDeskGroup = 'DELETE_CONFIGURATION_DESK_GROUP';
 
+        // Configuration > Function Assignment
+    case CreateConfigurationFunctionAssignment = 'CREATE_CONFIGURATION_FUNCTION_ASSIGNMENT';
+    case ReadConfigurationFunctionAssignment   = 'READ_CONFIGURATION_FUNCTION_ASSIGNMENT';
+    case UpdateConfigurationFunctionAssignment = 'UPDATE_CONFIGURATION_FUNCTION_ASSIGNMENT';
+    case DeleteConfigurationFunctionAssignment = 'DELETE_CONFIGURATION_FUNCTION_ASSIGNMENT';
+
     /**
      * Product Module
      */
