@@ -3,6 +3,7 @@
 namespace Tests\Feature\Configuration;
 
 use App\Enums\Configuration\FunctionAssignment\FunctionTypeEnum;
+use App\Models\Configuration\Company\Company;
 use App\Models\Configuration\FunctionAssignment\FunctionAssignment;
 use App\Models\Uam\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,9 +27,11 @@ class FunctionAssignmentTest extends TestCase
 
     public function test_store_creates_record(): void
     {
-        $userId = User::factory()->create()->id;
+        $company = Company::create(['name' => 'Test Company', 'short_name' => 'TC']);
+        $userId  = User::factory()->create()->id;
 
         $this->actingAsUser()
+            ->withSession([config('tenancy.company_id_session_key') => $company->id])
             ->post(route('configuration.function-assignments.store'), [
                 'name'        => 'HR Head Assignment',
                 'code'        => 'HRA-001',

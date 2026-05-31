@@ -5,6 +5,7 @@ use App\Http\Controllers\Configuration\Company\CompanyController;
 use App\Http\Controllers\Configuration\Department\DepartmentController;
 use App\Http\Controllers\Configuration\Desk\DeskController;
 use App\Http\Controllers\Configuration\DeskGroup\DeskGroupController;
+use App\Http\Controllers\Configuration\FunctionAssignment\FunctionAssignmentController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
 use App\Http\Controllers\Configuration\Designation\DesignationController;
 use App\Http\Controllers\Configuration\Division\DivisionController;
@@ -111,6 +112,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::resource('departments', DepartmentController::class);
             Route::delete('units/bulk-delete', [UnitController::class, 'bulkDelete'])->name('units.bulk-delete');
             Route::resource('units', UnitController::class);
+            Route::delete('function-assignments/bulk-delete', [FunctionAssignmentController::class, 'bulkDelete'])
+                ->name('function-assignments.bulk-delete');
+            Route::resource('function-assignments', FunctionAssignmentController::class);
         });
 
     /**
