@@ -47,7 +47,7 @@ class PermissionSeeder extends Seeder
             ['module' => 'Uam', 'group' => 'Uam > Permission', 'name' => PermissionEnum::DeleteUamPermission->value, 'display_name' => self::LABEL_DELETE],
 
             /**
-             * Employee Moduel
+             * Employee Module
              */
 
             // Employee
@@ -77,6 +77,19 @@ class PermissionSeeder extends Seeder
             ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::ReadPayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_READ],
             ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::UpdatePayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Payroll', 'group' => 'Payroll > Employee Salary Profile', 'name' => PermissionEnum::DeletePayrollEmployeeSalaryProfile->value, 'display_name' => self::LABEL_DELETE],
+
+            // Salary Disbursement Batch
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::CreatePayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::ReadPayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::UpdatePayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::DeletePayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_DELETE],
+
+            // PROCESS_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::ProcessPayrollSalaryDisbursementBatch->value, 'display_name' => 'Process'],
+            // APPROVE_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::ApprovePayrollSalaryDisbursementBatch->value, 'display_name' => 'Approve'],
+            // DISBURSE_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::DisbursePayrollSalaryDisbursementBatch->value, 'display_name' => 'Disburse'],
 
             /**
              * Configuration Module
@@ -118,6 +131,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::UpdateConfigurationDesk->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::DeleteConfigurationDesk->value, 'display_name' => self::LABEL_DELETE],
 
+            // Desk Group
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::CreateConfigurationDeskGroup->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::ReadConfigurationDeskGroup->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::UpdateConfigurationDeskGroup->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::DeleteConfigurationDeskGroup->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Product Module
              */
@@ -127,6 +146,24 @@ class PermissionSeeder extends Seeder
             ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::ReadProductCategory->value, 'display_name' => self::LABEL_READ],
             ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::UpdateProductCategory->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::DeleteProductCategory->value, 'display_name' => self::LABEL_DELETE],
+
+            // Brand
+            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::CreateProductBrand->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::ReadProductBrand->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::UpdateProductBrand->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::DeleteProductBrand->value, 'display_name' => self::LABEL_DELETE],
+
+            // Unit
+            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::CreateProductUnit->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::ReadProductUnit->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::UpdateProductUnit->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::DeleteProductUnit->value, 'display_name' => self::LABEL_DELETE],
+
+            // Product
+            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::CreateProductProduct->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::ReadProductProduct->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::UpdateProductProduct->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::DeleteProductProduct->value, 'display_name' => self::LABEL_DELETE],
 
         ];
 

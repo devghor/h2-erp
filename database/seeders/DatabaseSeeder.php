@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             DesignationSeeder::class,
             PayrollSalaryHeadSeeder::class,
             PayrollSalaryStructureSeeder::class,
+            DeskGroupSeeder::class,
+            DeskSeeder::class,
         ]);
     }
 }
