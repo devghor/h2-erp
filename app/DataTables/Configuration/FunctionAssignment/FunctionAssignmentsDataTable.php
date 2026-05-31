@@ -43,7 +43,7 @@ class FunctionAssignmentsDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->filename() . '.pdf');
+            ->download($this->getFilename() . '.pdf');
     }
 
     protected function filename(): string
