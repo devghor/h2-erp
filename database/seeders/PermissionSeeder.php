@@ -84,11 +84,11 @@ class PermissionSeeder extends Seeder
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::UpdatePayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::DeletePayrollSalaryDisbursementBatch->value, 'display_name' => self::LABEL_DELETE],
 
-            // PROCESS_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            // Process Payroll Salary Disbursement Batch
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::ProcessPayrollSalaryDisbursementBatch->value, 'display_name' => 'Process'],
-            // APPROVE_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            // Approve Payroll Salary Disbursement Batch
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::ApprovePayrollSalaryDisbursementBatch->value, 'display_name' => 'Approve'],
-            // DISBURSE_PAYROLL_SALARY_DISBURSEMENT_BATCH
+            // Disburse Payroll Salary Disbursement Batch
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Disbursement Batch', 'name' => PermissionEnum::DisbursePayrollSalaryDisbursementBatch->value, 'display_name' => 'Disburse'],
 
             /**
