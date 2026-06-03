@@ -6,6 +6,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - h2-erp
     depends_on:
@@ -69,6 +70,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - h2-erp
     depends_on:
