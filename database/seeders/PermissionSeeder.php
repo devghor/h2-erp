@@ -137,6 +137,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::UpdateConfigurationDeskGroup->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::DeleteConfigurationDeskGroup->value, 'display_name' => self::LABEL_DELETE],
 
+            // Function Assignment
+            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::CreateConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::ReadConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::UpdateConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::DeleteConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Product Module
              */
