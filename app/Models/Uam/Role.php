@@ -7,8 +7,6 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Role extends SpatieRole
 {
-    use BelongsToTenant;
-
     protected $fillable = [
         'name',
         'guard_name',
