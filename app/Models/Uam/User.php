@@ -4,7 +4,6 @@ namespace App\Models\Uam;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enums\Uam\GlobalRoleEnum;
 use App\Models\Configuration\Company\Company;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -59,6 +58,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_super_admin' => 'boolean',
         ];
     }
 
@@ -80,11 +80,6 @@ class User extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return $this->global_role == GlobalRoleEnum::SuperAdmin->value;
-    }
-
-    public function isAdmin()
-    {
-        return $this->global_role == GlobalRoleEnum::Admin->value;
+        return (bool) $this->is_super_admin;
     }
 }

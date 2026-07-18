@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Uam\GlobalRoleEnum;
 use App\Enums\Uam\PermissionEnum;
 use App\Models\Configuration\Company\Company;
 use App\Models\Uam\Role;
@@ -18,32 +17,45 @@ class AdminSeeder extends Seeder
             'email' => 'sa@app.com',
             'company_name' => 'Intellygo',
             'short_name' => 'intellygo',
-            'global_role' => GlobalRoleEnum::SuperAdmin,
+            'is_super_admin' => true,
             'role_name' => null,
+            'role_permissions' => null,
         ],
         [
             'user_name' => 'Admin One',
             'email' => 'admin1@app.com',
             'company_name' => 'Intellygo',
             'short_name' => 'intellygo',
-            'global_role' => GlobalRoleEnum::Admin,
-            'role_name' => null,
+            'is_super_admin' => false,
+            'role_name' => 'Admin',
+            'role_permissions' => [
+                PermissionEnum::ReadGeneralDashboard,
+
+                /**
+                 * UAM module
+                 */
+                PermissionEnum::CreateUamUser,
+                PermissionEnum::ReadUamUser,
+                PermissionEnum::UpdateUamUser,
+            ],
         ],
         [
             'user_name' => 'Company Admin',
             'email' => 'companyadmin@app.com',
             'company_name' => 'Dummy Company',
             'short_name' => 'dummy',
-            'global_role' => null,
+            'is_super_admin' => false,
             'role_name' => 'Company Admin',
+            'role_permissions' => null,
         ],
         [
             'user_name' => 'Company User',
             'email' => 'companyuser@app.com',
             'company_name' => 'Dummy Company',
             'short_name' => 'dummy',
-            'global_role' => null,
+            'is_super_admin' => false,
             'role_name' => 'Company User',
+            'role_permissions' => null,
         ],
     ];
 
@@ -69,14 +81,14 @@ class AdminSeeder extends Seeder
 
             $user->companies()->attach($company);
 
-            if ($data['global_role'] == GlobalRoleEnum::SuperAdmin || $data['global_role'] == GlobalRoleEnum::Admin) {
-                $user->global_role = $data['global_role'];
+            if ($data['is_super_admin']) {
+                $user->is_super_admin = true;
                 $user->save();
             } else {
                 setPermissionsTeamId($company->id);
                 $role = Role::firstOrCreate(['name' => $data['role_name'], 'company_id' => $company->id]);
 
-                $role->syncPermissions(PermissionEnum::cases());
+                $role->syncPermissions($data['role_permissions'] ?? PermissionEnum::cases());
 
                 $user->assignRole($role);
             }

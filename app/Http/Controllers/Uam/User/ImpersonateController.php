@@ -13,7 +13,7 @@ class ImpersonateController extends Controller
     {
         $currentUser = $request->user();
 
-        abort_unless($currentUser->isSuperAdmin() || $currentUser->isAdmin(), 403);
+        abort_unless($currentUser->isSuperAdmin(), 403);
         abort_if($currentUser->id === $id, 403, 'Cannot impersonate yourself.');
         abort_if($request->session()->has('impersonator_id'), 403, 'Already impersonating a user.');
 

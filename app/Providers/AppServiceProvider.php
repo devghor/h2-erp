@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Enums\Uam\GlobalRoleEnum;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,17 +25,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function regiterGlobalPermissions(): void
     {
-        $globalPermissions = config('global-permission');
-
-        Gate::before(function ($user, $ability) use ($globalPermissions) {
+        Gate::before(function ($user, $ability) {
             if ($user->isSuperAdmin()) {
                 return true;
-            }
-
-            if ($user->isAdmin()) {
-                if (!in_array($ability, $globalPermissions[GlobalRoleEnum::Admin->value])) {
-                    return true;
-                }
             }
         });
     }

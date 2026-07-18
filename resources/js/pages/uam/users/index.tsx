@@ -78,7 +78,7 @@ interface User {
 export default function Index() {
     const { auth } = usePage<SharedData>().props;
     const tableRef = useRef<{ refetch: () => void }>(null);
-    const canImpersonate = (auth.user.global_role === 'super-admin' || auth.user.global_role === 'admin') && !auth.impersonating;
+    const canImpersonate = auth.user.is_super_admin && !auth.impersonating;
 
     const columns = [
         {
