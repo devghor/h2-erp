@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { UserCombobox } from '@/components/user-combobox';
 import BulkDeleteButton from '@/components/bulk-delete-button';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
@@ -16,11 +17,23 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationDepartments];
 
-export default function Index({ divisions }: { divisions: { id: number; name: string }[] }) {
+export default function Index({
+    divisions,
+    users,
+}: {
+    divisions: { id: number; name: string }[];
+    users: { id: number; name: string; email: string }[];
+}) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [form, setForm] = useState({ id: undefined, name: '', division_id: '', description: '' });
+    const [form, setForm] = useState({
+        id: undefined,
+        name: '',
+        division_id: '',
+        description: '',
+        department_head_user_id: '' as number | string | '',
+    });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
@@ -28,6 +41,7 @@ export default function Index({ divisions }: { divisions: { id: number; name: st
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
         { accessorKey: 'division', header: 'Division', sortable: true, searchable: true },
+        { accessorKey: 'departmentHead', header: 'Department Head', sortable: true, searchable: true },
         { accessorKey: 'description', header: 'Description', sortable: true, searchable: true },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
@@ -42,14 +56,20 @@ export default function Index({ divisions }: { divisions: { id: number; name: st
     ];
 
     const handleOpenAdd = () => {
-        setForm({ id: undefined, name: '', division_id: '', description: '' });
+        setForm({ id: undefined, name: '', division_id: '', description: '', department_head_user_id: '' });
         setIsEdit(false);
         setOpen(true);
         setFormErrors({});
     };
 
     const handleEdit = (row: any) => {
-        setForm({ id: row.id, name: row.name, division_id: row.division_id, description: row.description });
+        setForm({
+            id: row.id,
+            name: row.name,
+            division_id: row.division_id,
+            description: row.description,
+            department_head_user_id: row.department_head_user_id ?? '',
+        });
         setIsEdit(true);
         setOpen(true);
         setFormErrors({});
@@ -87,6 +107,7 @@ export default function Index({ divisions }: { divisions: { id: number; name: st
             name: form.name,
             division_id: form.division_id,
             description: form.description,
+            department_head_user_id: form.department_head_user_id || null,
         };
         if (isEdit && form.id) {
             router.put(route('configuration.departments.update', form.id), data, {
@@ -155,6 +176,16 @@ export default function Index({ divisions }: { divisions: { id: number; name: st
                         </SelectContent>
                     </Select>
                     {formErrors.division_id && <p className="text-sm text-red-500">{formErrors.division_id}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="department_head_user_id">Department Head</Label>
+                    <UserCombobox
+                        users={users}
+                        value={form.department_head_user_id}
+                        onChange={(userId) => setForm((prev) => ({ ...prev, department_head_user_id: userId ?? '' }))}
+                        placeholder="Select department head..."
+                    />
+                    {formErrors.department_head_user_id && <p className="text-sm text-red-500">{formErrors.department_head_user_id}</p>}
                 </div>
                 <div>
                     <Label htmlFor="description">Description</Label>

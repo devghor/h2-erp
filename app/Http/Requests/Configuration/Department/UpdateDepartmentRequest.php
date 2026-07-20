@@ -17,6 +17,7 @@ class UpdateDepartmentRequest extends FormRequest
             'name' => 'required|string|max:255',
             'division_id' => 'nullable|integer|exists:divisions,id',
             'description' => 'nullable|string',
+            'department_head_user_id' => 'nullable|integer|exists:users,id',
         ];
     }
 }

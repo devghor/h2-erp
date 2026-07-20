@@ -16,13 +16,14 @@ class DivisionsDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->addColumn('divisionHead', fn (Division $d) => $d->divisionHead?->name ?? '')
             ->editColumn('created_at', fn (Division $d) => $d->created_at->format('Y-m-d H:i:s'))
             ->setRowId('id');
     }
 
     public function query(Division $model): QueryBuilder
     {
-        return $model->select(['id', 'name', 'description', 'created_at']);
+        return $model->with('divisionHead')->select(['id', 'name', 'description', 'division_head_user_id', 'created_at']);
     }
 
     public function getColumns(): array
@@ -31,6 +32,7 @@ class DivisionsDataTable extends BaseDataTable
             Column::make('id')->title('ID'),
             Column::make('name')->title('Name'),
             Column::make('description')->title('Description'),
+            Column::computed('divisionHead')->title('Division Head'),
             Column::make('created_at')->title('Created At'),
         ];
     }

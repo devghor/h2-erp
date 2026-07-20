@@ -3,6 +3,7 @@ import { RowActions } from '@/components/data-table/row-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { UserCombobox } from '@/components/user-combobox';
 import BulkDeleteButton from '@/components/bulk-delete-button';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
@@ -15,11 +16,11 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationDivisions];
 
-export default function Index() {
+export default function Index({ users }: { users: { id: number; name: string; email: string }[] }) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [form, setForm] = useState({ id: undefined, name: '', description: '' });
+    const [form, setForm] = useState({ id: undefined, name: '', description: '', division_head_user_id: '' as number | string | '' });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
@@ -27,6 +28,7 @@ export default function Index() {
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
         { accessorKey: 'description', header: 'Description', sortable: true, searchable: true },
+        { accessorKey: 'divisionHead', header: 'Division Head', sortable: true, searchable: true },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
@@ -40,14 +42,14 @@ export default function Index() {
     ];
 
     const handleOpenAdd = () => {
-        setForm({ id: undefined, name: '', description: '' });
+        setForm({ id: undefined, name: '', description: '', division_head_user_id: '' });
         setIsEdit(false);
         setOpen(true);
         setFormErrors({});
     };
 
     const handleEdit = (row: any) => {
-        setForm({ id: row.id, name: row.name, description: row.description });
+        setForm({ id: row.id, name: row.name, description: row.description, division_head_user_id: row.division_head_user_id ?? '' });
         setIsEdit(true);
         setOpen(true);
         setFormErrors({});
@@ -84,6 +86,7 @@ export default function Index() {
         const data: Record<string, any> = {
             name: form.name,
             description: form.description,
+            division_head_user_id: form.division_head_user_id || null,
         };
         if (isEdit && form.id) {
             router.put(route('configuration.divisions.update', form.id), data, {
@@ -132,6 +135,16 @@ export default function Index() {
                     <Label htmlFor="name">Name</Label>
                     <Input name="name" value={form.name} onChange={handleChange} required />
                     {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="division_head_user_id">Division Head</Label>
+                    <UserCombobox
+                        users={users}
+                        value={form.division_head_user_id}
+                        onChange={(userId) => setForm((prev) => ({ ...prev, division_head_user_id: userId ?? '' }))}
+                        placeholder="Select division head..."
+                    />
+                    {formErrors.division_head_user_id && <p className="text-sm text-red-500">{formErrors.division_head_user_id}</p>}
                 </div>
                 <div>
                     <Label htmlFor="description">Description</Label>

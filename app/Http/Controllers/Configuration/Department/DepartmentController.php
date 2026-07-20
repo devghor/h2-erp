@@ -6,6 +6,7 @@ use App\DataTables\Configuration\Department\DepartmentsDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Configuration\Department\StoreDepartmentRequest;
 use App\Http\Requests\Configuration\Department\UpdateDepartmentRequest;
+use App\Models\Uam\User;
 use App\Services\Configuration\Department\DepartmentService;
 use App\Services\Configuration\Division\DivisionService;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class DepartmentController extends Controller
     {
         return $dataTable->renderInertia('configuration/departments/index', [
             'divisions' => $this->divisionService->getDivisionOptions(),
+            'users' => User::select(['id', 'name', 'email'])->get(),
         ]);
     }
 
