@@ -94,6 +94,12 @@ enum PermissionEnum: string
     case UpdateConfigurationDepartment = 'UPDATE_CONFIGURATION_DEPARTMENT';
     case DeleteConfigurationDepartment = 'DELETE_CONFIGURATION_DEPARTMENT';
 
+    // Configuration > Unit
+    case CreateConfigurationUnit = 'CREATE_CONFIGURATION_UNIT';
+    case ReadConfigurationUnit = 'READ_CONFIGURATION_UNIT';
+    case UpdateConfigurationUnit = 'UPDATE_CONFIGURATION_UNIT';
+    case DeleteConfigurationUnit = 'DELETE_CONFIGURATION_UNIT';
+
         // Configuration > Designation
     case CreateConfigurationDesignation = 'CREATE_CONFIGURATION_DESIGNATION';
     case ReadConfigurationDesignation = 'READ_CONFIGURATION_DESIGNATION';
