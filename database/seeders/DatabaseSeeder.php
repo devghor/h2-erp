@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
             DesignationSeeder::class,
             PayrollSalaryHeadSeeder::class,
             PayrollSalaryStructureSeeder::class,
-            DeskGroupSeeder::class,
-            DeskSeeder::class,
             BranchSeeder::class,
             DivisionSeeder::class,
             DepartmentSeeder::class,
+            PositionGroupSeeder::class,
+            PositionSeeder::class,
         ]);
     }
 }

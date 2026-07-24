@@ -113,6 +113,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Division', 'name' => PermissionEnum::UpdateConfigurationDivision->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Division', 'name' => PermissionEnum::DeleteConfigurationDivision->value, 'display_name' => self::LABEL_DELETE],
 
+            // Unit
+            ['module' => 'Configuration', 'group' => 'Configuration > Unit', 'name' => PermissionEnum::CreateConfigurationUnit->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Unit', 'name' => PermissionEnum::ReadConfigurationUnit->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Unit', 'name' => PermissionEnum::UpdateConfigurationUnit->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Unit', 'name' => PermissionEnum::DeleteConfigurationUnit->value, 'display_name' => self::LABEL_DELETE],
+
             // Department
             ['module' => 'Configuration', 'group' => 'Configuration > Department', 'name' => PermissionEnum::CreateConfigurationDepartment->value, 'display_name' => self::LABEL_CREATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Department', 'name' => PermissionEnum::ReadConfigurationDepartment->value, 'display_name' => self::LABEL_READ],
@@ -125,23 +131,17 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Designation', 'name' => PermissionEnum::UpdateConfigurationDesignation->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Designation', 'name' => PermissionEnum::DeleteConfigurationDesignation->value, 'display_name' => self::LABEL_DELETE],
 
-            // Desk
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::CreateConfigurationDesk->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::ReadConfigurationDesk->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::UpdateConfigurationDesk->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk', 'name' => PermissionEnum::DeleteConfigurationDesk->value, 'display_name' => self::LABEL_DELETE],
+            // Position
+            ['module' => 'Configuration', 'group' => 'Configuration > Position', 'name' => PermissionEnum::CreateConfigurationPosition->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position', 'name' => PermissionEnum::ReadConfigurationPosition->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position', 'name' => PermissionEnum::UpdateConfigurationPosition->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position', 'name' => PermissionEnum::DeleteConfigurationPosition->value, 'display_name' => self::LABEL_DELETE],
 
-            // Desk Group
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::CreateConfigurationDeskGroup->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::ReadConfigurationDeskGroup->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::UpdateConfigurationDeskGroup->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Desk Group', 'name' => PermissionEnum::DeleteConfigurationDeskGroup->value, 'display_name' => self::LABEL_DELETE],
-
-            // Function Assignment
-            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::CreateConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::ReadConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::UpdateConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Configuration', 'group' => 'Configuration > Function Assignment', 'name' => PermissionEnum::DeleteConfigurationFunctionAssignment->value, 'display_name' => self::LABEL_DELETE],
+            // Position Group
+            ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::CreateConfigurationPositionGroup->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::ReadConfigurationPositionGroup->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::UpdateConfigurationPositionGroup->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::DeleteConfigurationPositionGroup->value, 'display_name' => self::LABEL_DELETE],
 
             /**
              * Product Module

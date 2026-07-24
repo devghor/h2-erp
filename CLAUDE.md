@@ -102,7 +102,7 @@ Produces: `module.entity.index`, `module.entity.store`, `module.entity.update`, 
 
 ## Existing modules
 
-- `Configuration`: companies, branches, divisions, departments, units, designations, desks
+- `Configuration`: companies, branches, divisions, departments, units, designations
 - `UAM`: users, roles, permissions
 - `Employee`: employees (with sub-tabs: contacts, documents, education, experience)
 - `Payroll`: salary-heads, salary-structures, employee-salary-profiles

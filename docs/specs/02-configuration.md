@@ -7,7 +7,7 @@
 
 ## Overview
 
-Configuration holds the organizational structure of a company: its branches, the division/department/unit hierarchy, designations, and physical desks. These entities are referenced throughout the system (employees are assigned to departments, desks, designations, etc.) so they must be set up before employee records are created.
+Configuration holds the organizational structure of a company: its branches, the division/department/unit hierarchy, and designations. These entities are referenced throughout the system (employees are assigned to departments, designations, etc.) so they must be set up before employee records are created.
 
 ---
 
@@ -89,18 +89,6 @@ A job title / grade. Used to determine salary structure, leave policy, and appra
 | level | integer | nullable — seniority ordering |
 | status | enum | active / inactive |
 
-### Desk
-
-A physical workstation or seat. Linked to an employee for seating plans.
-
-| Field | Type | Notes |
-|---|---|---|
-| id | bigint | |
-| branch_id | fk | |
-| company_id | fk | |
-| name / number | string | |
-| status | enum | available / occupied |
-
 ---
 
 ## User Stories
@@ -109,7 +97,6 @@ A physical workstation or seat. Linked to an employee for seating plans.
 - As a Company Admin, I can define branches so employees and assets can be location-tagged.
 - As a Company Admin, I can define the division → department → unit hierarchy so the org chart reflects reality.
 - As a Company Admin, I can define designations so salary structures and leave policies can be tied to job levels.
-- As a Company Admin, I can define desks and assign them to employees for seating visibility.
 - As a Super Admin, I can switch the active tenant to manage a different company.
 
 ---
@@ -128,7 +115,6 @@ DELETE     /configuration/companies/bulk-delete  → CompanyController@bulkDelet
 /configuration/departments
 /configuration/units
 /configuration/designations
-/configuration/desks
 ```
 
 ---
@@ -145,7 +131,7 @@ DELETE     /configuration/companies/bulk-delete  → CompanyController@bulkDelet
 | `CREATE_CONFIGURATION_BRANCH` | ... |
 | `UPDATE_CONFIGURATION_BRANCH` | ... |
 | `DELETE_CONFIGURATION_BRANCH` | ... |
-| *(same pattern for Division, Department, Unit, Designation, Desk)* | |
+| *(same pattern for Division, Department, Unit, Designation)* | |
 
 ---
 
@@ -153,7 +139,6 @@ DELETE     /configuration/companies/bulk-delete  → CompanyController@bulkDelet
 
 - All entities: DataTable list + create/edit dialog (no separate page).
 - Company: single-record form (settings page style) rather than a list for Company Admin; list view only for Super Admin.
-- Desk status badge: green = available, amber = occupied.
 - Division/Department/Unit: optionally show parent in the list column for context.
 
 ---
@@ -163,7 +148,6 @@ DELETE     /configuration/companies/bulk-delete  → CompanyController@bulkDelet
 | Gap | Fix |
 |---|---|
 | `Unit` missing from `PermissionEnum` | Add `READ/CREATE/UPDATE/DELETE_CONFIGURATION_UNIT` |
-| `Desk` missing from `PermissionEnum` | Add `READ/CREATE/UPDATE/DELETE_CONFIGURATION_DESK` |
 
 ---
 

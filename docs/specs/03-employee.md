@@ -173,5 +173,5 @@ None. Module is fully implemented.
 
 ## Dependencies
 
-- Configuration (Branch, Department, Unit, Designation, Desk must exist first)
+- Configuration (Branch, Department, Unit, Designation must exist first)
 - Referenced by: Payroll, Leave, Attendance, Performance, Separation, Reporting

@@ -3,9 +3,8 @@
 use App\Http\Controllers\Configuration\Branch\BranchController;
 use App\Http\Controllers\Configuration\Company\CompanyController;
 use App\Http\Controllers\Configuration\Department\DepartmentController;
-use App\Http\Controllers\Configuration\Desk\DeskController;
-use App\Http\Controllers\Configuration\DeskGroup\DeskGroupController;
-use App\Http\Controllers\Configuration\FunctionAssignment\FunctionAssignmentController;
+use App\Http\Controllers\Configuration\Position\PositionController;
+use App\Http\Controllers\Configuration\PositionGroup\PositionGroupController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
 use App\Http\Controllers\Configuration\Designation\DesignationController;
 use App\Http\Controllers\Configuration\Division\DivisionController;
@@ -97,10 +96,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->group(function (): void {
             Route::delete('branches/bulk-delete', [BranchController::class, 'bulkDelete'])->name('branches.bulk-delete');
             Route::resource('branches', BranchController::class);
-            Route::delete('desk-groups/bulk-delete', [DeskGroupController::class, 'bulkDelete'])->name('desk-groups.bulk-delete');
-            Route::resource('desk-groups', DeskGroupController::class);
-            Route::delete('desks/bulk-delete', [DeskController::class, 'bulkDelete'])->name('desks.bulk-delete');
-            Route::resource('desks', DeskController::class);
             Route::get('companies/{company}/switch', [CompanyController::class, 'switchCompany'])->name('companies.switch');
             Route::delete('companies/bulk-delete', [CompanyController::class, 'bulkDelete'])->name('companies.bulk-delete');
             Route::resource('companies', CompanyController::class);
@@ -112,9 +107,10 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::resource('departments', DepartmentController::class);
             Route::delete('units/bulk-delete', [UnitController::class, 'bulkDelete'])->name('units.bulk-delete');
             Route::resource('units', UnitController::class);
-            Route::delete('function-assignments/bulk-delete', [FunctionAssignmentController::class, 'bulkDelete'])
-                ->name('function-assignments.bulk-delete');
-            Route::resource('function-assignments', FunctionAssignmentController::class);
+            Route::delete('position-groups/bulk-delete', [PositionGroupController::class, 'bulkDelete'])->name('position-groups.bulk-delete');
+            Route::resource('position-groups', PositionGroupController::class);
+            Route::delete('positions/bulk-delete', [PositionController::class, 'bulkDelete'])->name('positions.bulk-delete');
+            Route::resource('positions', PositionController::class);
         });
 
     /**

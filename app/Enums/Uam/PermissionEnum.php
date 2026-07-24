@@ -106,23 +106,17 @@ enum PermissionEnum: string
     case UpdateConfigurationDesignation = 'UPDATE_CONFIGURATION_DESIGNATION';
     case DeleteConfigurationDesignation = 'DELETE_CONFIGURATION_DESIGNATION';
 
-        // Configuration > Desk
-    case CreateConfigurationDesk = 'CREATE_CONFIGURATION_DESK';
-    case ReadConfigurationDesk = 'READ_CONFIGURATION_DESK';
-    case UpdateConfigurationDesk = 'UPDATE_CONFIGURATION_DESK';
-    case DeleteConfigurationDesk = 'DELETE_CONFIGURATION_DESK';
+        // Configuration > Position
+    case CreateConfigurationPosition = 'CREATE_CONFIGURATION_POSITION';
+    case ReadConfigurationPosition = 'READ_CONFIGURATION_POSITION';
+    case UpdateConfigurationPosition = 'UPDATE_CONFIGURATION_POSITION';
+    case DeleteConfigurationPosition = 'DELETE_CONFIGURATION_POSITION';
 
-        // Configuration > Desk Group
-    case CreateConfigurationDeskGroup = 'CREATE_CONFIGURATION_DESK_GROUP';
-    case ReadConfigurationDeskGroup = 'READ_CONFIGURATION_DESK_GROUP';
-    case UpdateConfigurationDeskGroup = 'UPDATE_CONFIGURATION_DESK_GROUP';
-    case DeleteConfigurationDeskGroup = 'DELETE_CONFIGURATION_DESK_GROUP';
-
-        // Configuration > Function Assignment
-    case CreateConfigurationFunctionAssignment = 'CREATE_CONFIGURATION_FUNCTION_ASSIGNMENT';
-    case ReadConfigurationFunctionAssignment   = 'READ_CONFIGURATION_FUNCTION_ASSIGNMENT';
-    case UpdateConfigurationFunctionAssignment = 'UPDATE_CONFIGURATION_FUNCTION_ASSIGNMENT';
-    case DeleteConfigurationFunctionAssignment = 'DELETE_CONFIGURATION_FUNCTION_ASSIGNMENT';
+        // Configuration > Position Group
+    case CreateConfigurationPositionGroup = 'CREATE_CONFIGURATION_POSITION_GROUP';
+    case ReadConfigurationPositionGroup = 'READ_CONFIGURATION_POSITION_GROUP';
+    case UpdateConfigurationPositionGroup = 'UPDATE_CONFIGURATION_POSITION_GROUP';
+    case DeleteConfigurationPositionGroup = 'DELETE_CONFIGURATION_POSITION_GROUP';
 
     /**
      * Product Module
