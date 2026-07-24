@@ -69,6 +69,7 @@ function UserActionsMenu({
 interface User {
     id: number;
     name: string;
+    username: string;
     email: string;
     created_at: string;
     password?: string;
@@ -100,6 +101,12 @@ export default function Index() {
             ),
         },
         {
+            accessorKey: 'username',
+            header: 'Username',
+            sortable: true,
+            searchable: true,
+        },
+        {
             accessorKey: 'email',
             header: 'Email',
             sortable: true,
@@ -127,7 +134,7 @@ export default function Index() {
         },
     ];
 
-    const emptyForm = { name: '', email: '', password: '', password_confirmation: '' };
+    const emptyForm = { name: '', username: '', email: '', password: '', password_confirmation: '' };
 
     type FormState = typeof emptyForm & { id?: number };
 
@@ -261,6 +268,9 @@ export default function Index() {
                 <Label htmlFor="name">Name</Label>
                 <Input type="text" name="name" value={form.name} onChange={handleChange()} placeholder="Name" required />
                 {formErrors.name && <p className="text-red-500">{formErrors.name}</p>}
+                <Label htmlFor="username">Username</Label>
+                <Input type="text" name="username" value={form.username} onChange={handleChange()} placeholder="Username" required />
+                {formErrors.username && <p className="text-red-500">{formErrors.username}</p>}
                 <Label htmlFor="email">Email</Label>
                 <Input type="email" name="email" value={form.email} onChange={handleChange()} placeholder="Email" required />
                 {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}

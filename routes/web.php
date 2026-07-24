@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Configuration\ApprovalFlow\ApprovalFlowController;
+use App\Http\Controllers\Configuration\ApprovalFlow\ApprovalFlowGroupController;
+use App\Http\Controllers\Configuration\ApprovalLevel\ApprovalLevelController;
 use App\Http\Controllers\Configuration\Branch\BranchController;
 use App\Http\Controllers\Configuration\Company\CompanyController;
 use App\Http\Controllers\Configuration\Department\DepartmentController;
+use App\Http\Controllers\Configuration\Hrbp\HrbpController;
 use App\Http\Controllers\Configuration\Position\PositionController;
 use App\Http\Controllers\Configuration\PositionGroup\PositionGroupController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
@@ -111,6 +115,15 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::resource('position-groups', PositionGroupController::class);
             Route::delete('positions/bulk-delete', [PositionController::class, 'bulkDelete'])->name('positions.bulk-delete');
             Route::resource('positions', PositionController::class);
+            Route::delete('hrbps/bulk-delete', [HrbpController::class, 'bulkDelete'])->name('hrbps.bulk-delete');
+            Route::resource('hrbps', HrbpController::class);
+            Route::delete('approval-levels/bulk-delete', [ApprovalLevelController::class, 'bulkDelete'])->name('approval-levels.bulk-delete');
+            Route::resource('approval-levels', ApprovalLevelController::class);
+            Route::delete('approval-flows/bulk-delete', [ApprovalFlowController::class, 'bulkDelete'])->name('approval-flows.bulk-delete');
+            Route::resource('approval-flows', ApprovalFlowController::class);
+            Route::post('approval-flow-groups', [ApprovalFlowGroupController::class, 'store'])->name('approval-flow-groups.store');
+            Route::put('approval-flow-groups/{group}', [ApprovalFlowGroupController::class, 'update'])->name('approval-flow-groups.update');
+            Route::delete('approval-flow-groups/{group}', [ApprovalFlowGroupController::class, 'destroy'])->name('approval-flow-groups.destroy');
         });
 
     /**

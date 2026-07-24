@@ -14,6 +14,7 @@ class AdminSeeder extends Seeder
     private array $users = [
         [
             'user_name' => 'Super Admin',
+            'username' => 'superadmin',
             'email' => 'sa@app.com',
             'company_name' => 'Intellygo',
             'short_name' => 'intellygo',
@@ -23,6 +24,7 @@ class AdminSeeder extends Seeder
         ],
         [
             'user_name' => 'Admin One',
+            'username' => 'admin1',
             'email' => 'admin1@app.com',
             'company_name' => 'Intellygo',
             'short_name' => 'intellygo',
@@ -41,6 +43,7 @@ class AdminSeeder extends Seeder
         ],
         [
             'user_name' => 'Company Admin',
+            'username' => 'companyadmin',
             'email' => 'companyadmin@app.com',
             'company_name' => 'Dummy Company',
             'short_name' => 'dummy',
@@ -50,6 +53,7 @@ class AdminSeeder extends Seeder
         ],
         [
             'user_name' => 'Company User',
+            'username' => 'companyuser',
             'email' => 'companyuser@app.com',
             'company_name' => 'Dummy Company',
             'short_name' => 'dummy',
@@ -74,6 +78,7 @@ class AdminSeeder extends Seeder
                 ['email' => $data['email']],
                 [
                     'name' => $data['user_name'],
+                    'username' => $data['username'],
                     'password' => Hash::make('password'),
                     'company_id' => $company->id
                 ]

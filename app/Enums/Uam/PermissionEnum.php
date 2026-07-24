@@ -118,6 +118,24 @@ enum PermissionEnum: string
     case UpdateConfigurationPositionGroup = 'UPDATE_CONFIGURATION_POSITION_GROUP';
     case DeleteConfigurationPositionGroup = 'DELETE_CONFIGURATION_POSITION_GROUP';
 
+        // Configuration > Hrbp
+    case CreateConfigurationHrbp = 'CREATE_CONFIGURATION_HRBP';
+    case ReadConfigurationHrbp = 'READ_CONFIGURATION_HRBP';
+    case UpdateConfigurationHrbp = 'UPDATE_CONFIGURATION_HRBP';
+    case DeleteConfigurationHrbp = 'DELETE_CONFIGURATION_HRBP';
+
+        // Configuration > Approval Level
+    case CreateConfigurationApprovalLevel = 'CREATE_CONFIGURATION_APPROVAL_LEVEL';
+    case ReadConfigurationApprovalLevel = 'READ_CONFIGURATION_APPROVAL_LEVEL';
+    case UpdateConfigurationApprovalLevel = 'UPDATE_CONFIGURATION_APPROVAL_LEVEL';
+    case DeleteConfigurationApprovalLevel = 'DELETE_CONFIGURATION_APPROVAL_LEVEL';
+
+        // Configuration > Approval Flow
+    case CreateConfigurationApprovalFlow = 'CREATE_CONFIGURATION_APPROVAL_FLOW';
+    case ReadConfigurationApprovalFlow = 'READ_CONFIGURATION_APPROVAL_FLOW';
+    case UpdateConfigurationApprovalFlow = 'UPDATE_CONFIGURATION_APPROVAL_FLOW';
+    case DeleteConfigurationApprovalFlow = 'DELETE_CONFIGURATION_APPROVAL_FLOW';
+
     /**
      * Product Module
      */

@@ -143,6 +143,24 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::UpdateConfigurationPositionGroup->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Position Group', 'name' => PermissionEnum::DeleteConfigurationPositionGroup->value, 'display_name' => self::LABEL_DELETE],
 
+            // Hrbp
+            ['module' => 'Configuration', 'group' => 'Configuration > Hrbp', 'name' => PermissionEnum::CreateConfigurationHrbp->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Hrbp', 'name' => PermissionEnum::ReadConfigurationHrbp->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Hrbp', 'name' => PermissionEnum::UpdateConfigurationHrbp->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Hrbp', 'name' => PermissionEnum::DeleteConfigurationHrbp->value, 'display_name' => self::LABEL_DELETE],
+
+            // Approval Level
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Level', 'name' => PermissionEnum::CreateConfigurationApprovalLevel->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Level', 'name' => PermissionEnum::ReadConfigurationApprovalLevel->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Level', 'name' => PermissionEnum::UpdateConfigurationApprovalLevel->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Level', 'name' => PermissionEnum::DeleteConfigurationApprovalLevel->value, 'display_name' => self::LABEL_DELETE],
+
+            // Approval Flow
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::CreateConfigurationApprovalFlow->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::ReadConfigurationApprovalFlow->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::UpdateConfigurationApprovalFlow->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::DeleteConfigurationApprovalFlow->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Product Module
              */

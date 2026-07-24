@@ -4,6 +4,7 @@ import {
     Briefcase,
     Building,
     Building2,
+    Contact,
     DollarSign,
     FileSpreadsheet,
     IdCard,
@@ -11,6 +12,7 @@ import {
     Landmark,
     Layers,
     LayoutDashboard,
+    ListChecks,
     Lock,
     MonitorCog,
     Package,
@@ -19,6 +21,7 @@ import {
     UserCog,
     UserRound,
     Users,
+    Workflow,
 } from 'lucide-react';
 
 type BaseNavItem = {
@@ -139,6 +142,24 @@ export const sidebarData: SidebarData = {
                     url: '/configuration/positions',
                     icon: MonitorCog,
                     can: 'READ_CONFIGURATION_POSITION',
+                },
+                {
+                    title: 'HRBP',
+                    url: '/configuration/hrbps',
+                    icon: Contact,
+                    can: 'READ_CONFIGURATION_HRBP',
+                },
+                {
+                    title: 'Approval Levels',
+                    url: '/configuration/approval-levels',
+                    icon: ListChecks,
+                    can: 'READ_CONFIGURATION_APPROVAL_LEVEL',
+                },
+                {
+                    title: 'Approval Flows',
+                    url: '/configuration/approval-flows',
+                    icon: Workflow,
+                    can: 'READ_CONFIGURATION_APPROVAL_FLOW',
                 },
             ],
         },
