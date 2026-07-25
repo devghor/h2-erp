@@ -104,6 +104,7 @@ export function DatePicker({
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
                 <Button
+                    type="button"
                     variant="outline"
                     className={`cursor-pointer justify-start text-left font-normal ${className} ${!date ? 'text-muted-foreground' : ''}`}
                     disabled={disabled}

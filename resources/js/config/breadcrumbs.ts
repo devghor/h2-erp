@@ -12,6 +12,7 @@ export const breadcrumbItems = {
     configurationPositionGroups: { title: 'Position Groups', href: route('configuration.position-groups.index') },
     configurationPositions: { title: 'Positions', href: route('configuration.positions.index') },
     configurationHrbps: { title: 'HRBP', href: route('configuration.hrbps.index') },
+    configurationShifts: { title: 'Shifts', href: route('configuration.shifts.index') },
     configurationApprovalLevels: { title: 'Approval Levels', href: route('configuration.approval-levels.index') },
     configurationApprovalFlows: { title: 'Approval Flows', href: route('configuration.approval-flows.index') },
     employeeEmployees: { title: 'Employees', href: route('employee.employees.index') },

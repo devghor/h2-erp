@@ -4,6 +4,7 @@ import {
     Briefcase,
     Building,
     Building2,
+    Clock,
     Contact,
     DollarSign,
     FileSpreadsheet,
@@ -148,6 +149,12 @@ export const sidebarData: SidebarData = {
                     url: '/configuration/hrbps',
                     icon: Contact,
                     can: 'READ_CONFIGURATION_HRBP',
+                },
+                {
+                    title: 'Shifts',
+                    url: '/configuration/shifts',
+                    icon: Clock,
+                    can: 'READ_CONFIGURATION_SHIFT',
                 },
                 {
                     title: 'Approval Levels',

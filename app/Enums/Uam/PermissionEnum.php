@@ -124,6 +124,12 @@ enum PermissionEnum: string
     case UpdateConfigurationHrbp = 'UPDATE_CONFIGURATION_HRBP';
     case DeleteConfigurationHrbp = 'DELETE_CONFIGURATION_HRBP';
 
+        // Configuration > Shift
+    case CreateConfigurationShift = 'CREATE_CONFIGURATION_SHIFT';
+    case ReadConfigurationShift = 'READ_CONFIGURATION_SHIFT';
+    case UpdateConfigurationShift = 'UPDATE_CONFIGURATION_SHIFT';
+    case DeleteConfigurationShift = 'DELETE_CONFIGURATION_SHIFT';
+
         // Configuration > Approval Level
     case CreateConfigurationApprovalLevel = 'CREATE_CONFIGURATION_APPROVAL_LEVEL';
     case ReadConfigurationApprovalLevel = 'READ_CONFIGURATION_APPROVAL_LEVEL';

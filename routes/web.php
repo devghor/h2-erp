@@ -9,6 +9,7 @@ use App\Http\Controllers\Configuration\Department\DepartmentController;
 use App\Http\Controllers\Configuration\Hrbp\HrbpController;
 use App\Http\Controllers\Configuration\Position\PositionController;
 use App\Http\Controllers\Configuration\PositionGroup\PositionGroupController;
+use App\Http\Controllers\Configuration\Shift\ShiftController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
 use App\Http\Controllers\Configuration\Designation\DesignationController;
 use App\Http\Controllers\Configuration\Division\DivisionController;
@@ -124,6 +125,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::post('approval-flow-groups', [ApprovalFlowGroupController::class, 'store'])->name('approval-flow-groups.store');
             Route::put('approval-flow-groups/{group}', [ApprovalFlowGroupController::class, 'update'])->name('approval-flow-groups.update');
             Route::delete('approval-flow-groups/{group}', [ApprovalFlowGroupController::class, 'destroy'])->name('approval-flow-groups.destroy');
+            Route::delete('shifts/bulk-delete', [ShiftController::class, 'bulkDelete'])->name('shifts.bulk-delete');
+            Route::resource('shifts', ShiftController::class);
         });
 
     /**
