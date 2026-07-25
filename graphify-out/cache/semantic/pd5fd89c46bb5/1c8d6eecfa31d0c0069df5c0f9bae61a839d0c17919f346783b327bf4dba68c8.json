@@ -1,0 +1,1 @@
+{"nodes": [{"id": "readme_document", "label": "README.md", "file_type": "document", "source_file": "README.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Lists Inertia v2 and MySQL; AGENTS.md says the real stack is Laravel 12 + React 19 + Inertia v3 + PostgreSQL + Redis."}], "edges": [], "hyperedges": []}
