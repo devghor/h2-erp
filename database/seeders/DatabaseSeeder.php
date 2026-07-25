@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             PositionGroupSeeder::class,
             PositionSeeder::class,
+            LeaveTypeSeeder::class,
         ]);
     }
 }
