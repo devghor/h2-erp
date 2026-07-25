@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
             tenancy()->initialize($company);
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**
