@@ -25,7 +25,7 @@ import { sidebarData } from '@/config/sidebar';
 import { Company, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Building2, ChevronDown, ChevronsUpDown, Plus } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 // === Collapsible Nav Items ===
 function SidebarCollapsibleItem({ item }: { item: any }) {
@@ -164,14 +164,20 @@ export function AppSidebar() {
     const currentCompany = props.auth.company;
     const permissions = props.auth.permissions || [];
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            const sidebarContent = document.querySelector('[data-sidebar="content"]');
-            const activeEl = sidebarContent?.querySelector('[data-active="true"]');
-            activeEl?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }, 0);
-        return () => clearTimeout(timer);
-    }, [url]);
+    // Persist sidebar scroll position across Inertia navigation
+    useLayoutEffect(() => {
+        const sidebarContent = document.querySelector('[data-sidebar="content"]');
+        if (!sidebarContent) return;
+
+        const savedScroll = sessionStorage.getItem('sidebar-scroll-top');
+        if (savedScroll) {
+            sidebarContent.scrollTop = Number(savedScroll);
+        }
+    }, []);
+
+    const handleSidebarScroll = (event: React.UIEvent<HTMLDivElement>) => {
+        sessionStorage.setItem('sidebar-scroll-top', String(event.currentTarget.scrollTop));
+    };
 
     // Filter nav groups and items
     const filteredNavGroups = sidebarData.navGroups
@@ -187,7 +193,7 @@ export function AppSidebar() {
                 <CompanySwitcher companies={companies} currentCompany={currentCompany} />
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent onScroll={handleSidebarScroll}>
                 {filteredNavGroups.map((group) => (
                     <SidebarGroup key={group.title}>
                         <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">{group.title}</SidebarGroupLabel>
