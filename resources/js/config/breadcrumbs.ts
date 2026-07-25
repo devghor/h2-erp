@@ -1,5 +1,5 @@
 export const breadcrumbItems = {
-    dashboard: { title: 'Dashboard', href: route('dashboard') },
+    dashboard: { title: 'Dashboard', href: route('dashboard.index') },
     uamUsers: { title: 'Users', href: route('uam.users.index') },
     uamRoles: { title: 'Roles', href: route('uam.roles.index') },
     uamPermissions: { title: 'Permissions', href: route('uam.permissions.index') },

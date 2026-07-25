@@ -23,7 +23,7 @@ class ImpersonateController extends Controller
 
         Auth::login($target);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.index');
     }
 
     public function leave(Request $request)
@@ -36,6 +36,6 @@ class ImpersonateController extends Controller
 
         Auth::login($originalUser);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.index');
     }
 }

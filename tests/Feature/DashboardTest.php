@@ -21,4 +21,19 @@ class DashboardTest extends TestCase
 
         $this->get('/dashboard')->assertOk();
     }
+
+    public function test_dashboard_returns_stats_props()
+    {
+        $this->actingAs($user = User::factory()->create());
+
+        $this->get('/dashboard')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('dashboard')
+                ->has('employee')
+                ->has('organization')
+                ->has('user')
+                ->has('leave')
+            );
+    }
 }

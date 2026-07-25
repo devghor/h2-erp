@@ -13,6 +13,7 @@ use App\Http\Controllers\Configuration\Shift\ShiftController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
 use App\Http\Controllers\Configuration\Designation\DesignationController;
 use App\Http\Controllers\Configuration\Division\DivisionController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Employee\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeeContact\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeDocument\EmployeeDocumentController;
@@ -33,16 +34,20 @@ use App\Http\Controllers\Uam\Role\RoleController;
 use App\Http\Controllers\Uam\User\ImpersonateController;
 use App\Http\Controllers\Uam\User\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    /**
+     * Dashboard Module
+     */
+    Route::name('dashboard.')
+        ->prefix('dashboard')
+        ->group(function (): void {
+            Route::get('/', [DashboardController::class, 'index'])->name('index');
+        });
 
     /**
      * Notification Module
