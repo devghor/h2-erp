@@ -15,6 +15,6 @@ class DepartmentService extends CoreService
 
     public function getDepartmentOptions(): Collection
     {
-        return $this->model->select('id', 'name')->get();
+        return $this->model->select('id', 'name', 'code')->get();
     }
 }

@@ -4,8 +4,6 @@ namespace App\Enums\Configuration;
 
 enum ApprovalLevelTypeEnum: string
 {
-    case CEO          = 'CEO';
-    case DyCEO        = 'DyCEO';
     case DivisionHead = 'DivisionHead';
     case HOD          = 'HOD';
     case LineManager  = 'LineManager';
@@ -15,8 +13,6 @@ enum ApprovalLevelTypeEnum: string
     public function label(): string
     {
         return match ($this) {
-            self::CEO          => 'CEO',
-            self::DyCEO        => 'Deputy CEO',
             self::DivisionHead => 'Division Head',
             self::HOD          => 'Head of Department',
             self::LineManager  => 'Line Manager',

@@ -1,12 +1,12 @@
+import BulkDeleteButton from '@/components/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
+import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UserCombobox } from '@/components/user-combobox';
-import BulkDeleteButton from '@/components/bulk-delete-button';
-import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -21,7 +21,7 @@ export default function Index({
     divisions,
     users,
 }: {
-    divisions: { id: number; name: string }[];
+    divisions: { id: number; name: string; code?: string }[];
     users: { id: number; name: string; email: string }[];
 }) {
     const tableRef = useRef<{ refetch: () => void }>(null);
@@ -30,6 +30,7 @@ export default function Index({
     const [form, setForm] = useState({
         id: undefined,
         name: '',
+        code: '',
         division_id: '',
         description: '',
         department_head_user_id: '' as number | string | '',
@@ -40,6 +41,7 @@ export default function Index({
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
+        { accessorKey: 'code', header: 'Code', sortable: true, searchable: true },
         { accessorKey: 'division', header: 'Division', sortable: true, searchable: true },
         { accessorKey: 'departmentHead', header: 'Department Head', sortable: true, searchable: true },
         { accessorKey: 'description', header: 'Description', sortable: true, searchable: true },
@@ -49,14 +51,12 @@ export default function Index({
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
-            ),
+            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
         },
     ];
 
     const handleOpenAdd = () => {
-        setForm({ id: undefined, name: '', division_id: '', description: '', department_head_user_id: '' });
+        setForm({ id: undefined, name: '', code: '', division_id: '', description: '', department_head_user_id: '' });
         setIsEdit(false);
         setOpen(true);
         setFormErrors({});
@@ -66,6 +66,7 @@ export default function Index({
         setForm({
             id: row.id,
             name: row.name,
+            code: row.code ?? '',
             division_id: row.division_id,
             description: row.description,
             department_head_user_id: row.department_head_user_id ?? '',
@@ -88,12 +89,15 @@ export default function Index({
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios.delete(route('configuration.departments.bulk-delete'), { data: { ids: selectedIds } }).then(() => {
-            toast.success(`${selectedIds.length} department(s) deleted successfully`);
-            tableRef.current?.refetch();
-        }).catch(() => {
-            toast.error('Error deleting selected departments');
-        });
+        axios
+            .delete(route('configuration.departments.bulk-delete'), { data: { ids: selectedIds } })
+            .then(() => {
+                toast.success(`${selectedIds.length} department(s) deleted successfully`);
+                tableRef.current?.refetch();
+            })
+            .catch(() => {
+                toast.error('Error deleting selected departments');
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +109,7 @@ export default function Index({
         e.preventDefault();
         const data: Record<string, any> = {
             name: form.name,
+            code: form.code,
             division_id: form.division_id,
             description: form.description,
             department_head_user_id: form.department_head_user_id || null,
@@ -139,9 +144,7 @@ export default function Index({
                 columns={columns}
                 dataUrl={route('configuration.departments.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={
-                    <BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />
-                }
+                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
             />
             <BaseDialog
                 open={open}
@@ -158,6 +161,11 @@ export default function Index({
                     {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
                 </div>
                 <div>
+                    <Label htmlFor="code">Code</Label>
+                    <Input name="code" value={form.code} onChange={handleChange} />
+                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                </div>
+                <div>
                     <Label htmlFor="division_id">Division</Label>
                     <Select
                         name="division_id"
@@ -170,7 +178,7 @@ export default function Index({
                         <SelectContent>
                             {divisions.map((division) => (
                                 <SelectItem key={division.id} value={division.id.toString()}>
-                                    {division.name}
+                                    {division.code ? `${division.name} (${division.code})` : division.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>

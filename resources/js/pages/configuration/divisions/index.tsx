@@ -1,11 +1,11 @@
+import BulkDeleteButton from '@/components/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
+import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserCombobox } from '@/components/user-combobox';
-import BulkDeleteButton from '@/components/bulk-delete-button';
-import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -20,13 +20,14 @@ export default function Index({ users }: { users: { id: number; name: string; em
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [form, setForm] = useState({ id: undefined, name: '', description: '', division_head_user_id: '' as number | string | '' });
+    const [form, setForm] = useState({ id: undefined, name: '', code: '', description: '', division_head_user_id: '' as number | string | '' });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
+        { accessorKey: 'code', header: 'Code', sortable: true, searchable: true },
         { accessorKey: 'description', header: 'Description', sortable: true, searchable: true },
         { accessorKey: 'divisionHead', header: 'Division Head', sortable: true, searchable: true },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
@@ -35,21 +36,25 @@ export default function Index({ users }: { users: { id: number; name: string; em
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
-            ),
+            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
         },
     ];
 
     const handleOpenAdd = () => {
-        setForm({ id: undefined, name: '', description: '', division_head_user_id: '' });
+        setForm({ id: undefined, name: '', code: '', description: '', division_head_user_id: '' });
         setIsEdit(false);
         setOpen(true);
         setFormErrors({});
     };
 
     const handleEdit = (row: any) => {
-        setForm({ id: row.id, name: row.name, description: row.description, division_head_user_id: row.division_head_user_id ?? '' });
+        setForm({
+            id: row.id,
+            name: row.name,
+            code: row.code ?? '',
+            description: row.description,
+            division_head_user_id: row.division_head_user_id ?? '',
+        });
         setIsEdit(true);
         setOpen(true);
         setFormErrors({});
@@ -68,12 +73,15 @@ export default function Index({ users }: { users: { id: number; name: string; em
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios.delete(route('configuration.divisions.bulk-delete'), { data: { ids: selectedIds } }).then(() => {
-            toast.success(`${selectedIds.length} division(s) deleted successfully`);
-            tableRef.current?.refetch();
-        }).catch(() => {
-            toast.error('Error deleting selected divisions');
-        });
+        axios
+            .delete(route('configuration.divisions.bulk-delete'), { data: { ids: selectedIds } })
+            .then(() => {
+                toast.success(`${selectedIds.length} division(s) deleted successfully`);
+                tableRef.current?.refetch();
+            })
+            .catch(() => {
+                toast.error('Error deleting selected divisions');
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +93,7 @@ export default function Index({ users }: { users: { id: number; name: string; em
         e.preventDefault();
         const data: Record<string, any> = {
             name: form.name,
+            code: form.code,
             description: form.description,
             division_head_user_id: form.division_head_user_id || null,
         };
@@ -118,9 +127,7 @@ export default function Index({ users }: { users: { id: number; name: string; em
                 columns={columns}
                 dataUrl={route('configuration.divisions.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={
-                    <BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />
-                }
+                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
             />
             <BaseDialog
                 open={open}
@@ -135,6 +142,11 @@ export default function Index({ users }: { users: { id: number; name: string; em
                     <Label htmlFor="name">Name</Label>
                     <Input name="name" value={form.name} onChange={handleChange} required />
                     {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="code">Code</Label>
+                    <Input name="code" value={form.code} onChange={handleChange} />
+                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
                 </div>
                 <div>
                     <Label htmlFor="division_head_user_id">Division Head</Label>

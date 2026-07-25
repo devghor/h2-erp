@@ -15,6 +15,7 @@ class UpdateDivisionRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'division_head_user_id' => 'nullable|integer|exists:users,id',
         ];

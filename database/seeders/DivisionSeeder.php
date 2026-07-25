@@ -18,22 +18,27 @@ class DivisionSeeder extends Seeder
         $divisions = [
             [
                 'name'        => 'Human Resources',
+                'code'        => 'HR',
                 'description' => 'Manages recruitment, employee relations, and HR operations',
             ],
             [
                 'name'        => 'Finance & Accounts',
+                'code'        => 'FIN',
                 'description' => 'Handles financial planning, accounting, and reporting',
             ],
             [
                 'name'        => 'Information Technology',
+                'code'        => 'IT',
                 'description' => 'Manages IT infrastructure, software, and digital systems',
             ],
             [
                 'name'        => 'Operations',
+                'code'        => 'OPS',
                 'description' => 'Oversees daily business operations and logistics',
             ],
             [
                 'name'        => 'Marketing & Sales',
+                'code'        => 'MKT',
                 'description' => 'Drives brand awareness, marketing campaigns, and sales',
             ],
         ];

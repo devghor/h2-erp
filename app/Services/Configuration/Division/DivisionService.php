@@ -15,6 +15,6 @@ class DivisionService extends CoreService
 
     public function getDivisionOptions(): Collection
     {
-        return $this->model->select('id', 'name')->get();
+        return $this->model->select('id', 'name', 'code')->get();
     }
 }

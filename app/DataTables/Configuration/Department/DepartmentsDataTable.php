@@ -25,7 +25,7 @@ class DepartmentsDataTable extends BaseDataTable
     public function query(Department $model): QueryBuilder
     {
         return $model->with(['division', 'departmentHead'])
-            ->select(['id', 'name', 'division_id', 'description', 'department_head_user_id', 'created_at']);
+            ->select(['id', 'name', 'code', 'division_id', 'description', 'department_head_user_id', 'created_at']);
     }
 
     public function getColumns(): array
@@ -33,6 +33,7 @@ class DepartmentsDataTable extends BaseDataTable
         return [
             Column::make('id')->title('ID'),
             Column::make('name')->title('Name'),
+            Column::make('code')->title('Code'),
             Column::computed('division')->title('Division'),
             Column::computed('departmentHead')->title('Department Head'),
             Column::make('description')->title('Description'),

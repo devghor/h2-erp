@@ -23,7 +23,7 @@ class DivisionsDataTable extends BaseDataTable
 
     public function query(Division $model): QueryBuilder
     {
-        return $model->with('divisionHead')->select(['id', 'name', 'description', 'division_head_user_id', 'created_at']);
+        return $model->with('divisionHead')->select(['id', 'name', 'code', 'description', 'division_head_user_id', 'created_at']);
     }
 
     public function getColumns(): array
@@ -31,6 +31,7 @@ class DivisionsDataTable extends BaseDataTable
         return [
             Column::make('id')->title('ID'),
             Column::make('name')->title('Name'),
+            Column::make('code')->title('Code'),
             Column::make('description')->title('Description'),
             Column::computed('divisionHead')->title('Division Head'),
             Column::make('created_at')->title('Created At'),

@@ -1,11 +1,11 @@
+import BulkDeleteButton from '@/components/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
+import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import BulkDeleteButton from '@/components/bulk-delete-button';
-import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationUnits];
 
-export default function Index({ departments }: { departments: { id: number; name: string }[] }) {
+export default function Index({ departments }: { departments: { id: number; name: string; code?: string }[] }) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -36,9 +36,7 @@ export default function Index({ departments }: { departments: { id: number; name
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
-            ),
+            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
         },
     ];
 
@@ -69,12 +67,15 @@ export default function Index({ departments }: { departments: { id: number; name
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios.delete(route('configuration.units.bulk-delete'), { data: { ids: selectedIds } }).then(() => {
-            toast.success(`${selectedIds.length} unit(s) deleted successfully`);
-            tableRef.current?.refetch();
-        }).catch(() => {
-            toast.error('Error deleting selected units');
-        });
+        axios
+            .delete(route('configuration.units.bulk-delete'), { data: { ids: selectedIds } })
+            .then(() => {
+                toast.success(`${selectedIds.length} unit(s) deleted successfully`);
+                tableRef.current?.refetch();
+            })
+            .catch(() => {
+                toast.error('Error deleting selected units');
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,9 +121,7 @@ export default function Index({ departments }: { departments: { id: number; name
                 columns={columns}
                 dataUrl={route('configuration.units.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={
-                    <BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />
-                }
+                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
             />
             <BaseDialog
                 open={open}
@@ -156,7 +155,7 @@ export default function Index({ departments }: { departments: { id: number; name
                         <SelectContent>
                             {departments.map((department) => (
                                 <SelectItem key={department.id} value={department.id.toString()}>
-                                    {department.name}
+                                    {department.code ? `${department.name} (${department.code})` : department.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>

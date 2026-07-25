@@ -15,6 +15,7 @@ class Division extends Model
 
     protected $fillable = [
         'name',
+        'code',
         'description',
         'division_head_user_id',
     ];
