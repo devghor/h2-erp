@@ -4,6 +4,7 @@ import {
     Briefcase,
     Building,
     Building2,
+    Calendar,
     Clock,
     Contact,
     DollarSign,
@@ -209,6 +210,18 @@ export const sidebarData: SidebarData = {
                     url: '/employee/employees',
                     icon: UserRound,
                     can: 'READ_EMPLOYEE_EMPLOYEE',
+                },
+            ],
+        },
+        {
+            title: 'Leave',
+            can: 'READ_LEAVE',
+            items: [
+                {
+                    title: 'Leave Types',
+                    url: '/leave/leave-types',
+                    icon: Calendar,
+                    can: 'READ_LEAVE_LEAVE_TYPE',
                 },
             ],
         },

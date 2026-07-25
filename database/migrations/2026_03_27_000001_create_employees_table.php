@@ -32,7 +32,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
-            $table->integer('employee_type')->default(EmployeeTypeEnum::Permanent->value);
+            $table->integer('employee_type')->default(EmployeeTypeEnum::Regular->value);
             $table->integer('employee_status')->default(EmployeeStatusEnum::OnProbation->value);
             MigrationHelper::commonFields($table);
         });

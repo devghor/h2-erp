@@ -143,6 +143,15 @@ enum PermissionEnum: string
     case DeleteConfigurationApprovalFlow = 'DELETE_CONFIGURATION_APPROVAL_FLOW';
 
     /**
+     * Leave Module
+     */
+        // Leave > Leave Type
+    case CreateLeaveLeaveType = 'CREATE_LEAVE_LEAVE_TYPE';
+    case ReadLeaveLeaveType = 'READ_LEAVE_LEAVE_TYPE';
+    case UpdateLeaveLeaveType = 'UPDATE_LEAVE_LEAVE_TYPE';
+    case DeleteLeaveLeaveType = 'DELETE_LEAVE_LEAVE_TYPE';
+
+    /**
      * Product Module
      */
         // Product > Category

@@ -16,6 +16,7 @@ export const breadcrumbItems = {
     configurationApprovalLevels: { title: 'Approval Levels', href: route('configuration.approval-levels.index') },
     configurationApprovalFlows: { title: 'Approval Flows', href: route('configuration.approval-flows.index') },
     employeeEmployees: { title: 'Employees', href: route('employee.employees.index') },
+    leaveLeaveTypes: { title: 'Leave Types', href: route('leave.leave-types.index') },
     payrollSalaryHeads: { title: 'Salary Heads', href: route('payroll.salary-heads.index') },
     payrollSalaryStructures: { title: 'Salary Structures', href: route('payroll.salary-structures.index') },
     payrollEmployeeSalaryProfiles: { title: 'Employee Salary Profiles', href: route('payroll.employee-salary-profiles.index') },

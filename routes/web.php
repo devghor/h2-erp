@@ -18,6 +18,7 @@ use App\Http\Controllers\Employee\EmployeeContact\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeDocument\EmployeeDocumentController;
 use App\Http\Controllers\Employee\EmployeeEducation\EmployeeEducationController;
 use App\Http\Controllers\Employee\EmployeeExperience\EmployeeExperienceController;
+use App\Http\Controllers\Leave\LeaveType\LeaveTypeController;
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Product\Brand\BrandController;
 use App\Http\Controllers\Product\Category\CategoryController;
@@ -159,6 +160,16 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::post('employee-experience', [EmployeeExperienceController::class, 'store'])->name('employee-experience.store');
             Route::put('employee-experience/{experience}', [EmployeeExperienceController::class, 'update'])->name('employee-experience.update');
             Route::delete('employee-experience/{experience}', [EmployeeExperienceController::class, 'destroy'])->name('employee-experience.destroy');
+        });
+
+    /**
+     * Leave Module
+     */
+    Route::name('leave.')
+        ->prefix('leave')
+        ->group(function (): void {
+            Route::delete('leave-types/bulk-delete', [LeaveTypeController::class, 'bulkDelete'])->name('leave-types.bulk-delete');
+            Route::resource('leave-types', LeaveTypeController::class);
         });
 
     /**
