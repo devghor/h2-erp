@@ -18,6 +18,7 @@ class Position extends Model
 
     protected $fillable = [
         'name',
+        'code',
         'parent_id',
         'description',
         'branch_id',

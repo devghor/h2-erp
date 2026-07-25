@@ -15,6 +15,7 @@ class StorePositionRequest extends FormRequest
     {
         return [
             'name'               => 'required|string|max:255',
+            'code'               => 'nullable|string|max:100',
             'parent_id'          => 'nullable|integer|exists:positions,id',
             'description'        => 'nullable|string',
             'branch_id'          => 'nullable|integer|exists:branches,id',

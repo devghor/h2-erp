@@ -1,13 +1,13 @@
+import BulkDeleteButton from '@/components/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
+import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import BulkDeleteButton from '@/components/bulk-delete-button';
-import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
@@ -24,7 +24,7 @@ type Branch = { id: number; name: string };
 type Division = { id: number; name: string };
 type Department = { id: number; name: string };
 type PositionGroup = { id: number; name: string };
-type PositionOption = { id: number; name: string; parent_id: number | null };
+type PositionOption = { id: number; name: string; code: string | null; parent_id: number | null };
 
 function getDescendantIds(positionId: number, positions: PositionOption[]): Set<number> {
     const ids = new Set<number>();
@@ -57,6 +57,7 @@ export default function Index({
     const [form, setForm] = useState({
         id: undefined as number | undefined,
         name: '',
+        code: '',
         parent_id: '',
         description: '',
         branch_id: '',
@@ -97,6 +98,7 @@ export default function Index({
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
+        { accessorKey: 'code', header: 'Code', sortable: true, searchable: true },
         { accessorKey: 'branch_name', header: 'Branch', sortable: true },
         { accessorKey: 'division_name', header: 'Division', sortable: true },
         { accessorKey: 'department_name', header: 'Department', sortable: true },
@@ -108,15 +110,14 @@ export default function Index({
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
-            ),
+            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
         },
     ];
 
     const emptyForm = () => ({
         id: undefined as number | undefined,
         name: '',
+        code: '',
         parent_id: '',
         description: '',
         branch_id: '',
@@ -136,6 +137,7 @@ export default function Index({
         setForm({
             id: row.id,
             name: row.name,
+            code: row.code ?? '',
             parent_id: row.parent_id ?? '',
             description: row.description ?? '',
             branch_id: row.branch_id ? row.branch_id.toString() : '',
@@ -161,12 +163,15 @@ export default function Index({
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios.delete(route('configuration.positions.bulk-delete'), { data: { ids: selectedIds } }).then(() => {
-            toast.success(`${selectedIds.length} position(s) deleted successfully`);
-            tableRef.current?.refetch();
-        }).catch(() => {
-            toast.error('Error deleting selected positions');
-        });
+        axios
+            .delete(route('configuration.positions.bulk-delete'), { data: { ids: selectedIds } })
+            .then(() => {
+                toast.success(`${selectedIds.length} position(s) deleted successfully`);
+                tableRef.current?.refetch();
+            })
+            .catch(() => {
+                toast.error('Error deleting selected positions');
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,6 +183,7 @@ export default function Index({
         e.preventDefault();
         const data: Record<string, any> = {
             name: form.name,
+            code: form.code || null,
             parent_id: form.parent_id || null,
             description: form.description || null,
             branch_id: form.branch_id || null,
@@ -213,7 +219,9 @@ export default function Index({
                 onSelectionChange={setSelectedIds}
                 extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
                 extraParams={extraParams}
-                extraFilterCount={[filterBranchId, filterDivisionId, filterDepartmentId, filterPositionGroupId, filterParentPositionId].filter(Boolean).length}
+                extraFilterCount={
+                    [filterBranchId, filterDivisionId, filterDepartmentId, filterPositionGroupId, filterParentPositionId].filter(Boolean).length
+                }
                 onClearExtraFilters={() => {
                     setFilterBranchId('');
                     setFilterDivisionId('');
@@ -227,7 +235,12 @@ export default function Index({
                             <label className="text-xs font-medium text-muted-foreground">Branch</label>
                             <Popover open={branchOpen} onOpenChange={setBranchOpen}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={branchOpen} className="h-8 justify-between text-sm font-normal">
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={branchOpen}
+                                        className="h-8 justify-between text-sm font-normal"
+                                    >
                                         <span className="truncate">
                                             {filterBranchId ? branches.find((b) => String(b.id) === filterBranchId)?.name : 'All branches…'}
                                         </span>
@@ -240,13 +253,31 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No branch found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterBranchId(''); setBranchOpen(false); }}>
+                                                <CommandItem
+                                                    value="__all__"
+                                                    onSelect={() => {
+                                                        setFilterBranchId('');
+                                                        setBranchOpen(false);
+                                                    }}
+                                                >
                                                     <Check className={cn('mr-2 h-3.5 w-3.5', !filterBranchId ? 'opacity-100' : 'opacity-0')} />
                                                     All
                                                 </CommandItem>
                                                 {branches.map((b) => (
-                                                    <CommandItem key={b.id} value={b.name} onSelect={() => { setFilterBranchId(String(b.id)); setBranchOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterBranchId === String(b.id) ? 'opacity-100' : 'opacity-0')} />
+                                                    <CommandItem
+                                                        key={b.id}
+                                                        value={b.name}
+                                                        onSelect={() => {
+                                                            setFilterBranchId(String(b.id));
+                                                            setBranchOpen(false);
+                                                        }}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                'mr-2 h-3.5 w-3.5',
+                                                                filterBranchId === String(b.id) ? 'opacity-100' : 'opacity-0',
+                                                            )}
+                                                        />
                                                         {b.name}
                                                     </CommandItem>
                                                 ))}
@@ -261,7 +292,12 @@ export default function Index({
                             <label className="text-xs font-medium text-muted-foreground">Division</label>
                             <Popover open={divisionOpen} onOpenChange={setDivisionOpen}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={divisionOpen} className="h-8 justify-between text-sm font-normal">
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={divisionOpen}
+                                        className="h-8 justify-between text-sm font-normal"
+                                    >
                                         <span className="truncate">
                                             {filterDivisionId ? divisions.find((d) => String(d.id) === filterDivisionId)?.name : 'All divisions…'}
                                         </span>
@@ -274,13 +310,31 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No division found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterDivisionId(''); setDivisionOpen(false); }}>
+                                                <CommandItem
+                                                    value="__all__"
+                                                    onSelect={() => {
+                                                        setFilterDivisionId('');
+                                                        setDivisionOpen(false);
+                                                    }}
+                                                >
                                                     <Check className={cn('mr-2 h-3.5 w-3.5', !filterDivisionId ? 'opacity-100' : 'opacity-0')} />
                                                     All
                                                 </CommandItem>
                                                 {divisions.map((d) => (
-                                                    <CommandItem key={d.id} value={d.name} onSelect={() => { setFilterDivisionId(String(d.id)); setDivisionOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterDivisionId === String(d.id) ? 'opacity-100' : 'opacity-0')} />
+                                                    <CommandItem
+                                                        key={d.id}
+                                                        value={d.name}
+                                                        onSelect={() => {
+                                                            setFilterDivisionId(String(d.id));
+                                                            setDivisionOpen(false);
+                                                        }}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                'mr-2 h-3.5 w-3.5',
+                                                                filterDivisionId === String(d.id) ? 'opacity-100' : 'opacity-0',
+                                                            )}
+                                                        />
                                                         {d.name}
                                                     </CommandItem>
                                                 ))}
@@ -295,9 +349,16 @@ export default function Index({
                             <label className="text-xs font-medium text-muted-foreground">Department</label>
                             <Popover open={departmentOpen} onOpenChange={setDepartmentOpen}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={departmentOpen} className="h-8 justify-between text-sm font-normal">
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={departmentOpen}
+                                        className="h-8 justify-between text-sm font-normal"
+                                    >
                                         <span className="truncate">
-                                            {filterDepartmentId ? departments.find((d) => String(d.id) === filterDepartmentId)?.name : 'All departments…'}
+                                            {filterDepartmentId
+                                                ? departments.find((d) => String(d.id) === filterDepartmentId)?.name
+                                                : 'All departments…'}
                                         </span>
                                         <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
                                     </Button>
@@ -308,13 +369,31 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No department found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterDepartmentId(''); setDepartmentOpen(false); }}>
+                                                <CommandItem
+                                                    value="__all__"
+                                                    onSelect={() => {
+                                                        setFilterDepartmentId('');
+                                                        setDepartmentOpen(false);
+                                                    }}
+                                                >
                                                     <Check className={cn('mr-2 h-3.5 w-3.5', !filterDepartmentId ? 'opacity-100' : 'opacity-0')} />
                                                     All
                                                 </CommandItem>
                                                 {departments.map((d) => (
-                                                    <CommandItem key={d.id} value={d.name} onSelect={() => { setFilterDepartmentId(String(d.id)); setDepartmentOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterDepartmentId === String(d.id) ? 'opacity-100' : 'opacity-0')} />
+                                                    <CommandItem
+                                                        key={d.id}
+                                                        value={d.name}
+                                                        onSelect={() => {
+                                                            setFilterDepartmentId(String(d.id));
+                                                            setDepartmentOpen(false);
+                                                        }}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                'mr-2 h-3.5 w-3.5',
+                                                                filterDepartmentId === String(d.id) ? 'opacity-100' : 'opacity-0',
+                                                            )}
+                                                        />
                                                         {d.name}
                                                     </CommandItem>
                                                 ))}
@@ -329,9 +408,16 @@ export default function Index({
                             <label className="text-xs font-medium text-muted-foreground">Position Group</label>
                             <Popover open={positionGroupOpen} onOpenChange={setPositionGroupOpen}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={positionGroupOpen} className="h-8 justify-between text-sm font-normal">
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={positionGroupOpen}
+                                        className="h-8 justify-between text-sm font-normal"
+                                    >
                                         <span className="truncate">
-                                            {filterPositionGroupId ? positionGroups.find((g) => String(g.id) === filterPositionGroupId)?.name : 'All position groups…'}
+                                            {filterPositionGroupId
+                                                ? positionGroups.find((g) => String(g.id) === filterPositionGroupId)?.name
+                                                : 'All position groups…'}
                                         </span>
                                         <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
                                     </Button>
@@ -342,13 +428,31 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No position group found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterPositionGroupId(''); setPositionGroupOpen(false); }}>
+                                                <CommandItem
+                                                    value="__all__"
+                                                    onSelect={() => {
+                                                        setFilterPositionGroupId('');
+                                                        setPositionGroupOpen(false);
+                                                    }}
+                                                >
                                                     <Check className={cn('mr-2 h-3.5 w-3.5', !filterPositionGroupId ? 'opacity-100' : 'opacity-0')} />
                                                     All
                                                 </CommandItem>
                                                 {positionGroups.map((g) => (
-                                                    <CommandItem key={g.id} value={g.name} onSelect={() => { setFilterPositionGroupId(String(g.id)); setPositionGroupOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterPositionGroupId === String(g.id) ? 'opacity-100' : 'opacity-0')} />
+                                                    <CommandItem
+                                                        key={g.id}
+                                                        value={g.name}
+                                                        onSelect={() => {
+                                                            setFilterPositionGroupId(String(g.id));
+                                                            setPositionGroupOpen(false);
+                                                        }}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                'mr-2 h-3.5 w-3.5',
+                                                                filterPositionGroupId === String(g.id) ? 'opacity-100' : 'opacity-0',
+                                                            )}
+                                                        />
                                                         {g.name}
                                                     </CommandItem>
                                                 ))}
@@ -363,9 +467,16 @@ export default function Index({
                             <label className="text-xs font-medium text-muted-foreground">Parent Position</label>
                             <Popover open={filterParentPositionOpen} onOpenChange={setFilterParentPositionOpen}>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" role="combobox" aria-expanded={filterParentPositionOpen} className="h-8 justify-between text-sm font-normal">
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={filterParentPositionOpen}
+                                        className="h-8 justify-between text-sm font-normal"
+                                    >
                                         <span className="truncate">
-                                            {filterParentPositionId ? positions.find((p) => String(p.id) === filterParentPositionId)?.name : 'All parent positions…'}
+                                            {filterParentPositionId
+                                                ? positions.find((p) => String(p.id) === filterParentPositionId)?.name
+                                                : 'All parent positions…'}
                                         </span>
                                         <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
                                     </Button>
@@ -376,13 +487,33 @@ export default function Index({
                                         <CommandList>
                                             <CommandEmpty>No position found.</CommandEmpty>
                                             <CommandGroup>
-                                                <CommandItem value="__all__" onSelect={() => { setFilterParentPositionId(''); setFilterParentPositionOpen(false); }}>
-                                                    <Check className={cn('mr-2 h-3.5 w-3.5', !filterParentPositionId ? 'opacity-100' : 'opacity-0')} />
+                                                <CommandItem
+                                                    value="__all__"
+                                                    onSelect={() => {
+                                                        setFilterParentPositionId('');
+                                                        setFilterParentPositionOpen(false);
+                                                    }}
+                                                >
+                                                    <Check
+                                                        className={cn('mr-2 h-3.5 w-3.5', !filterParentPositionId ? 'opacity-100' : 'opacity-0')}
+                                                    />
                                                     All
                                                 </CommandItem>
                                                 {positions.map((p) => (
-                                                    <CommandItem key={p.id} value={p.name} onSelect={() => { setFilterParentPositionId(String(p.id)); setFilterParentPositionOpen(false); }}>
-                                                        <Check className={cn('mr-2 h-3.5 w-3.5', filterParentPositionId === String(p.id) ? 'opacity-100' : 'opacity-0')} />
+                                                    <CommandItem
+                                                        key={p.id}
+                                                        value={p.name}
+                                                        onSelect={() => {
+                                                            setFilterParentPositionId(String(p.id));
+                                                            setFilterParentPositionOpen(false);
+                                                        }}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                'mr-2 h-3.5 w-3.5',
+                                                                filterParentPositionId === String(p.id) ? 'opacity-100' : 'opacity-0',
+                                                            )}
+                                                        />
                                                         {p.name}
                                                     </CommandItem>
                                                 ))}
@@ -410,11 +541,13 @@ export default function Index({
                     {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
                 </div>
                 <div>
+                    <Label htmlFor="code">Code</Label>
+                    <Input name="code" value={form.code} onChange={handleChange} />
+                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                </div>
+                <div>
                     <Label htmlFor="branch_id">Branch</Label>
-                    <Select
-                        value={form.branch_id}
-                        onValueChange={(value) => setForm((prev) => ({ ...prev, branch_id: value }))}
-                    >
+                    <Select value={form.branch_id} onValueChange={(value) => setForm((prev) => ({ ...prev, branch_id: value }))}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select a branch" />
                         </SelectTrigger>
@@ -430,10 +563,7 @@ export default function Index({
                 </div>
                 <div>
                     <Label htmlFor="division_id">Division</Label>
-                    <Select
-                        value={form.division_id}
-                        onValueChange={(value) => setForm((prev) => ({ ...prev, division_id: value }))}
-                    >
+                    <Select value={form.division_id} onValueChange={(value) => setForm((prev) => ({ ...prev, division_id: value }))}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select a division" />
                         </SelectTrigger>
@@ -449,10 +579,7 @@ export default function Index({
                 </div>
                 <div>
                     <Label htmlFor="department_id">Department</Label>
-                    <Select
-                        value={form.department_id}
-                        onValueChange={(value) => setForm((prev) => ({ ...prev, department_id: value }))}
-                    >
+                    <Select value={form.department_id} onValueChange={(value) => setForm((prev) => ({ ...prev, department_id: value }))}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select a department" />
                         </SelectTrigger>
@@ -468,10 +595,7 @@ export default function Index({
                 </div>
                 <div>
                     <Label htmlFor="position_group_id">Position Group</Label>
-                    <Select
-                        value={form.position_group_id}
-                        onValueChange={(value) => setForm((prev) => ({ ...prev, position_group_id: value }))}
-                    >
+                    <Select value={form.position_group_id} onValueChange={(value) => setForm((prev) => ({ ...prev, position_group_id: value }))}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select a position group" />
                         </SelectTrigger>
@@ -497,9 +621,7 @@ export default function Index({
                                 className="w-full justify-between font-normal"
                             >
                                 <span className="truncate">
-                                    {form.parent_id
-                                        ? availableParentPositions.find((p) => String(p.id) === form.parent_id)?.name
-                                        : 'None'}
+                                    {form.parent_id ? availableParentPositions.find((p) => String(p.id) === form.parent_id)?.name : 'None'}
                                 </span>
                                 <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
                             </Button>
@@ -529,7 +651,9 @@ export default function Index({
                                                     setParentPositionOpen(false);
                                                 }}
                                             >
-                                                <Check className={cn('mr-2 h-3.5 w-3.5', form.parent_id === String(p.id) ? 'opacity-100' : 'opacity-0')} />
+                                                <Check
+                                                    className={cn('mr-2 h-3.5 w-3.5', form.parent_id === String(p.id) ? 'opacity-100' : 'opacity-0')}
+                                                />
                                                 {p.name}
                                             </CommandItem>
                                         ))}

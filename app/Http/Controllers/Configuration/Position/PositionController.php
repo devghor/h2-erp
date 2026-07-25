@@ -25,7 +25,7 @@ class PositionController extends Controller
             'divisions' => Division::select(['id', 'name'])->get(),
             'departments' => Department::select(['id', 'name'])->get(),
             'positionGroups' => PositionGroup::select(['id', 'name'])->get(),
-            'positions' => Position::select(['id', 'name', 'parent_id'])->get(),
+            'positions' => Position::select(['id', 'name', 'code', 'parent_id'])->get(),
         ]);
     }
 

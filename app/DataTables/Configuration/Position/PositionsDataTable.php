@@ -29,7 +29,7 @@ class PositionsDataTable extends BaseDataTable
     {
         $query = $model
             ->with(['branch', 'division', 'department', 'positionGroup', 'parent'])
-            ->select(['id', 'name', 'description', 'parent_id', 'branch_id', 'division_id', 'department_id', 'position_group_id', 'created_at']);
+            ->select(['id', 'name', 'code', 'description', 'parent_id', 'branch_id', 'division_id', 'department_id', 'position_group_id', 'created_at']);
 
         if ($branchId = request('branch_id')) {
             $query->where('branch_id', $branchId);
@@ -55,6 +55,7 @@ class PositionsDataTable extends BaseDataTable
         return [
             Column::make('id')->title('ID'),
             Column::make('name')->title('Name'),
+            Column::make('code')->title('Code'),
             Column::make('branch_name')->title('Branch'),
             Column::make('division_name')->title('Division'),
             Column::make('department_name')->title('Department'),
