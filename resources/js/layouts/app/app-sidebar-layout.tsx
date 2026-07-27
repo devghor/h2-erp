@@ -2,7 +2,6 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
-import { Breadcrumbs } from '@/components/breadcrumbs';
 import { ImpersonationBanner } from '@/components/impersonation-banner';
 import { NavUser } from '@/components/nav-user';
 import { Notification } from '@/components/notification';
@@ -24,20 +23,17 @@ export default function AppSidebarLayout({
         <AppShell variant="sidebar">
             <Head title={title} />
             <AppSidebar />
-            <AppContent title={title} variant="sidebar" className="overflow-x-hidden">
+            <AppContent title={title} variant="sidebar">
                 <SearchProvider>
-                    <AppSidebarHeader fixed>
-                        <div className="ms-auto flex items-center space-x-4">
-                            {auth.impersonating && <ImpersonationBanner />}
-                            <Notification />
-                            <NavUser />
-                        </div>
+                    <AppSidebarHeader fixed breadcrumbs={breadcrumbs}>
+                        {auth.impersonating && <ImpersonationBanner />}
+                        <Notification />
+                        <NavUser />
                     </AppSidebarHeader>
                 </SearchProvider>
                 <div className="container py-4">
-                    <div className="mb-2 flex flex-wrap items-center justify-between space-y-2 gap-x-4">
+                    <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                         <div>
-                            <Breadcrumbs breadcrumbs={breadcrumbs} />
                             <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
                             <p className="text-muted-foreground">{description}</p>
                         </div>

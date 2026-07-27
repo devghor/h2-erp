@@ -1,17 +1,12 @@
-import { Badge } from '@/components/ui/badge';
+import { NotificationCard } from '@/components/notification-card';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import type { SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { AlertTriangle, Bell, Check, CheckCircle, CreditCard, MessageSquare } from 'lucide-react';
+import { Bell, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface NotificationItem {
@@ -36,33 +31,21 @@ export function Notification() {
     const [unreadCount, setUnreadCount] = useState(auth.unread_notifications_count);
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState<NotificationItem[]>([]);
-    const [page, setPage] = useState(1);
-    const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [initialized, setInitialized] = useState(false);
-    const sentinelRef = useRef<HTMLDivElement>(null);
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const loadingRef = useRef(false);
     const initializedRef = useRef(false);
 
     useEffect(() => {
         setUnreadCount(auth.unread_notifications_count);
     }, [auth.unread_notifications_count]);
 
-    // loadingRef keeps fetchPage stable (no state dependency) while loadingRef.current guards concurrent calls
     const fetchPage = useCallback(async (pageNum: number) => {
-        if (loadingRef.current) return;
-        loadingRef.current = true;
         setLoading(true);
         try {
             const { data } = await axios.get<PaginatedResponse>(route('notification.dropdown'), {
                 params: { page: pageNum },
             });
             setItems((prev) => (pageNum === 1 ? data.data : [...prev, ...data.data]));
-            setPage(data.current_page);
-            setLastPage(data.last_page);
         } finally {
-            loadingRef.current = false;
             setLoading(false);
         }
     }, []);
@@ -70,30 +53,13 @@ export function Notification() {
     useEffect(() => {
         if (open && !initializedRef.current) {
             initializedRef.current = true;
-            fetchPage(1).then(() => setInitialized(true));
+            fetchPage(1);
         }
         if (!open) {
             initializedRef.current = false;
-            setInitialized(false);
             setItems([]);
-            setPage(1);
-            setLastPage(1);
         }
     }, [open, fetchPage]);
-
-    useEffect(() => {
-        if (!sentinelRef.current || !initialized) return;
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting && !loading && page < lastPage) {
-                    fetchPage(page + 1);
-                }
-            },
-            { root: scrollContainerRef.current, threshold: 0.1 },
-        );
-        observer.observe(sentinelRef.current);
-        return () => observer.disconnect();
-    }, [loading, page, lastPage, initialized, fetchPage]);
 
     const handleMarkAsRead = (id: string) => {
         setItems((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)));
@@ -114,117 +80,78 @@ export function Notification() {
         });
     };
 
-    const getIcon = (type: string) => {
-        switch (type.toLowerCase()) {
-            case 'newcomment':
-            case 'messagenotification':
-                return <MessageSquare className="h-4 w-4 text-blue-500" />;
-            case 'paymentfailed':
-            case 'paymentnotification':
-                return <CreditCard className="h-4 w-4 text-red-500" />;
-            case 'systemupdated':
-            case 'leaveupdated':
-                return <CheckCircle className="h-4 w-4 text-green-500" />;
-            default:
-                return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-        }
+    const handleAction = (id: string) => {
+        setOpen(false);
+        router.visit(route('notification.show', id));
     };
 
+    const count = unreadCount;
+    const MAX_VISIBLE = 5;
+    const visibleItems = items.slice(0, MAX_VISIBLE);
+
     return (
-        <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative scale-95 rounded-full">
-                    <Bell className="size-[1.2rem]" />
-                    {unreadCount > 0 && (
-                        <Badge className="absolute -top-1 -right-1 rounded-full px-1.5 py-0 text-[10px]" variant="destructive">
-                            {unreadCount > 99 ? '99+' : unreadCount}
-                        </Badge>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative size-8">
+                    <Bell />
+                    {count > 0 && (
+                        <span className="text-destructive-foreground absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium">
+                            {count > 9 ? '9+' : count}
+                        </span>
                     )}
                     <span className="sr-only">Notifications</span>
                 </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="flex max-h-[500px] w-96 flex-col p-0">
-                <div className="flex items-center justify-between px-3 py-2">
-                    <DropdownMenuLabel className="p-0">Notifications</DropdownMenuLabel>
-                    {unreadCount > 0 && (
-                        <Button variant="ghost" size="sm" className="text-xs" onClick={handleMarkAllAsRead}>
-                            Mark all as read
-                        </Button>
-                    )}
-                </div>
-                <DropdownMenuSeparator className="m-0" />
-
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto" style={{ maxHeight: '360px' }}>
-                    {!initialized && loading ? (
-                        <div className="py-8 text-center text-sm text-muted-foreground">Loading…</div>
-                    ) : items.length === 0 && initialized ? (
-                        <div className="py-8 text-center text-sm text-muted-foreground">No notifications yet</div>
-                    ) : (
-                        <>
-                            {items.map((n) => (
-                                <div
-                                    key={n.id}
-                                    className={cn('flex flex-col gap-1 border-b px-3 py-2 last:border-b-0', !n.is_read && 'bg-muted/40')}
-                                >
-                                    <div className="flex w-full items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            {getIcon(n.type)}
-                                            <p className="text-sm font-medium">{n.title}</p>
-                                        </div>
-                                        <div className="ml-2 flex shrink-0 items-center gap-1.5">
-                                            {!n.is_read && (
-                                                <button
-                                                    className="text-muted-foreground hover:text-green-600"
-                                                    title="Mark as read"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        handleMarkAsRead(n.id);
-                                                    }}
-                                                >
-                                                    <Check className="h-3 w-3" />
-                                                </button>
-                                            )}
-                                            <Link
-                                                href={route('notification.show', n.id)}
-                                                className="text-xs text-blue-600 hover:underline"
-                                                onClick={() => setOpen(false)}
-                                            >
-                                                View
-                                            </Link>
-                                        </div>
-                                    </div>
-                                    <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
-                                        <p className="line-clamp-1">{n.message}</p>
-                                        <span className="ml-2 shrink-0">{n.time}</span>
-                                    </div>
-                                </div>
-                            ))}
-
-                            {/* IntersectionObserver sentinel */}
-                            <div ref={sentinelRef} className="h-4 w-full" />
-
-                            {loading && initialized && (
-                                <div className="py-2 text-center text-xs text-muted-foreground">Loading more…</div>
-                            )}
-                            {!loading && initialized && page >= lastPage && items.length > 0 && (
-                                <div className="py-2 text-center text-xs text-muted-foreground">All caught up</div>
-                            )}
-                        </>
-                    )}
-                </div>
-
-                <DropdownMenuSeparator className="m-0" />
-                <div className="px-3 py-2 text-center">
-                    <Link
-                        href={route('notification.index')}
-                        className="text-sm text-blue-600 hover:underline"
-                        onClick={() => setOpen(false)}
-                    >
-                        View All Notifications
+            </PopoverTrigger>
+            <PopoverContent align="end" sideOffset={8} className="w-[calc(100vw-2rem)] p-0 sm:w-[380px]">
+                <div className="flex items-center justify-between px-4 py-3">
+                    <Link href={route('notification.index')} className="group flex items-center gap-1" onClick={() => setOpen(false)}>
+                        <h4 className="text-sm font-semibold group-hover:underline">Notifications</h4>
+                        <ChevronRight className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                     </Link>
+                    <div className="flex items-center gap-2">
+                        {count > 0 && <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{count} new</span>}
+                        {count > 0 && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-auto px-2 py-1 text-xs text-muted-foreground"
+                                onClick={handleMarkAllAsRead}
+                            >
+                                Mark all as read
+                            </Button>
+                        )}
+                    </div>
                 </div>
-            </DropdownMenuContent>
-        </DropdownMenu>
+                <Separator />
+                <ScrollArea className="h-[400px]">
+                    <div className="flex flex-col gap-1 p-2">
+                        {loading && items.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-12">
+                                <span className="text-sm text-muted-foreground">Loading…</span>
+                            </div>
+                        ) : items.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-12">
+                                <Bell className="mb-2 size-8 text-muted-foreground/40" />
+                                <p className="text-sm text-muted-foreground">No notifications yet</p>
+                            </div>
+                        ) : (
+                            visibleItems.map((n) => (
+                                <NotificationCard
+                                    key={n.id}
+                                    id={n.id}
+                                    title={n.title}
+                                    body={n.message ?? ''}
+                                    status={n.is_read ? 'read' : 'unread'}
+                                    createdAt={n.created_at}
+                                    actions={[{ id: 'view', label: 'View', type: 'redirect' }]}
+                                    onMarkAsRead={handleMarkAsRead}
+                                    onAction={handleAction}
+                                />
+                            ))
+                        )}
+                    </div>
+                </ScrollArea>
+            </PopoverContent>
+        </Popover>
     );
 }

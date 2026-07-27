@@ -1,15 +1,22 @@
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useSearch } from '@/context/search-provider';
 import { cn } from '@/lib/utils';
+import { type BreadcrumbItem } from '@/types';
+import { Search as SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Search } from './search';
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
+    breadcrumbs?: BreadcrumbItem[];
     fixed?: boolean;
     ref?: React.Ref<HTMLElement>;
 };
 
-export function AppSidebarHeader({ className, fixed, children, ...props }: HeaderProps) {
+export function AppSidebarHeader({ className, fixed, breadcrumbs = [], children, ...props }: HeaderProps) {
+    const { setOpen } = useSearch();
     const [offset, setOffset] = useState(0);
 
     useEffect(() => {
@@ -17,31 +24,33 @@ export function AppSidebarHeader({ className, fixed, children, ...props }: Heade
             setOffset(document.body.scrollTop || document.documentElement.scrollTop);
         };
 
-        // Add scroll listener to the body
         document.addEventListener('scroll', onScroll, { passive: true });
-
-        // Clean up the event listener on unmount
         return () => document.removeEventListener('scroll', onScroll);
     }, []);
+
     return (
         <header
             className={cn(
-                'z-50 h-16',
-                fixed && 'header-fixed peer/header sticky top-0 w-[inherit]',
+                'flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-background/60 px-4 backdrop-blur-md',
+                fixed && 'header-fixed peer/header sticky top-0 z-20',
                 offset > 10 && fixed ? 'shadow' : 'shadow-none',
                 className,
             )}
             {...props}
         >
-            <div
-                className={cn(
-                    'relative flex h-full items-center gap-3 p-4 sm:gap-4',
-                    offset > 10 && fixed && 'after:absolute after:inset-0 after:-z-10 after:bg-background/20 after:backdrop-blur-lg',
-                )}
-            >
+            <div className="flex items-center gap-2">
                 <SidebarTrigger variant="outline" className="max-md:scale-125" />
-                <Separator className="h-6" orientation="vertical" />
-                <Search />
+                <Separator orientation="vertical" className="h-6" />
+                <Breadcrumbs breadcrumbs={breadcrumbs} />
+            </div>
+
+            <div className="flex items-center gap-2">
+                <div className="hidden w-40 md:block lg:w-64">
+                    <Search />
+                </div>
+                <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
+                    <SearchIcon />
+                </Button>
                 {children}
             </div>
         </header>
