@@ -1,15 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead as TableHeadCell, TableHeader, TableRow } from '@/components/ui/table';
-import axios from 'axios';
 import {
     ChevronDown,
     ChevronLeft,
@@ -30,17 +23,52 @@ import {
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-interface TopProgressBarProps {
-    loading: boolean;
+function appendSearchParams(searchParams: URLSearchParams, params: Record<string, any>, prefix = '') {
+    for (const [key, value] of Object.entries(params)) {
+        if (value === null || value === undefined) continue;
+        const fullKey = prefix ? `${prefix}[${key}]` : key;
+        if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+                if (item !== null && typeof item === 'object') {
+                    appendSearchParams(searchParams, item, `${fullKey}[${index}]`);
+                } else {
+                    searchParams.append(`${fullKey}[${index}]`, String(item));
+                }
+            });
+        } else if (typeof value === 'object') {
+            appendSearchParams(searchParams, value, fullKey);
+        } else {
+            searchParams.append(fullKey, String(value));
+        }
+    }
 }
 
-export function TopProgressBar({ loading }: TopProgressBarProps) {
+function buildUrl(baseUrl: string, params: Record<string, any>): string {
+    const url = new URL(baseUrl, window.location.origin);
+    appendSearchParams(url.searchParams, params);
+    return url.toString();
+}
+
+async function fetchWithAuth(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    const response = await fetch(input, init);
+    if (response.status === 401) {
+        window.location.href = '/login';
+        throw new Error('Unauthorized');
+    }
+    return response;
+}
+
+function TopProgressBar({ loading }: { loading: boolean }) {
     const [width, setWidth] = useState(0);
     const intervalRef = useRef<number | null>(null);
+    const wasLoading = useRef(false);
 
     useEffect(() => {
         if (loading) {
-            setWidth(0);
+            if (!wasLoading.current) {
+                setWidth(0);
+                wasLoading.current = true;
+            }
             intervalRef.current = window.setInterval(() => {
                 setWidth((w) => {
                     if (w >= 70) {
@@ -54,6 +82,7 @@ export function TopProgressBar({ loading }: TopProgressBarProps) {
                 });
             }, 180);
         } else {
+            wasLoading.current = false;
             setWidth(100);
             const timeout = setTimeout(() => setWidth(0), 300);
             if (intervalRef.current) {
@@ -78,17 +107,6 @@ export function TopProgressBar({ loading }: TopProgressBarProps) {
         />
     );
 }
-
-// Axios interceptor to handle 401 globally
-axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error?.response?.status === 401) {
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    },
-);
 
 export interface ColumnDef {
     accessorKey: string;
@@ -126,7 +144,21 @@ interface DataTableProps {
     onClearExtraFilters?: () => void;
 }
 
-const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions, tableId, exportTitle = 'export', onSelectionChange, extraParams, extraFilters, extraFilterCount = 0, onClearExtraFilters }: DataTableProps, ref) {
+const DataTable = forwardRef(function DataTable(
+    {
+        columns,
+        dataUrl,
+        extraActions,
+        tableId,
+        exportTitle = 'export',
+        onSelectionChange,
+        extraParams,
+        extraFilters,
+        extraFilterCount = 0,
+        onClearExtraFilters,
+    }: DataTableProps,
+    ref,
+) {
     const encodeUrlKey = (url: string) => encodeURIComponent(url);
     const keySuffix = tableId ?? encodeUrlKey(dataUrl);
 
@@ -173,80 +205,137 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
     const [draw, setDraw] = useState(0);
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [recordsFiltered, setRecordsFiltered] = useState(0);
-    const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const skipNextFetchRef = useRef(false);
 
     // Keep a ref so fetchData always reads the latest extraParams without being a dep
     const extraParamsRef = useRef(extraParams ?? {});
-    useEffect(() => { extraParamsRef.current = extraParams ?? {}; });
+    useEffect(() => {
+        extraParamsRef.current = extraParams ?? {};
+    });
 
     useEffect(() => safeSet(ORDER_KEY, order), [order]);
     useEffect(() => safeSet(LENGTH_KEY, length), [length]);
     useEffect(() => safeSet(START_KEY, start), [start]);
     useEffect(() => safeSet(VISIBILITY_KEY, columnVisibility), [columnVisibility]);
-    useEffect(() => { onSelectionChange?.(Array.from(selectedRows)); }, [selectedRows]);
+    useEffect(() => {
+        onSelectionChange?.(Array.from(selectedRows));
+    }, [selectedRows]);
 
-    const fetchData = useCallback(async (currentStart = start) => {
-        setLoading(true);
-        try {
-            const response = await axios.get(dataUrl, {
-                params: {
-                    draw: draw + 1,
-                    start: currentStart,
-                    length,
-                    order,
-                    columns: columns.map((col: ColumnDef) => ({
-                        data: col.accessorKey,
-                        name: col.accessorKey,
-                        searchable: col.searchable !== false,
-                        orderable: col.sortable !== false,
-                        search: { value: columnFilters[col.accessorKey] ?? '', regex: false },
-                    })),
-                    ...extraParamsRef.current,
-                },
-            });
+    const fetchData = useCallback(
+        async (currentStart = start) => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+            const controller = new AbortController();
+            abortControllerRef.current = controller;
 
-            const result = response.data;
-            setData(result.data || []);
-            setDraw(result.draw ?? draw + 1);
-            setRecordsTotal(result.recordsTotal ?? 0);
-            setRecordsFiltered(result.recordsFiltered ?? 0);
-            setSelectedRows(new Set());
-        } catch (error) {
-            console.error('Failed to fetch data:', error);
-        } finally {
-            setLoading(false);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataUrl, start, length, order, columnFilters]);
+            setLoading(true);
+            try {
+                const response = await fetchWithAuth(
+                    buildUrl(dataUrl, {
+                        draw: draw + 1,
+                        start: currentStart,
+                        length,
+                        order,
+                        columns: columns.map((col: ColumnDef) => ({
+                            data: col.accessorKey,
+                            name: col.accessorKey,
+                            searchable: col.searchable !== false,
+                            orderable: col.sortable !== false,
+                            search: { value: columnFilters[col.accessorKey] ?? '', regex: false },
+                        })),
+                        ...extraParamsRef.current,
+                    }),
+                    {
+                        signal: controller.signal,
+                        headers: { Accept: 'application/json' },
+                    },
+                );
+
+                if (!response.ok) {
+                    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                setData(result.data || []);
+                setDraw(result.draw ?? draw + 1);
+                setRecordsTotal(result.recordsTotal ?? 0);
+                setRecordsFiltered(result.recordsFiltered ?? 0);
+                setSelectedRows(new Set());
+            } catch (error) {
+                if (error instanceof Error && error.name === 'AbortError') {
+                    return;
+                }
+                console.error('Failed to fetch data:', error);
+            } finally {
+                if (abortControllerRef.current === controller) {
+                    abortControllerRef.current = null;
+                    setLoading(false);
+                }
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        },
+        [dataUrl, start, length, order, columnFilters],
+    );
 
     useImperativeHandle(ref, () => ({
         refetch: () => fetchData(),
     }));
 
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+                abortControllerRef.current = null;
+            }
+        };
+    }, []);
+
     // Debounce filter changes
     const filterDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const filterInitialRef = useRef(true);
     useEffect(() => {
+        if (filterInitialRef.current) {
+            filterInitialRef.current = false;
+            return;
+        }
         if (filterDebounceRef.current) clearTimeout(filterDebounceRef.current);
         filterDebounceRef.current = setTimeout(() => {
+            skipNextFetchRef.current = true;
             setStart(0);
             fetchData(0);
         }, 350);
         return () => {
             if (filterDebounceRef.current) clearTimeout(filterDebounceRef.current);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [columnFilters]);
 
     // Refetch when extraParams change (e.g. designation filter from parent)
     const extraParamsStr = JSON.stringify(extraParams ?? {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => { setStart(0); fetchData(0); }, [extraParamsStr]);
+    useEffect(() => {
+        skipNextFetchRef.current = true;
+        setStart(0);
+        fetchData(0);
+    }, [extraParamsStr]);
 
     useEffect(() => {
+        if (skipNextFetchRef.current) {
+            skipNextFetchRef.current = false;
+            return;
+        }
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [start, length, order]);
+
+    useEffect(() => {
+        skipNextFetchRef.current = false;
+    });
 
     const pageCount = Math.max(1, Math.ceil((recordsFiltered || recordsTotal) / length));
     const currentPage = Math.floor(start / length) + 1;
@@ -296,8 +385,8 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
     const handleExport = async (action: 'excel' | 'pdf', mimeType: string, ext: string) => {
         setExportLoading(true);
         try {
-            const response = await axios.get(dataUrl, {
-                params: {
+            const response = await fetchWithAuth(
+                buildUrl(dataUrl, {
                     draw: 1,
                     start: 0,
                     length: -1,
@@ -311,10 +400,15 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
                         search: { value: columnFilters[col.accessorKey] ?? '', regex: false },
                     })),
                     ...extraParamsRef.current,
-                },
-                responseType: 'blob',
-            });
-            const url = URL.createObjectURL(new Blob([response.data], { type: mimeType }));
+                }),
+            );
+
+            if (!response.ok) {
+                throw new Error(`Export failed: ${response.status} ${response.statusText}`);
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(new Blob([blob], { type: mimeType }));
             const a = document.createElement('a');
             a.href = url;
             a.download = `${exportTitle}.${ext}`;
@@ -322,13 +416,15 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to export data:', error);
         } finally {
             setExportLoading(false);
         }
     };
 
     const handleExportExcel = () => handleExport('excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
-    const handleExportPdf   = () => handleExport('pdf',   'application/pdf', 'pdf');
+    const handleExportPdf = () => handleExport('pdf', 'application/pdf', 'pdf');
 
     return (
         <div className="w-full space-y-2">
@@ -461,7 +557,7 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
                                     {columnFilters[col.accessorKey] && (
                                         <button
                                             type="button"
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                             onClick={() =>
                                                 setColumnFilters((prev) => {
                                                     const next = { ...prev };
@@ -489,7 +585,7 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
                         <TableHeader className="sticky top-0 z-20 bg-white">
                             <TableRow>
                                 {/* Select all checkbox */}
-                                <TableHeadCell className="w-8 h-8 py-0">
+                                <TableHeadCell className="h-8 w-8 py-0">
                                     <Checkbox
                                         checked={allSelected}
                                         onCheckedChange={(checked) => toggleSelectAll(!!checked)}
@@ -509,7 +605,11 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
                                                 {col.sortable !== false ? (
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="sm" className="-ml-2 h-7 gap-1 px-2 text-xs data-[state=open]:bg-accent">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="-ml-2 h-7 gap-1 px-2 text-xs data-[state=open]:bg-accent"
+                                                            >
                                                                 <span>{col.header}</span>
                                                                 {order[0]?.column === index ? (
                                                                     order[0]?.dir === 'asc' ? (
@@ -523,19 +623,11 @@ const DataTable = forwardRef(function DataTable({ columns, dataUrl, extraActions
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="start">
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    setOrder([{ column: index, dir: 'asc' }])
-                                                                }
-                                                            >
+                                                            <DropdownMenuItem onClick={() => setOrder([{ column: index, dir: 'asc' }])}>
                                                                 <ChevronUp className="mr-2 h-3.5 w-3.5" />
                                                                 Asc
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    setOrder([{ column: index, dir: 'desc' }])
-                                                                }
-                                                            >
+                                                            <DropdownMenuItem onClick={() => setOrder([{ column: index, dir: 'desc' }])}>
                                                                 <ChevronDown className="mr-2 h-3.5 w-3.5" />
                                                                 Desc
                                                             </DropdownMenuItem>
