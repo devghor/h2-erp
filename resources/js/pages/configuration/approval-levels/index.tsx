@@ -19,9 +19,20 @@ const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItem
 
 type TypeOption = { value: string; label: string };
 type Position = { id: number; name: string };
-type Hrbp = { id: number; name: string };
+type PositionGroup = { id: number; name: string };
+type Hrbp = { id: number; user: { id: number; name: string; email: string } | null };
 
-export default function Index({ typeOptions, positions, hrbps }: { typeOptions: TypeOption[]; positions: Position[]; hrbps: Hrbp[] }) {
+export default function Index({
+    typeOptions,
+    positions,
+    positionGroups,
+    hrbps,
+}: {
+    typeOptions: TypeOption[];
+    positions: Position[];
+    positionGroups: PositionGroup[];
+    hrbps: Hrbp[];
+}) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -30,7 +41,8 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
         name: '',
         type: '',
         position_ids: [] as number[],
-        hrbp_id: undefined as number | undefined,
+        position_group_ids: [] as number[],
+        hrbp_ids: [] as number[],
     });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
@@ -39,8 +51,9 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
         { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
         { accessorKey: 'type_label', header: 'Type', sortable: false, searchable: false },
-        { accessorKey: 'hrbp_name', header: 'HRBP', sortable: false, searchable: false },
+        { accessorKey: 'hrbp_names', header: 'HRBP', sortable: false, searchable: false },
         { accessorKey: 'position_names', header: 'Positions', sortable: false, searchable: false },
+        { accessorKey: 'position_group_names', header: 'Position Groups', sortable: false, searchable: false },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
@@ -56,7 +69,8 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
         name: '',
         type: '',
         position_ids: [] as number[],
-        hrbp_id: undefined as number | undefined,
+        position_group_ids: [] as number[],
+        hrbp_ids: [] as number[],
     });
 
     const handleOpenAdd = () => {
@@ -72,7 +86,8 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
             name: row.name ?? '',
             type: row.type ?? '',
             position_ids: row.position_ids ?? [],
-            hrbp_id: row.hrbp_id ?? undefined,
+            position_group_ids: row.position_group_ids ?? [],
+            hrbp_ids: row.hrbp_ids ?? [],
         });
         setIsEdit(true);
         setOpen(true);
@@ -113,7 +128,8 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
             ...prev,
             type,
             position_ids: type === 'Position' ? prev.position_ids : [],
-            hrbp_id: type === 'HRBP' ? prev.hrbp_id : undefined,
+            position_group_ids: type === 'PositionGroup' ? prev.position_group_ids : [],
+            hrbp_ids: type === 'HRBP' ? prev.hrbp_ids : [],
         }));
     };
 
@@ -126,8 +142,11 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
         if (form.type === 'Position') {
             data.position_ids = form.position_ids;
         }
+        if (form.type === 'PositionGroup') {
+            data.position_group_ids = form.position_group_ids;
+        }
         if (form.type === 'HRBP') {
-            data.hrbp_id = form.hrbp_id;
+            data.hrbp_ids = form.hrbp_ids;
         }
         if (isEdit && form.id) {
             router.put(route('configuration.approval-levels.update', form.id), data, {
@@ -149,6 +168,8 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
     };
 
     const positionOptions = positions.map((p) => ({ id: p.id, label: p.name }));
+    const positionGroupOptions = positionGroups.map((pg) => ({ id: pg.id, label: pg.name }));
+    const hrbpOptions = hrbps.map((h) => ({ id: h.id, label: h.user ? `${h.user.name} (${h.user.email})` : `HRBP #${h.id}` }));
 
     return (
         <AppLayout title="Approval Levels" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Approval Level</Button>}>
@@ -204,25 +225,30 @@ export default function Index({ typeOptions, positions, hrbps }: { typeOptions: 
                         {formErrors.position_ids && <p className="text-sm text-red-500">{formErrors.position_ids}</p>}
                     </div>
                 )}
+                {form.type === 'PositionGroup' && (
+                    <div>
+                        <Label>Position Groups</Label>
+                        <MultiCombobox
+                            options={positionGroupOptions}
+                            value={form.position_group_ids}
+                            onChange={(position_group_ids) => setForm((prev) => ({ ...prev, position_group_ids }))}
+                            placeholder="Select position groups..."
+                            searchPlaceholder="Search position groups..."
+                        />
+                        {formErrors.position_group_ids && <p className="text-sm text-red-500">{formErrors.position_group_ids}</p>}
+                    </div>
+                )}
                 {form.type === 'HRBP' && (
                     <div>
-                        <Label htmlFor="hrbp_id">HRBP</Label>
-                        <Select
-                            value={form.hrbp_id ? String(form.hrbp_id) : ''}
-                            onValueChange={(value) => setForm((prev) => ({ ...prev, hrbp_id: Number(value) }))}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select an HRBP" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {hrbps.map((hrbp) => (
-                                    <SelectItem key={hrbp.id} value={String(hrbp.id)}>
-                                        {hrbp.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {formErrors.hrbp_id && <p className="text-sm text-red-500">{formErrors.hrbp_id}</p>}
+                        <Label>HRBP</Label>
+                        <MultiCombobox
+                            options={hrbpOptions}
+                            value={form.hrbp_ids}
+                            onChange={(hrbp_ids) => setForm((prev) => ({ ...prev, hrbp_ids }))}
+                            placeholder="Select HRBPs..."
+                            searchPlaceholder="Search HRBPs..."
+                        />
+                        {formErrors.hrbp_ids && <p className="text-sm text-red-500">{formErrors.hrbp_ids}</p>}
                     </div>
                 )}
             </BaseDialog>

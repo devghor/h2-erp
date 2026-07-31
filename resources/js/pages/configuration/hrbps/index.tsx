@@ -3,9 +3,8 @@ import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MultiUserCombobox } from '@/components/multi-user-combobox';
+import { UserCombobox } from '@/components/user-combobox';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -24,17 +23,14 @@ export default function Index({ users }: { users: User[] }) {
     const [isEdit, setIsEdit] = useState(false);
     const [form, setForm] = useState({
         id: undefined as number | undefined,
-        name: '',
-        user_ids: [] as number[],
+        user_id: undefined as number | undefined,
     });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
-        { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
-        { accessorKey: 'user_names', header: 'Users', sortable: false, searchable: false },
-        { accessorKey: 'user_count', header: 'User Count', sortable: false, searchable: false },
+        { accessorKey: 'user_name', header: 'User', sortable: false, searchable: false },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
@@ -47,8 +43,7 @@ export default function Index({ users }: { users: User[] }) {
 
     const emptyForm = () => ({
         id: undefined as number | undefined,
-        name: '',
-        user_ids: [] as number[],
+        user_id: undefined as number | undefined,
     });
 
     const handleOpenAdd = () => {
@@ -61,8 +56,7 @@ export default function Index({ users }: { users: User[] }) {
     const handleEdit = (row: any) => {
         setForm({
             id: row.id,
-            name: row.name ?? '',
-            user_ids: row.user_ids ?? [],
+            user_id: row.user_id ?? undefined,
         });
         setIsEdit(true);
         setOpen(true);
@@ -93,16 +87,10 @@ export default function Index({ users }: { users: User[] }) {
             });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const data = {
-            name: form.name,
-            user_ids: form.user_ids,
+            user_id: form.user_id,
         };
         if (isEdit && form.id) {
             router.put(route('configuration.hrbps.update', form.id), data, {
@@ -142,14 +130,9 @@ export default function Index({ users }: { users: User[] }) {
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <div>
-                    <Label htmlFor="name">Name</Label>
-                    <Input name="name" value={form.name} onChange={handleChange} required />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
-                </div>
-                <div>
-                    <Label>Users</Label>
-                    <MultiUserCombobox users={users} value={form.user_ids} onChange={(user_ids) => setForm((prev) => ({ ...prev, user_ids }))} />
-                    {formErrors.user_ids && <p className="text-sm text-red-500">{formErrors.user_ids}</p>}
+                    <Label>User</Label>
+                    <UserCombobox users={users} value={form.user_id} onChange={(user_id) => setForm((prev) => ({ ...prev, user_id }))} />
+                    {formErrors.user_id && <p className="text-sm text-red-500">{formErrors.user_id}</p>}
                 </div>
             </BaseDialog>
         </AppLayout>

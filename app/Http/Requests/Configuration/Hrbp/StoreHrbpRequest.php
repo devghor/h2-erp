@@ -14,9 +14,7 @@ class StoreHrbpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => ['required', 'string', 'max:255'],
-            'user_ids'   => ['nullable', 'array'],
-            'user_ids.*' => ['integer', 'exists:users,id'],
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 }

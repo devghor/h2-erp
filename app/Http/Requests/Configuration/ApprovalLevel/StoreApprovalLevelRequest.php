@@ -18,9 +18,12 @@ class StoreApprovalLevelRequest extends FormRequest
         return [
             'name'           => ['required', 'string', 'max:255'],
             'type'           => ['required', new Enum(ApprovalLevelTypeEnum::class)],
-            'position_ids'   => ['required_if:type,Position', 'prohibited_unless:type,Position', 'array'],
-            'position_ids.*' => ['integer', 'exists:positions,id'],
-            'hrbp_id'        => ['required_if:type,HRBP', 'prohibited_unless:type,HRBP', 'nullable', 'integer', 'exists:hrbps,id'],
+            'position_ids'         => ['required_if:type,Position', 'prohibited_unless:type,Position', 'array'],
+            'position_ids.*'       => ['integer', 'exists:positions,id'],
+            'position_group_ids'   => ['required_if:type,PositionGroup', 'prohibited_unless:type,PositionGroup', 'array'],
+            'position_group_ids.*' => ['integer', 'exists:position_groups,id'],
+            'hrbp_ids'             => ['required_if:type,HRBP', 'prohibited_unless:type,HRBP', 'array'],
+            'hrbp_ids.*'           => ['integer', 'exists:hrbps,id'],
         ];
     }
 }

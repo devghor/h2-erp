@@ -13,8 +13,7 @@ return new class extends Migration
             $table->id();
             MigrationHelper::ulidField($table);
             MigrationHelper::companyIdField($table);
-            $table->string('name');
-            $table->json('user_ids')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable()->after('name');
 
             MigrationHelper::commonFields($table);
         });

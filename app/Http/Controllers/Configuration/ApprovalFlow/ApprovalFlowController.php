@@ -34,7 +34,7 @@ class ApprovalFlowController extends Controller
 
     public function show(string $id)
     {
-        $flow = ApprovalFlow::with(['groups.positionGroup', 'groups.items.approvalLevel.hrbp'])->findOrFail($id);
+        $flow = ApprovalFlow::with(['groups.positionGroup', 'groups.items.approvalLevel'])->findOrFail($id);
 
         return inertia('configuration/approval-flows/show', [
             'flow' => $flow,

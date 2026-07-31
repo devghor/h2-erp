@@ -16,10 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->json('position_ids')->nullable();
-            $table->unsignedBigInteger('hrbp_id')->nullable();
-
-            $table->foreign('hrbp_id')->references('id')->on('hrbps')->onDelete('set null');
-
+            $table->json('hrbp_ids')->nullable();
+            $table->json('position_group_ids')->nullable();
             MigrationHelper::commonFields($table);
         });
     }

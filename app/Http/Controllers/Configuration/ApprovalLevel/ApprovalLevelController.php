@@ -9,6 +9,7 @@ use App\Http\Requests\Configuration\ApprovalLevel\StoreApprovalLevelRequest;
 use App\Http\Requests\Configuration\ApprovalLevel\UpdateApprovalLevelRequest;
 use App\Models\Configuration\Hrbp\Hrbp;
 use App\Models\Configuration\Position\Position;
+use App\Models\Configuration\PositionGroup\PositionGroup;
 use App\Services\Configuration\ApprovalLevel\ApprovalLevelService;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,8 @@ class ApprovalLevelController extends Controller
         return $dataTable->renderInertia('configuration/approval-levels/index', [
             'typeOptions' => ApprovalLevelTypeEnum::options(),
             'positions' => Position::select(['id', 'name'])->get(),
-            'hrbps' => Hrbp::select(['id', 'name'])->get(),
+            'positionGroups' => PositionGroup::select(['id', 'name'])->get(),
+            'hrbps' => Hrbp::with('user:id,name,email')->select(['id', 'user_id'])->get(),
         ]);
     }
 

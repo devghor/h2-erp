@@ -4,20 +4,22 @@ namespace App\Enums\Configuration;
 
 enum ApprovalLevelTypeEnum: string
 {
-    case DivisionHead = 'DivisionHead';
-    case HOD          = 'HOD';
-    case LineManager  = 'LineManager';
-    case HRBP         = 'HRBP';
-    case Position     = 'Position';
+    case DivisionHead  = 'DivisionHead';
+    case HOD           = 'HOD';
+    case LineManager   = 'LineManager';
+    case HRBP          = 'HRBP';
+    case Position      = 'Position';
+    case PositionGroup = 'PositionGroup';
 
     public function label(): string
     {
         return match ($this) {
-            self::DivisionHead => 'Division Head',
-            self::HOD          => 'Head of Department',
-            self::LineManager  => 'Line Manager',
-            self::HRBP         => 'HRBP',
-            self::Position     => 'Position',
+            self::DivisionHead  => 'Division Head',
+            self::HOD           => 'Head of Department',
+            self::LineManager   => 'Line Manager',
+            self::HRBP          => 'HRBP',
+            self::Position      => 'Position',
+            self::PositionGroup => 'Position Group',
         };
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Configuration\Hrbp;
 
+use App\Models\Uam\User;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -13,14 +14,11 @@ class Hrbp extends Model
     protected $table = 'hrbps';
 
     protected $fillable = [
-        'name',
-        'user_ids',
+        'user_id',
     ];
 
-    protected function casts(): array
+    public function user()
     {
-        return [
-            'user_ids' => 'array',
-        ];
+        return $this->belongsTo(User::class);
     }
 }

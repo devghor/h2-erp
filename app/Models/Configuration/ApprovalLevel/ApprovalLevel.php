@@ -3,7 +3,6 @@
 namespace App\Models\Configuration\ApprovalLevel;
 
 use App\Enums\Configuration\ApprovalLevelTypeEnum;
-use App\Models\Configuration\Hrbp\Hrbp;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -18,7 +17,8 @@ class ApprovalLevel extends Model
         'name',
         'type',
         'position_ids',
-        'hrbp_id',
+        'position_group_ids',
+        'hrbp_ids',
     ];
 
     protected function casts(): array
@@ -26,11 +26,8 @@ class ApprovalLevel extends Model
         return [
             'type' => ApprovalLevelTypeEnum::class,
             'position_ids' => 'array',
+            'position_group_ids' => 'array',
+            'hrbp_ids' => 'array',
         ];
-    }
-
-    public function hrbp()
-    {
-        return $this->belongsTo(Hrbp::class);
     }
 }

@@ -31,12 +31,16 @@ class ApprovalLevelService extends CoreService
     {
         $type = $data['type'];
 
-        $data['hrbp_id'] = $type === ApprovalLevelTypeEnum::HRBP->value
-            ? ($data['hrbp_id'] ?? null)
+        $data['hrbp_ids'] = $type === ApprovalLevelTypeEnum::HRBP->value
+            ? ($data['hrbp_ids'] ?? [])
             : null;
 
         $data['position_ids'] = $type === ApprovalLevelTypeEnum::Position->value
             ? ($data['position_ids'] ?? [])
+            : null;
+
+        $data['position_group_ids'] = $type === ApprovalLevelTypeEnum::PositionGroup->value
+            ? ($data['position_group_ids'] ?? [])
             : null;
 
         return $data;
