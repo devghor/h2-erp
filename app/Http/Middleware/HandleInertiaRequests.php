@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
 
         $companies = [];
 
-        $user = $request->user() ?? [];
+        $user = $request->user();
 
         $selectedCompany = tenant();
 

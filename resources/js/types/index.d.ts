@@ -9,7 +9,7 @@ export interface Company {
 }
 
 export interface Auth {
-    user: User;
+    user: User | null;
     companies: Company[] | null | undefined;
     company: Company | null;
     permissions: string[];
