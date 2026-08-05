@@ -31,7 +31,7 @@ export default function AppSidebarLayout({
                         <NavUser />
                     </AppSidebarHeader>
                 </SearchProvider>
-                <div className="container py-4">
+                <div className="container mx-auto py-4">
                     <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight">{title}</h2>

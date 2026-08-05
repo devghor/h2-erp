@@ -35,9 +35,11 @@ use App\Http\Controllers\Uam\User\ImpersonateController;
 use App\Http\Controllers\Uam\User\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('home');
+Route::inertia('/', 'welcome')->name('home');
+
+Route::get('/login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
     /**

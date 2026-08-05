@@ -9,31 +9,31 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "barryvdh/laravel-dompdf": "^3.1",
+        "php": "^8.3",
         "inertiajs/inertia-laravel": "^3.0",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
-        "laravel/wayfinder": "^0.1.9",
-        "rap2hpoutre/fast-excel": "^5.6",
-        "spatie/laravel-medialibrary": "^11.14",
-        "spatie/laravel-permission": "^6.21",
+        "laravel/chisel": "^0.1.0",
+        "laravel/fortify": "^1.37.2",
+        "laravel/framework": "^13.17",
+        "laravel/tinker": "^3.0",
+        "laravel/wayfinder": "*",
+        "rap2hpoutre/fast-excel": "*",
+        "spatie/laravel-medialibrary": "*",
+        "spatie/laravel-permission": "*",
         "stancl/tenancy": "dev-master",
-        "tightenco/ziggy": "^2.5",
-        "yajra/laravel-datatables": "^12.0",
-        "yajra/laravel-datatables-buttons": "^12.3"
+        "tightenco/ziggy": "*",
+        "yajra/laravel-datatables": "*",
+        "yajra/laravel-datatables-buttons": "*"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
+        "fakerphp/faker": "^1.24",
         "larastan/larastan": "^3.9",
-        "laravel/boost": "^2.4",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.18",
-        "laravel/sail": "^1.41",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
+        "laravel/sail": "^1.53",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3",
-        "rector/rector": "^2.1"
+        "nunomaduro/collision": "^8.9.3",
+        "phpunit/phpunit": "^12.5.23"
     },
     "autoload": {
         "psr-4": {
@@ -58,10 +58,28 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c blue,magenta,red,yellow \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"npm run dev\" --names=server,queue,vite --kill-others"
+            "@php artisan dev"
+        ],
+        "lint": [
+            "pint --parallel"
+        ],
+        "lint:check": [
+            "pint --parallel --test"
+        ],
+        "ci:check": [
+            "Composer\\Config::disableProcessTimeout",
+            "npm run lint:check",
+            "npm run format:check",
+            "npm run types:check",
+            "@test"
+        ],
+        "types:check": [
+            "phpstan analyse"
         ],
         "test": [
             "@php artisan config:clear --ansi",
+            "@lint:check",
+            "@types:check",
             "@php artisan test"
         ],
         "post-autoload-dump": [
@@ -76,19 +94,18 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\""
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
-    "scripts-descriptions": {
-        "phpstan": "Run PHPStan static analysis against your application."
-    },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [],
+            "installer": {
+                "post-create-project": []
+            }
         }
     },
     "config": {
