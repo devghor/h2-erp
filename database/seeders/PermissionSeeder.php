@@ -161,6 +161,22 @@ class PermissionSeeder extends Seeder
             ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::UpdateConfigurationApprovalFlow->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Configuration', 'group' => 'Configuration > Approval Flow', 'name' => PermissionEnum::DeleteConfigurationApprovalFlow->value, 'display_name' => self::LABEL_DELETE],
 
+            // Shift
+            ['module' => 'Configuration', 'group' => 'Configuration > Shift', 'name' => PermissionEnum::CreateConfigurationShift->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Shift', 'name' => PermissionEnum::ReadConfigurationShift->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Configuration', 'group' => 'Configuration > Shift', 'name' => PermissionEnum::UpdateConfigurationShift->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Configuration', 'group' => 'Configuration > Shift', 'name' => PermissionEnum::DeleteConfigurationShift->value, 'display_name' => self::LABEL_DELETE],
+
+            /**
+             * Leave Module
+             */
+
+            // Leave Type
+            ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::CreateLeaveLeaveType->value, 'display_name' => self::LABEL_CREATE],
+            ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::ReadLeaveLeaveType->value, 'display_name' => self::LABEL_READ],
+            ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::UpdateLeaveLeaveType->value, 'display_name' => self::LABEL_UPDATE],
+            ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::DeleteLeaveLeaveType->value, 'display_name' => self::LABEL_DELETE],
+
             /**
              * Product Module
              */
