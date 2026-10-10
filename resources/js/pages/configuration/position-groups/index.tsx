@@ -3,7 +3,7 @@ import { RowActions } from '@/components/data-table/row-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import BulkDeleteButton from '@/components/bulk-delete-button';
+import BulkDeleteButton from '@/components/button/bulk-delete-button';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';

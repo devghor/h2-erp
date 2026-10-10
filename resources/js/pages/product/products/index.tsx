@@ -1,4 +1,4 @@
-import BulkDeleteButton from '@/components/bulk-delete-button';
+import BulkDeleteButton from '@/components/button/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
 import { Button } from '@/components/ui/button';

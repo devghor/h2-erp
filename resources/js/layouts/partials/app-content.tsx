@@ -1,6 +1,6 @@
 import { SidebarInset } from '@/components/ui/sidebar';
 import * as React from 'react';
-import HeadingSmall from './heading-small';
+import HeadingSmall from '@/components/typography/heading-small';
 
 interface AppContentProps extends React.ComponentProps<'main'> {
     variant?: 'header' | 'sidebar';

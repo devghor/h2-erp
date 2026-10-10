@@ -1,8 +1,8 @@
-import BulkDeleteButton from '@/components/bulk-delete-button';
+import BulkDeleteButton from '@/components/button/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
-import { MultiCombobox } from '@/components/multi-combobox';
+import { MultiCombobox } from '@/components/form/multi-combobox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -1,4 +1,4 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Breadcrumbs } from '@/layouts/partials/breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Search as SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Search } from './search';
+import { Search } from '@/layouts/partials/search';
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
     breadcrumbs?: BreadcrumbItem[];

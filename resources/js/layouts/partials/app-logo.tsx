@@ -1,4 +1,4 @@
-import AppLogoIcon from './app-logo-icon';
+import AppLogoIcon from '@/layouts/partials/app-logo-icon';
 
 export default function AppLogo() {
     return (

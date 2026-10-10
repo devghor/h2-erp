@@ -1,4 +1,4 @@
-import BulkDeleteButton from '@/components/bulk-delete-button';
+import BulkDeleteButton from '@/components/button/bulk-delete-button';
 import DataTable from '@/components/data-table/data-table';
 import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
@@ -12,7 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { UserCombobox } from '@/components/user-combobox';
+import { UserCombobox } from '@/components/form/user-combobox';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';

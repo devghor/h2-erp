@@ -1,6 +1,6 @@
-import { SectionHeader } from '@/components/dashboard/section-header';
-import { Sparkline } from '@/components/dashboard/sparkline';
-import { StatCard } from '@/components/dashboard/stat-card';
+import { SectionHeader } from '@/components/features/dashboard/section-header';
+import { Sparkline } from '@/components/features/dashboard/sparkline';
+import { StatCard } from '@/components/features/dashboard/stat-card';
 import { Button } from '@/components/ui/button';
 import {
     Card,

@@ -4,7 +4,7 @@ import { useSearch } from '@/context/search-provider';
 import { router, usePage } from '@inertiajs/react';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import React from 'react';
-import { ScrollArea } from './ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // === Helper: Filter sidebar items by permission ===
 function filterSidebarItemsByPermission(items: any[], permissions: string[]): any {

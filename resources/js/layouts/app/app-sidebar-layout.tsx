@@ -1,10 +1,10 @@
-import { AppContent } from '@/components/app-content';
-import { AppShell } from '@/components/app-shell';
-import { AppSidebar } from '@/components/app-sidebar';
-import { AppSidebarHeader } from '@/components/app-sidebar-header';
-import { ImpersonationBanner } from '@/components/impersonation-banner';
-import { NavUser } from '@/components/nav-user';
-import { Notification } from '@/components/notification';
+import { AppContent } from '@/layouts/partials/app-content';
+import { AppShell } from '@/layouts/partials/app-shell';
+import { AppSidebar } from '@/layouts/partials/app-sidebar';
+import { AppSidebarHeader } from '@/layouts/partials/app-sidebar-header';
+import { ImpersonationBanner } from '@/layouts/partials/impersonation-banner';
+import { NavUser } from '@/layouts/partials/nav-user';
+import { Notification } from '@/components/features/notification/notification';
 import { SearchProvider } from '@/context/search-provider';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';

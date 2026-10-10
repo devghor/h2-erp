@@ -1,4 +1,4 @@
-import { NotificationCard } from '@/components/notification-card';
+import { NotificationCard } from '@/components/features/notification/notification-card';
 import { Button } from '@/components/ui/button';
 import {
     Popover,

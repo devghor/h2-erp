@@ -1,4 +1,4 @@
-import { CommandMenu } from '@/components/command-menu';
+import { CommandMenu } from '@/layouts/partials/command-menu';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type SearchContextType = {
