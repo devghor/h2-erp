@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead as TableHeadCell, TableHeader, TableRow } from '@/components/ui/table';
 import {
     ChevronDown,
@@ -59,56 +60,6 @@ async function fetchWithAuth(input: RequestInfo | URL, init?: RequestInit): Prom
         throw new Error('Unauthorized');
     }
     return response;
-}
-
-function TopProgressBar({ loading }: { loading: boolean }) {
-    const [width, setWidth] = useState(0);
-    const intervalRef = useRef<number | null>(null);
-    const wasLoading = useRef(false);
-
-    useEffect(() => {
-        if (loading) {
-            if (!wasLoading.current) {
-                setWidth(0);
-                wasLoading.current = true;
-            }
-            intervalRef.current = window.setInterval(() => {
-                setWidth((w) => {
-                    if (w >= 70) {
-                        if (intervalRef.current) {
-                            clearInterval(intervalRef.current);
-                        }
-                        return w;
-                    }
-                    const increment = w < 20 ? 2 : w < 50 ? 1.5 : 0.8;
-                    return Math.min(w + increment, 70);
-                });
-            }, 180);
-        } else {
-            wasLoading.current = false;
-            setWidth(100);
-            const timeout = setTimeout(() => setWidth(0), 300);
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-            return () => clearTimeout(timeout);
-        }
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [loading]);
-
-    return (
-        <div
-            className={`fixed top-0 left-0 z-50 h-0.5 bg-primary transition-all duration-300 ease-out`}
-            style={{
-                width: `${width}%`,
-                opacity: width > 0 ? 0.8 : 0,
-            }}
-        />
-    );
 }
 
 export interface ColumnDef {
@@ -638,7 +589,6 @@ const DataTable = forwardRef(function DataTable(
 
             {/* Table */}
             <div className="relative overflow-x-auto rounded-md border">
-                <TopProgressBar loading={loading} />
                 <div className="w-full">
                     <Table>
                         <TableHeader className="sticky top-0 z-20 bg-white">
@@ -713,7 +663,23 @@ const DataTable = forwardRef(function DataTable(
                         </TableHeader>
 
                         <TableBody>
-                            {data.length > 0 ? (
+                            {loading ? (
+                                Array.from({ length: Math.min(length, 10) }).map((_, rowIndex) => (
+                                    <TableRow key={`skeleton-${rowIndex}`}>
+                                        <TableCell className="w-8 py-1.5">
+                                            <Skeleton className="h-4 w-4" />
+                                        </TableCell>
+                                        {columns.map(
+                                            (col: any) =>
+                                                columnVisibility[col.accessorKey] && (
+                                                    <TableCell key={col.accessorKey} className="py-1.5">
+                                                        <Skeleton className="h-4 w-full" />
+                                                    </TableCell>
+                                                ),
+                                        )}
+                                    </TableRow>
+                                ))
+                            ) : data.length > 0 ? (
                                 data.map((row, rowIndex) => {
                                     const rowId = row.id ?? rowIndex;
                                     const isSelected = selectedRows.has(rowId);
