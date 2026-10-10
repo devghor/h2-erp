@@ -30,6 +30,8 @@ class PermissionSeeder extends Seeder
              * Uam Module
              */
 
+            ['module' => 'Uam', 'group' => 'Uam', 'name' => PermissionEnum::ReadUam->value, 'display_name' => self::LABEL_READ],
+
             // User
             ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::CreateUamUser->value, 'display_name' => self::LABEL_CREATE],
             ['module' => 'Uam', 'group' => 'Uam > User', 'name' => PermissionEnum::ReadUamUser->value, 'display_name' => self::LABEL_READ],
@@ -52,6 +54,8 @@ class PermissionSeeder extends Seeder
              * Employee Module
              */
 
+            ['module' => 'Employee', 'group' => 'Employee', 'name' => PermissionEnum::ReadEmployee->value, 'display_name' => self::LABEL_READ],
+
             // Employee
             ['module' => 'Employee', 'group' => 'Employee > Employees', 'name' => PermissionEnum::CreateEmployeeEmployee->value, 'display_name' => self::LABEL_CREATE],
             ['module' => 'Employee', 'group' => 'Employee > Employees', 'name' => PermissionEnum::ReadEmployeeEmployee->value, 'display_name' => self::LABEL_READ],
@@ -61,6 +65,8 @@ class PermissionSeeder extends Seeder
             /**
              * Payroll Module
              */
+
+            ['module' => 'Payroll', 'group' => 'Payroll', 'name' => PermissionEnum::ReadPayroll->value, 'display_name' => self::LABEL_READ],
 
             // Salary Head
             ['module' => 'Payroll', 'group' => 'Payroll > Salary Head', 'name' => PermissionEnum::CreatePayrollSalaryHead->value, 'display_name' => self::LABEL_CREATE],
@@ -96,6 +102,8 @@ class PermissionSeeder extends Seeder
             /**
              * Configuration Module
              */
+
+            ['module' => 'Configuration', 'group' => 'Configuration', 'name' => PermissionEnum::ReadConfiguration->value, 'display_name' => self::LABEL_READ],
 
             // Company
             ['module' => 'Configuration', 'group' => 'Configuration > Company', 'name' => PermissionEnum::CreateConfigurationCompany->value, 'display_name' => self::LABEL_CREATE],
@@ -172,6 +180,8 @@ class PermissionSeeder extends Seeder
             /**
              * Leave Module
              */
+
+            ['module' => 'Leave', 'group' => 'Leave', 'name' => PermissionEnum::ReadLeave->value, 'display_name' => self::LABEL_READ],
 
             // Leave Type
             ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::CreateLeaveLeaveType->value, 'display_name' => self::LABEL_CREATE],

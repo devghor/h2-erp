@@ -8,6 +8,7 @@ use App\Models\Uam\Role;
 use App\Models\Uam\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 
 class AdminSeeder extends Seeder
 {
@@ -65,6 +66,8 @@ class AdminSeeder extends Seeder
 
     public function run(): void
     {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         foreach ($this->users as $data) {
             $company = Company::where('name', $data['company_name'])->first();
             if (! $company) {

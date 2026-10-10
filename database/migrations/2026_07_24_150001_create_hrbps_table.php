@@ -12,9 +12,9 @@ return new class extends Migration
         Schema::create('hrbps', function (Blueprint $table) {
             $table->id();
             MigrationHelper::ulidField($table);
+            $table->string('name')->nullable();
+            $table->unsignedBigInteger('user_id');
             MigrationHelper::companyIdField($table);
-            $table->unsignedBigInteger('user_id')->nullable()->after('name');
-
             MigrationHelper::commonFields($table);
         });
     }
