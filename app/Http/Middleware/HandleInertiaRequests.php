@@ -54,7 +54,7 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $unreadNotificationsCount = $user->unreadNotifications()->count();
             if ($user->isSuperAdmin()) {
-                $permissions = array_map(fn($p) => $p->value, PermissionEnum::cases());
+                $permissions = array_map(fn ($p) => $p->value, PermissionEnum::cases());
                 $companies = Company::all();
             } else {
                 $permissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
@@ -74,7 +74,7 @@ class HandleInertiaRequests extends Middleware
                 'unread_notifications_count' => $unreadNotificationsCount,
                 'impersonating' => $request->session()->has('impersonator_id'),
             ],
-            'ziggy' => fn(): array => [
+            'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],

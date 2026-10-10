@@ -1,18 +1,19 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Configuration\ApprovalFlow\ApprovalFlowController;
 use App\Http\Controllers\Configuration\ApprovalFlow\ApprovalFlowGroupController;
 use App\Http\Controllers\Configuration\ApprovalLevel\ApprovalLevelController;
 use App\Http\Controllers\Configuration\Branch\BranchController;
 use App\Http\Controllers\Configuration\Company\CompanyController;
 use App\Http\Controllers\Configuration\Department\DepartmentController;
+use App\Http\Controllers\Configuration\Designation\DesignationController;
+use App\Http\Controllers\Configuration\Division\DivisionController;
 use App\Http\Controllers\Configuration\Hrbp\HrbpController;
 use App\Http\Controllers\Configuration\Position\PositionController;
 use App\Http\Controllers\Configuration\PositionGroup\PositionGroupController;
 use App\Http\Controllers\Configuration\Shift\ShiftController;
 use App\Http\Controllers\Configuration\Unit\UnitController;
-use App\Http\Controllers\Configuration\Designation\DesignationController;
-use App\Http\Controllers\Configuration\Division\DivisionController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Employee\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeeContact\EmployeeContactController;
@@ -33,7 +34,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
 
-Route::get('/login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'create'])
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
     ->name('login');
 
@@ -60,8 +61,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::post('mark-all-read', [NotificationController::class, 'markAllRead'])->name('mark-all-read');
             Route::delete('{id}', [NotificationController::class, 'destroy'])->name('destroy');
         });
-
-
 
     /*
      * User Access Management Module
@@ -199,5 +198,5 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         });
 });
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

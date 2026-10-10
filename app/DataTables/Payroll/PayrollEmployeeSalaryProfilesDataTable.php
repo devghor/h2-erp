@@ -64,11 +64,11 @@ class PayrollEmployeeSalaryProfilesDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'PayrollEmployeeSalaryProfiles_' . date('YmdHis');
+        return 'PayrollEmployeeSalaryProfiles_'.date('YmdHis');
     }
 }

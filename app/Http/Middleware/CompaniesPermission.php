@@ -15,7 +15,7 @@ class CompaniesPermission
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!empty(auth()->user())) {
+        if (! empty(auth()->user())) {
             setPermissionsTeamId(tenant('id'));
         }
 

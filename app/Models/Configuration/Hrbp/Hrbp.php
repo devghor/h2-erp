@@ -9,7 +9,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Hrbp extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'hrbps';
 

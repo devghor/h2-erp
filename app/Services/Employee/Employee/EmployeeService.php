@@ -19,13 +19,13 @@ class EmployeeService extends CoreService
     public function create(array $data): Model
     {
         if (empty($data['full_name'])) {
-            $data['full_name'] = trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
+            $data['full_name'] = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
         }
 
         return DB::transaction(function () use ($data) {
             $user = User::create([
-                'name'     => $data['full_name'],
-                'email'    => $data['email'],
+                'name' => $data['full_name'],
+                'email' => $data['email'],
                 'password' => Str::random(16),
             ]);
 

@@ -32,6 +32,7 @@ class ApprovalLevelController extends Controller
     public function store(StoreApprovalLevelRequest $request)
     {
         $this->approvalLevelService->create($request->validated());
+
         return redirect()->back()->with('success', 'Approval level created successfully.');
     }
 
@@ -48,6 +49,7 @@ class ApprovalLevelController extends Controller
     public function update(UpdateApprovalLevelRequest $request, string $id)
     {
         $this->approvalLevelService->update($request->validated(), $id);
+
         return redirect()->route('configuration.approval-levels.index')->with([
             'success' => __('Approval level updated successfully.'),
         ]);
@@ -56,6 +58,7 @@ class ApprovalLevelController extends Controller
     public function destroy(string $id)
     {
         $this->approvalLevelService->delete($id);
+
         return redirect()->route('configuration.approval-levels.index')->with([
             'success' => __('Approval level deleted successfully.'),
         ]);

@@ -15,8 +15,8 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, BelongsToTenant;
+    /** @use HasFactory<UserFactory> */
+    use BelongsToTenant, HasFactory, HasRoles, Notifiable;
 
     protected static function newFactory(): Factory
     {
@@ -48,7 +48,6 @@ class User extends Authenticatable
 
     protected $guard_name = ['web'];
 
-
     /**
      * Get the attributes that should be cast.
      *
@@ -67,7 +66,6 @@ class User extends Authenticatable
     {
         return ['web'];
     }
-
 
     public function companies()
     {

@@ -9,7 +9,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollEmployeeSalaryProfileItem extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_employee_salary_profile_items';
 

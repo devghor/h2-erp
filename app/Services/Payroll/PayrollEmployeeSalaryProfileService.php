@@ -21,12 +21,12 @@ class PayrollEmployeeSalaryProfileService extends CoreService
         PayrollEmployeeSalaryProfile::where('user_id', $userId)->update(['is_active' => false]);
 
         $profile = $this->model->create([
-            'user_id'          => $userId,
-            'basic_amount'     => $basicAmount,
-            'gross_amount'     => $grossAmount,
+            'user_id' => $userId,
+            'basic_amount' => $basicAmount,
+            'gross_amount' => $grossAmount,
             'deduction_amount' => $deductionAmount,
-            'net_amount'       => $netAmount,
-            'is_active'        => true,
+            'net_amount' => $netAmount,
+            'is_active' => true,
         ]);
 
         $profile->items()->createMany($items);
@@ -48,9 +48,9 @@ class PayrollEmployeeSalaryProfileService extends CoreService
 
         $salaryStructure = $employee->designation_id
             ? PayrollSalaryStructure::where('designation_id', $employee->designation_id)
-            ->where('is_active', true)
-            ->latest()
-            ->first()
+                ->where('is_active', true)
+                ->latest()
+                ->first()
             : null;
 
         $salaryHeads = PayrollSalaryHead::where('is_active', true)

@@ -20,10 +20,10 @@ class LeaveTypeController extends Controller
     public function index(LeaveTypesDataTable $dataTable)
     {
         return $dataTable->renderInertia('leave/leave-types/index', [
-            'employeeTypes'     => EmployeeTypeEnum::options(),
+            'employeeTypes' => EmployeeTypeEnum::options(),
             'availabilityTypes' => LeaveAvailabilityEnum::options(),
-            'frequencyTypes'    => LeaveFrequencyEnum::options(),
-            'eligibilityTypes'  => LeaveEligibilityEnum::options(),
+            'frequencyTypes' => LeaveFrequencyEnum::options(),
+            'eligibilityTypes' => LeaveEligibilityEnum::options(),
         ]);
     }
 
@@ -32,6 +32,7 @@ class LeaveTypeController extends Controller
     public function store(StoreLeaveTypeRequest $request)
     {
         $this->leaveTypeService->create($request->validated());
+
         return redirect()->back()->with('success', 'Leave type created successfully.');
     }
 
@@ -48,6 +49,7 @@ class LeaveTypeController extends Controller
     public function update(UpdateLeaveTypeRequest $request, string $id)
     {
         $this->leaveTypeService->update($request->validated(), $id);
+
         return redirect()->route('leave.leave-types.index')->with([
             'success' => __('Leave type updated successfully.'),
         ]);
@@ -56,6 +58,7 @@ class LeaveTypeController extends Controller
     public function destroy(string $id)
     {
         $this->leaveTypeService->delete($id);
+
         return redirect()->route('leave.leave-types.index')->with([
             'success' => __('Leave type deleted successfully.'),
         ]);

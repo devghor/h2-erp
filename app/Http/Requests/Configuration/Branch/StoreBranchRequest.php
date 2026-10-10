@@ -15,13 +15,13 @@ class StoreBranchRequest extends FormRequest
     {
         return [
             'company_id' => 'required|integer|exists:companies,id',
-            'name'       => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'short_name' => 'nullable|string|max:255',
-            'code'       => 'nullable|string|max:50',
-            'address'    => 'nullable|string|max:500',
-            'phone'      => 'nullable|string|max:20',
-            'mobile'     => 'nullable|string|max:20',
-            'email'      => 'nullable|email|max:255',
+            'code' => 'nullable|string|max:50',
+            'address' => 'nullable|string|max:500',
+            'phone' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
         ];
     }
 }

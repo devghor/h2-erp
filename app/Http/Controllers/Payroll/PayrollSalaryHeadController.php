@@ -21,10 +21,10 @@ class PayrollSalaryHeadController extends Controller
     public function index(PayrollSalaryHeadsDataTable $dataTable)
     {
         return $dataTable->renderInertia('payroll/salary-heads/index', [
-            'modes'               => SalaryHeadModeEnum::options(),
-            'glPrefixTypes'       => SalaryHeadGlPrefixTypeEnum::options(),
+            'modes' => SalaryHeadModeEnum::options(),
+            'glPrefixTypes' => SalaryHeadGlPrefixTypeEnum::options(),
             'identificationTypes' => SalaryHeadIdentificationTypeEnum::options(),
-            'categories'          => SalaryHeadCategoryEnum::options(),
+            'categories' => SalaryHeadCategoryEnum::options(),
             'taxCalculationTypes' => SalaryHeadTaxCalculationTypeEnum::options(),
         ]);
     }

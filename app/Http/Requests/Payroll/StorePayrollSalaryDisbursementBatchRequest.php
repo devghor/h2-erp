@@ -16,12 +16,12 @@ class StorePayrollSalaryDisbursementBatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => ['required', 'string', 'max:255'],
-            'year'       => ['required', 'integer', 'min:2000', 'max:2100'],
-            'month'      => ['required', 'integer', 'min:1', 'max:12'],
-            'type'       => ['required', new Enum(SalaryDisbursementBatchTypeEnum::class)],
-            'remark'     => ['nullable', 'string'],
-            'user_ids'   => ['nullable', 'array'],
+            'name' => ['required', 'string', 'max:255'],
+            'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'type' => ['required', new Enum(SalaryDisbursementBatchTypeEnum::class)],
+            'remark' => ['nullable', 'string'],
+            'user_ids' => ['nullable', 'array'],
             'user_ids.*' => ['integer', 'exists:users,id'],
         ];
     }

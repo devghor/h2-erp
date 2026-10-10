@@ -2,14 +2,14 @@
 
 namespace App\Models\Employee\Employee;
 
+use App\Enums\Employee\EmployeeStatusEnum;
+use App\Enums\Employee\EmployeeTypeEnum;
 use App\Models\Configuration\Department\Department;
 use App\Models\Configuration\Designation\Designation;
 use App\Models\Employee\EmployeeContact\EmployeeContact;
 use App\Models\Employee\EmployeeDocument\EmployeeDocument;
 use App\Models\Employee\EmployeeEducation\EmployeeEducation;
 use App\Models\Employee\EmployeeExperience\EmployeeExperience;
-use App\Enums\Employee\EmployeeStatusEnum;
-use App\Enums\Employee\EmployeeTypeEnum;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +18,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Employee extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'employees';
 
@@ -46,9 +46,9 @@ class Employee extends Model
     ];
 
     protected $casts = [
-        'date_of_birth'   => 'date',
-        'hire_date'       => 'date',
-        'employee_type'   => EmployeeTypeEnum::class,
+        'date_of_birth' => 'date',
+        'hire_date' => 'date',
+        'employee_type' => EmployeeTypeEnum::class,
         'employee_status' => EmployeeStatusEnum::class,
     ];
 

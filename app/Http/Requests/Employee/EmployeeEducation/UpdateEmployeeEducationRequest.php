@@ -14,8 +14,8 @@ class UpdateEmployeeEducationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'degree'          => 'required|string|max:255',
-            'institution'     => 'nullable|string|max:255',
+            'degree' => 'required|string|max:255',
+            'institution' => 'nullable|string|max:255',
             'year_of_passing' => 'nullable|integer|min:1900|max:2100',
         ];
     }

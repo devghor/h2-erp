@@ -49,11 +49,11 @@ class EmployeesDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'Employees_' . date('YmdHis');
+        return 'Employees_'.date('YmdHis');
     }
 }

@@ -13,7 +13,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollSalaryHead extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_salary_heads';
 
@@ -38,14 +38,14 @@ class PayrollSalaryHead extends Model
     ];
 
     protected $casts = [
-        'is_basic_linked'      => 'boolean',
-        'is_variable'          => 'boolean',
-        'is_taxable'           => 'boolean',
-        'is_active'            => 'boolean',
-        'mode'                 => SalaryHeadModeEnum::class,
-        'gl_prefix_type'       => SalaryHeadGlPrefixTypeEnum::class,
-        'identification_type'  => SalaryHeadIdentificationTypeEnum::class,
-        'category'             => SalaryHeadCategoryEnum::class,
+        'is_basic_linked' => 'boolean',
+        'is_variable' => 'boolean',
+        'is_taxable' => 'boolean',
+        'is_active' => 'boolean',
+        'mode' => SalaryHeadModeEnum::class,
+        'gl_prefix_type' => SalaryHeadGlPrefixTypeEnum::class,
+        'identification_type' => SalaryHeadIdentificationTypeEnum::class,
+        'category' => SalaryHeadCategoryEnum::class,
         'tax_calculation_type' => SalaryHeadTaxCalculationTypeEnum::class,
     ];
 }

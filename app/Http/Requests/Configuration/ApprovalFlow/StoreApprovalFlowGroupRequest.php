@@ -14,11 +14,11 @@ class StoreApprovalFlowGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'approval_flow_id'             => ['required', 'integer', 'exists:approval_flows,id'],
-            'position_group_id'            => ['required', 'integer', 'exists:position_groups,id'],
-            'items'                        => ['required', 'array', 'min:1'],
-            'items.*.approval_level_id'    => ['required', 'integer', 'exists:approval_levels,id'],
-            'items.*.sequence'             => ['required', 'integer', 'min:1'],
+            'approval_flow_id' => ['required', 'integer', 'exists:approval_flows,id'],
+            'position_group_id' => ['required', 'integer', 'exists:position_groups,id'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.approval_level_id' => ['required', 'integer', 'exists:approval_levels,id'],
+            'items.*.sequence' => ['required', 'integer', 'min:1'],
         ];
     }
 }

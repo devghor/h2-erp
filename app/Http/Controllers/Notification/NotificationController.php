@@ -75,12 +75,12 @@ class NotificationController extends Controller
     private function transform($notification): array
     {
         return [
-            'id'         => $notification->id,
-            'title'      => $notification->data['title'] ?? 'Notification',
-            'message'    => $notification->data['message'] ?? null,
-            'type'       => class_basename($notification->type),
-            'is_read'    => $notification->read_at !== null,
-            'time'       => $notification->created_at->diffForHumans(),
+            'id' => $notification->id,
+            'title' => $notification->data['title'] ?? 'Notification',
+            'message' => $notification->data['message'] ?? null,
+            'type' => class_basename($notification->type),
+            'is_read' => $notification->read_at !== null,
+            'time' => $notification->created_at->diffForHumans(),
             'created_at' => $notification->created_at->toISOString(),
         ];
     }

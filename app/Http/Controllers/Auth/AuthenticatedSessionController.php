@@ -13,7 +13,6 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-
     /**
      * Show the login page.
      */

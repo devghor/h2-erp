@@ -33,6 +33,7 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
         $this->companyService->create($request->validated());
+
         return redirect()->back()->with('success', 'Company created successfully.');
     }
 
@@ -58,6 +59,7 @@ class CompanyController extends Controller
     public function update(UpdateCompanyRequest $request, string $id)
     {
         $this->companyService->update($request->validated(), $id);
+
         return redirect()->route('configuration.companies.index')->with([
             'success' => __('Company updated successfully.'),
         ]);
@@ -69,6 +71,7 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         $this->companyService->delete($id);
+
         return redirect()->route('configuration.companies.index')->with([
             'success' => __('Company deleted successfully.'),
         ]);

@@ -10,7 +10,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollSalaryDisbursementBatchEmployeeItem extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_salary_disbursement_batch_employee_items';
 
@@ -27,7 +27,7 @@ class PayrollSalaryDisbursementBatchEmployeeItem extends Model
 
     protected $casts = [
         'head_category' => SalaryHeadCategoryEnum::class,
-        'amount'        => 'decimal:2',
+        'amount' => 'decimal:2',
         'is_adjustment' => 'boolean',
     ];
 

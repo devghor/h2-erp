@@ -5,15 +5,15 @@ namespace App\Enums\Payroll;
 enum SalaryHeadTaxCalculationTypeEnum: string
 {
     case Percentage = 'percentage';
-    case Fixed      = 'fixed';
-    case None       = 'none';
+    case Fixed = 'fixed';
+    case None = 'none';
 
     public function label(): string
     {
         return match ($this) {
             self::Percentage => 'Percentage',
-            self::Fixed      => 'Fixed',
-            self::None       => 'None',
+            self::Fixed => 'Fixed',
+            self::None => 'None',
         };
     }
 

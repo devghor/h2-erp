@@ -12,7 +12,7 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         $company = Company::first();
-        if (!$company) {
+        if (! $company) {
             return;
         }
 
@@ -45,7 +45,7 @@ class DepartmentSeeder extends Seeder
         foreach ($departments as $dept) {
             $divisionName = $dept['division'];
 
-            if (!isset($divisionCache[$divisionName])) {
+            if (! isset($divisionCache[$divisionName])) {
                 $divisionCache[$divisionName] = Division::where('company_id', $company->id)
                     ->where('name', $divisionName)
                     ->first();
@@ -56,9 +56,9 @@ class DepartmentSeeder extends Seeder
             Department::updateOrCreate(
                 ['company_id' => $company->id, 'name' => $dept['name']],
                 [
-                    'company_id'  => $company->id,
-                    'name'        => $dept['name'],
-                    'code'        => $dept['code'],
+                    'company_id' => $company->id,
+                    'name' => $dept['name'],
+                    'code' => $dept['code'],
                     'division_id' => $division?->id,
                     'description' => $dept['description'],
                 ]

@@ -26,6 +26,7 @@ class DivisionController extends Controller
     public function store(StoreDivisionRequest $request)
     {
         $this->divisionService->create($request->validated());
+
         return redirect()->back()->with('success', 'Division created successfully.');
     }
 
@@ -42,6 +43,7 @@ class DivisionController extends Controller
     public function update(UpdateDivisionRequest $request, string $id)
     {
         $this->divisionService->update($request->validated(), $id);
+
         return redirect()->route('configuration.divisions.index')->with([
             'success' => __('Division updated successfully.'),
         ]);
@@ -50,6 +52,7 @@ class DivisionController extends Controller
     public function destroy(string $id)
     {
         $this->divisionService->delete($id);
+
         return redirect()->route('configuration.divisions.index')->with([
             'success' => __('Division deleted successfully.'),
         ]);

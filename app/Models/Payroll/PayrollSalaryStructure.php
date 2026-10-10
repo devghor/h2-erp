@@ -10,7 +10,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollSalaryStructure extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_salary_structures';
 
@@ -31,16 +31,16 @@ class PayrollSalaryStructure extends Model
     ];
 
     protected $casts = [
-        'is_active'                   => 'boolean',
-        'effective_date'              => 'date:Y-m-d',
-        'basic'                       => 'decimal:2',
+        'is_active' => 'boolean',
+        'effective_date' => 'date:Y-m-d',
+        'basic' => 'decimal:2',
         'annual_increment_percentage' => 'decimal:4',
-        'efficiency_bar'              => 'decimal:2',
-        'home_loan_multiplier'        => 'decimal:4',
-        'car_loan_max_amount'         => 'decimal:2',
-        'car_maintenance_expense'     => 'decimal:2',
-        'life_insurance_multiplier'   => 'decimal:4',
-        'hospitalization_insurance'   => 'decimal:2',
+        'efficiency_bar' => 'decimal:2',
+        'home_loan_multiplier' => 'decimal:4',
+        'car_loan_max_amount' => 'decimal:2',
+        'car_maintenance_expense' => 'decimal:2',
+        'life_insurance_multiplier' => 'decimal:4',
+        'hospitalization_insurance' => 'decimal:2',
     ];
 
     public function designation(): BelongsTo

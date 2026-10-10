@@ -29,6 +29,7 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         $this->branchService->create($request->validated());
+
         return redirect()->back()->with('success', 'Branch created successfully.');
     }
 
@@ -39,6 +40,7 @@ class BranchController extends Controller
     public function update(UpdateBranchRequest $request, string $id)
     {
         $this->branchService->update($request->validated(), $id);
+
         return redirect()->route('configuration.branches.index')->with([
             'success' => __('Branch updated successfully.'),
         ]);
@@ -47,6 +49,7 @@ class BranchController extends Controller
     public function destroy(string $id)
     {
         $this->branchService->delete($id);
+
         return redirect()->route('configuration.branches.index')->with([
             'success' => __('Branch deleted successfully.'),
         ]);

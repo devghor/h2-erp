@@ -10,6 +10,7 @@ use App\Http\Requests\Payroll\StorePayrollSalaryDisbursementBatchRequest;
 use App\Http\Requests\Payroll\UpdatePayrollSalaryDisbursementBatchRequest;
 use App\Models\Payroll\PayrollSalaryDisbursementBatch;
 use App\Services\Payroll\PayrollSalaryDisbursementBatchService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PayrollSalaryDisbursementBatchController extends Controller
@@ -28,7 +29,7 @@ class PayrollSalaryDisbursementBatchController extends Controller
         $batch = $this->service->getBatchWithEmployees($id);
 
         return Inertia::render('payroll/salary-disbursement-batches/show', [
-            'batch'     => $batch,
+            'batch' => $batch,
             'employees' => $batch->employees,
         ]);
     }
@@ -46,8 +47,8 @@ class PayrollSalaryDisbursementBatchController extends Controller
     {
         $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
         $batch->update([
-            'name'       => $request->validated('name'),
-            'remark'     => $request->validated('remark'),
+            'name' => $request->validated('name'),
+            'remark' => $request->validated('remark'),
             'updated_by' => auth()->id(),
         ]);
 
@@ -118,12 +119,12 @@ class PayrollSalaryDisbursementBatchController extends Controller
             ->with('success', 'Batch disbursed successfully. All employees marked as paid.');
     }
 
-    public function storeAdjustment(\Illuminate\Http\Request $request, string $id, string $empId)
+    public function storeAdjustment(Request $request, string $id, string $empId)
     {
         $data = $request->validate([
-            'head_name'     => ['required', 'string', 'max:255'],
+            'head_name' => ['required', 'string', 'max:255'],
             'head_category' => ['required', 'string', 'in:gross,benefit,deduction,adjustment'],
-            'amount'        => ['required', 'numeric', 'min:0'],
+            'amount' => ['required', 'numeric', 'min:0'],
         ]);
 
         $this->service->addAdjustment($id, $empId, $data);

@@ -54,30 +54,30 @@ class DashboardService
 
         return [
             'employee' => [
-                'total_employees'         => $totalEmployees,
-                'active_employees'        => $activeEmployees,
-                'new_joiners_this_month'  => $newJoinersThisMonth,
-                'employees_on_probation'  => $employeesOnProbation,
-                'pending_confirmations'   => $pendingConfirmations,
+                'total_employees' => $totalEmployees,
+                'active_employees' => $activeEmployees,
+                'new_joiners_this_month' => $newJoinersThisMonth,
+                'employees_on_probation' => $employeesOnProbation,
+                'pending_confirmations' => $pendingConfirmations,
             ],
             'organization' => [
                 'total_departments' => $totalDepartments,
-                'total_branches'    => $totalBranches,
-                'total_companies'   => $totalCompanies,
-                'open_positions'    => $openPositions,
+                'total_branches' => $totalBranches,
+                'total_companies' => $totalCompanies,
+                'open_positions' => $openPositions,
             ],
             'user' => [
-                'total_users'  => $totalUsers,
+                'total_users' => $totalUsers,
                 'active_users' => $activeUsers,
             ],
             'leave' => [
-                'pending_leave_requests'     => 0,
-                'todays_leave'               => 0,
-                'upcoming_leaves'            => 0,
-                'leave_balance_summary'      => 0,
-                'leave_approval_statistics'  => 0,
-                'employees_on_leave'         => 0,
-                'leave_trends_monthly'       => [],
+                'pending_leave_requests' => 0,
+                'todays_leave' => 0,
+                'upcoming_leaves' => 0,
+                'leave_balance_summary' => 0,
+                'leave_approval_statistics' => 0,
+                'employees_on_leave' => 0,
+                'leave_trends_monthly' => [],
             ],
         ];
     }

@@ -14,14 +14,14 @@ class UpdatePositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'               => 'required|string|max:255',
-            'code'               => 'nullable|string|max:100',
-            'parent_id'          => 'nullable|integer|exists:positions,id',
-            'description'        => 'nullable|string',
-            'branch_id'          => 'nullable|integer|exists:branches,id',
-            'division_id'        => 'nullable|integer|exists:divisions,id',
-            'department_id'      => 'nullable|integer|exists:departments,id',
-            'position_group_id'  => 'nullable|integer|exists:position_groups,id',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:100',
+            'parent_id' => 'nullable|integer|exists:positions,id',
+            'description' => 'nullable|string',
+            'branch_id' => 'nullable|integer|exists:branches,id',
+            'division_id' => 'nullable|integer|exists:divisions,id',
+            'department_id' => 'nullable|integer|exists:departments,id',
+            'position_group_id' => 'nullable|integer|exists:position_groups,id',
         ];
     }
 }

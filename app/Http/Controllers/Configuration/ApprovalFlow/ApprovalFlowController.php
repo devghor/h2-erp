@@ -29,6 +29,7 @@ class ApprovalFlowController extends Controller
     public function store(StoreApprovalFlowRequest $request)
     {
         $this->approvalFlowService->create($request->validated());
+
         return redirect()->back()->with('success', 'Approval flow created successfully.');
     }
 
@@ -52,6 +53,7 @@ class ApprovalFlowController extends Controller
     public function update(UpdateApprovalFlowRequest $request, string $id)
     {
         $this->approvalFlowService->update($request->validated(), $id);
+
         return redirect()->route('configuration.approval-flows.index')->with([
             'success' => __('Approval flow updated successfully.'),
         ]);
@@ -60,6 +62,7 @@ class ApprovalFlowController extends Controller
     public function destroy(string $id)
     {
         $this->approvalFlowService->delete($id);
+
         return redirect()->route('configuration.approval-flows.index')->with([
             'success' => __('Approval flow deleted successfully.'),
         ]);

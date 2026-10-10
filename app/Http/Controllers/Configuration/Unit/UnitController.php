@@ -26,6 +26,7 @@ class UnitController extends Controller
     public function store(StoreUnitRequest $request)
     {
         $this->unitService->create($request->validated());
+
         return redirect()->back()->with('success', 'Unit created successfully.');
     }
 
@@ -42,6 +43,7 @@ class UnitController extends Controller
     public function update(UpdateUnitRequest $request, string $id)
     {
         $this->unitService->update($request->validated(), $id);
+
         return redirect()->route('configuration.units.index')->with([
             'success' => __('Unit updated successfully.'),
         ]);
@@ -50,6 +52,7 @@ class UnitController extends Controller
     public function destroy(string $id)
     {
         $this->unitService->delete($id);
+
         return redirect()->route('configuration.units.index')->with([
             'success' => __('Unit deleted successfully.'),
         ]);

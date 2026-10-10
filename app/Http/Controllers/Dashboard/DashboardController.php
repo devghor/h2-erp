@@ -7,9 +7,7 @@ use Inertia\Inertia;
 
 class DashboardController
 {
-    public function __construct(private DashboardService $dashboardService)
-    {
-    }
+    public function __construct(private DashboardService $dashboardService) {}
 
     public function index()
     {

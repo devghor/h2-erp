@@ -4,22 +4,22 @@ namespace App\Enums\Payroll;
 
 enum SalaryHeadIdentificationTypeEnum: string
 {
-    case Basic               = 'basic';
-    case Lfa                 = 'lfa';
-    case PfEmployee          = 'pf_employee';
-    case PfEmployer          = 'pf_employer';
+    case Basic = 'basic';
+    case Lfa = 'lfa';
+    case PfEmployee = 'pf_employee';
+    case PfEmployer = 'pf_employer';
     case PfEmployerDeduction = 'pf_employer_deduction';
-    case Other               = 'other';
+    case Other = 'other';
 
     public function label(): string
     {
         return match ($this) {
-            self::Basic               => 'Basic',
-            self::Lfa                 => 'LFA',
-            self::PfEmployee          => 'PF Employee',
-            self::PfEmployer          => 'PF Employer',
+            self::Basic => 'Basic',
+            self::Lfa => 'LFA',
+            self::PfEmployee => 'PF Employee',
+            self::PfEmployer => 'PF Employer',
             self::PfEmployerDeduction => 'PF Employer Deduction',
-            self::Other               => 'Other',
+            self::Other => 'Other',
         };
     }
 

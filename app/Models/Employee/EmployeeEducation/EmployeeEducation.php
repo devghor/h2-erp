@@ -8,7 +8,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class EmployeeEducation extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'employee_education';
 

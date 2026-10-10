@@ -9,7 +9,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class ApprovalFlowGroup extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'approval_flow_groups';
 

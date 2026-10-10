@@ -11,34 +11,34 @@ class DivisionSeeder extends Seeder
     public function run(): void
     {
         $company = Company::first();
-        if (!$company) {
+        if (! $company) {
             return;
         }
 
         $divisions = [
             [
-                'name'        => 'Human Resources',
-                'code'        => 'HR',
+                'name' => 'Human Resources',
+                'code' => 'HR',
                 'description' => 'Manages recruitment, employee relations, and HR operations',
             ],
             [
-                'name'        => 'Finance & Accounts',
-                'code'        => 'FIN',
+                'name' => 'Finance & Accounts',
+                'code' => 'FIN',
                 'description' => 'Handles financial planning, accounting, and reporting',
             ],
             [
-                'name'        => 'Information Technology',
-                'code'        => 'IT',
+                'name' => 'Information Technology',
+                'code' => 'IT',
                 'description' => 'Manages IT infrastructure, software, and digital systems',
             ],
             [
-                'name'        => 'Operations',
-                'code'        => 'OPS',
+                'name' => 'Operations',
+                'code' => 'OPS',
                 'description' => 'Oversees daily business operations and logistics',
             ],
             [
-                'name'        => 'Marketing & Sales',
-                'code'        => 'MKT',
+                'name' => 'Marketing & Sales',
+                'code' => 'MKT',
                 'description' => 'Drives brand awareness, marketing campaigns, and sales',
             ],
         ];

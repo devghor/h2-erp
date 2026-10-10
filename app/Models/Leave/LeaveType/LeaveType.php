@@ -8,7 +8,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class LeaveType extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'leave_types';
 
@@ -28,10 +28,10 @@ class LeaveType extends Model
     ];
 
     protected $casts = [
-        'employee_type'       => 'array',
-        'advanced_leave'      => 'boolean',
-        'document_required'   => 'boolean',
-        'carry_forward'       => 'boolean',
+        'employee_type' => 'array',
+        'advanced_leave' => 'boolean',
+        'document_required' => 'boolean',
+        'carry_forward' => 'boolean',
         'allow_pending_leave' => 'boolean',
     ];
 }

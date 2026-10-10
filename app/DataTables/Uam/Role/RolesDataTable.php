@@ -40,11 +40,11 @@ class RolesDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'Roles_' . date('YmdHis');
+        return 'Roles_'.date('YmdHis');
     }
 }

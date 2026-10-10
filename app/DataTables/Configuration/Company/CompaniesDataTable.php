@@ -16,7 +16,7 @@ class CompaniesDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('created_at', fn(Company $c) => $c->created_at->format('Y-m-d H:i:s'))
+            ->editColumn('created_at', fn (Company $c) => $c->created_at->format('Y-m-d H:i:s'))
             ->setRowId('id');
     }
 
@@ -40,11 +40,11 @@ class CompaniesDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'Companies_' . date('YmdHis');
+        return 'Companies_'.date('YmdHis');
     }
 }

@@ -14,10 +14,10 @@ class StoreEmployeeContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'      => 'required|integer|exists:users,id',
+            'user_id' => 'required|integer|exists:users,id',
             'contact_name' => 'required|string|max:255',
             'relationship' => 'nullable|string|max:100',
-            'phone'        => 'nullable|string|max:50',
+            'phone' => 'nullable|string|max:50',
         ];
     }
 }

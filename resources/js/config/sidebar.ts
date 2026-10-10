@@ -11,6 +11,11 @@ import {
     IdCard,
     Key,
     Landmark,
+    Settings,
+    ShieldCheck,
+    Wallet,
+    CalendarDays,
+    UsersRound,
     Layers,
     LayoutDashboard,
     ListChecks,
@@ -43,6 +48,7 @@ type NavItem = NavCollapsible | NavLink;
 
 type NavGroup = {
     title: string;
+    icon?: React.ElementType;
     items: NavItem[];
     can?: string;
 };
@@ -67,6 +73,7 @@ export const sidebarData: SidebarData = {
         },
         {
             title: 'Uam',
+            icon: ShieldCheck,
             can: 'READ_UAM',
             items: [
                 {
@@ -91,6 +98,7 @@ export const sidebarData: SidebarData = {
         },
         {
             title: 'Configuration',
+            icon: Settings,
             can: 'READ_CONFIGURATION',
             items: [
                 {
@@ -169,6 +177,7 @@ export const sidebarData: SidebarData = {
         },
         {
             title: 'Employee',
+            icon: UsersRound,
             can: 'READ_EMPLOYEE',
             items: [
                 {
@@ -181,6 +190,7 @@ export const sidebarData: SidebarData = {
         },
         {
             title: 'Leave',
+            icon: CalendarDays,
             can: 'READ_LEAVE',
             items: [
                 {
@@ -193,6 +203,7 @@ export const sidebarData: SidebarData = {
         },
         {
             title: 'Payroll',
+            icon: Wallet,
             can: 'READ_PAYROLL',
             items: [
                 {

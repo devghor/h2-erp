@@ -20,21 +20,21 @@ class UpdatePayrollSalaryHeadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'                 => 'required|string|max:255',
-            'code'                 => 'nullable|string|max:100',
-            'is_basic_linked'      => 'boolean',
-            'basic_ratio'          => 'nullable|numeric|min:0|max:100',
-            'mode'                 => ['required', new Enum(SalaryHeadModeEnum::class)],
-            'gl_account_code'      => 'nullable|string|max:100',
-            'gl_prefix_type'       => ['required', new Enum(SalaryHeadGlPrefixTypeEnum::class)],
-            'identification_type'  => ['required', new Enum(SalaryHeadIdentificationTypeEnum::class)],
-            'category'             => ['required', new Enum(SalaryHeadCategoryEnum::class)],
-            'position'             => 'nullable|integer|min:0',
-            'is_variable'          => 'boolean',
-            'is_taxable'           => 'boolean',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:100',
+            'is_basic_linked' => 'boolean',
+            'basic_ratio' => 'nullable|numeric|min:0|max:100',
+            'mode' => ['required', new Enum(SalaryHeadModeEnum::class)],
+            'gl_account_code' => 'nullable|string|max:100',
+            'gl_prefix_type' => ['required', new Enum(SalaryHeadGlPrefixTypeEnum::class)],
+            'identification_type' => ['required', new Enum(SalaryHeadIdentificationTypeEnum::class)],
+            'category' => ['required', new Enum(SalaryHeadCategoryEnum::class)],
+            'position' => 'nullable|integer|min:0',
+            'is_variable' => 'boolean',
+            'is_taxable' => 'boolean',
             'tax_calculation_type' => ['required', new Enum(SalaryHeadTaxCalculationTypeEnum::class)],
-            'tax_value'            => 'nullable|numeric|min:0',
-            'is_active'            => 'boolean',
+            'tax_value' => 'nullable|numeric|min:0',
+            'is_active' => 'boolean',
         ];
     }
 }

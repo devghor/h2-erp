@@ -16,7 +16,7 @@ class UpdateEmployeeContactRequest extends FormRequest
         return [
             'contact_name' => 'required|string|max:255',
             'relationship' => 'nullable|string|max:100',
-            'phone'        => 'nullable|string|max:50',
+            'phone' => 'nullable|string|max:50',
         ];
     }
 }

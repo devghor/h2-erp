@@ -16,7 +16,7 @@ class UpdateEmployeeDocumentRequest extends FormRequest
         return [
             'document_name' => 'required|string|max:255',
             'document_type' => 'nullable|string|max:100',
-            'file_path'     => 'nullable|string|max:500',
+            'file_path' => 'nullable|string|max:500',
         ];
     }
 }

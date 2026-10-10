@@ -14,10 +14,10 @@ class UpdateApprovalFlowGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'position_group_id'         => ['required', 'integer', 'exists:position_groups,id'],
-            'items'                     => ['required', 'array', 'min:1'],
+            'position_group_id' => ['required', 'integer', 'exists:position_groups,id'],
+            'items' => ['required', 'array', 'min:1'],
             'items.*.approval_level_id' => ['required', 'integer', 'exists:approval_levels,id'],
-            'items.*.sequence'          => ['required', 'integer', 'min:1'],
+            'items.*.sequence' => ['required', 'integer', 'min:1'],
         ];
     }
 }

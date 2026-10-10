@@ -26,6 +26,7 @@ class HrbpController extends Controller
     public function store(StoreHrbpRequest $request)
     {
         $this->hrbpService->create($request->validated());
+
         return redirect()->back()->with('success', 'Hrbp created successfully.');
     }
 
@@ -42,6 +43,7 @@ class HrbpController extends Controller
     public function update(UpdateHrbpRequest $request, string $id)
     {
         $this->hrbpService->update($request->validated(), $id);
+
         return redirect()->route('configuration.hrbps.index')->with([
             'success' => __('Hrbp updated successfully.'),
         ]);
@@ -50,6 +52,7 @@ class HrbpController extends Controller
     public function destroy(string $id)
     {
         $this->hrbpService->delete($id);
+
         return redirect()->route('configuration.hrbps.index')->with([
             'success' => __('Hrbp deleted successfully.'),
         ]);

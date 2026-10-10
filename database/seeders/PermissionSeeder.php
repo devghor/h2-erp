@@ -8,10 +8,12 @@ use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
-
     const LABEL_CREATE = 'Create';
+
     const LABEL_READ = 'Read';
+
     const LABEL_UPDATE = 'Update';
+
     const LABEL_DELETE = 'Delete';
 
     /**
@@ -178,7 +180,6 @@ class PermissionSeeder extends Seeder
             ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::DeleteLeaveLeaveType->value, 'display_name' => self::LABEL_DELETE],
 
         ];
-
 
         foreach ($permissions as $permission) {
             Permission::updateOrCreate(

@@ -23,12 +23,12 @@ class PayrollSalaryDisbursementBatchService extends CoreService
     {
         return DB::transaction(function () use ($data) {
             $batch = PayrollSalaryDisbursementBatch::create([
-                'name'       => $data['name'],
-                'year'       => $data['year'],
-                'month'      => $data['month'],
-                'type'       => $data['type'],
-                'remark'     => $data['remark'] ?? null,
-                'status'     => SalaryDisbursementBatchStatusEnum::Generated->value,
+                'name' => $data['name'],
+                'year' => $data['year'],
+                'month' => $data['month'],
+                'type' => $data['type'],
+                'remark' => $data['remark'] ?? null,
+                'status' => SalaryDisbursementBatchStatusEnum::Generated->value,
                 'created_by' => Auth::id(),
                 'updated_by' => Auth::id(),
             ]);
@@ -36,27 +36,27 @@ class PayrollSalaryDisbursementBatchService extends CoreService
             $profileQuery = PayrollEmployeeSalaryProfile::where('is_active', true)
                 ->with(['items.salaryHead', 'employee.designation']);
 
-            if (!empty($data['user_ids'])) {
+            if (! empty($data['user_ids'])) {
                 $profileQuery->whereIn('user_id', $data['user_ids']);
             }
 
             $profiles = $profileQuery->get();
 
-            $totalBasic      = 0;
-            $totalGross      = 0;
-            $totalDeduction  = 0;
-            $totalNet        = 0;
-            $employeeCount   = 0;
+            $totalBasic = 0;
+            $totalGross = 0;
+            $totalDeduction = 0;
+            $totalNet = 0;
+            $employeeCount = 0;
 
             foreach ($profiles as $profile) {
-                $itemsToCreate  = [];
-                $grossAmount    = 0;
+                $itemsToCreate = [];
+                $grossAmount = 0;
                 $deductionAmount = 0;
-                $basicAmount    = (float) $profile->basic_amount;
+                $basicAmount = (float) $profile->basic_amount;
 
                 foreach ($profile->items as $profileItem) {
                     $head = $profileItem->salaryHead;
-                    if (!$head) {
+                    if (! $head) {
                         continue;
                     }
 
@@ -76,45 +76,45 @@ class PayrollSalaryDisbursementBatchService extends CoreService
 
                     $itemsToCreate[] = [
                         'payroll_salary_head_id' => $head->id,
-                        'head_name'              => $head->name,
-                        'head_category'          => $category->value,
-                        'amount'                 => $amount,
-                        'is_adjustment'          => false,
-                        'created_by'             => Auth::id(),
-                        'updated_by'             => Auth::id(),
+                        'head_name' => $head->name,
+                        'head_category' => $category->value,
+                        'amount' => $amount,
+                        'is_adjustment' => false,
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id(),
                     ];
                 }
 
                 $netAmount = $grossAmount - $deductionAmount;
 
                 $batchEmployee = $batch->employees()->create([
-                    'user_id'                            => $profile->user_id,
+                    'user_id' => $profile->user_id,
                     'payroll_employee_salary_profile_id' => $profile->id,
-                    'basic_amount'                       => $basicAmount,
-                    'gross_amount'                       => round($grossAmount, 2),
-                    'deduction_amount'                   => round($deductionAmount, 2),
-                    'net_amount'                         => round($netAmount, 2),
-                    'payment_mode'                       => 'bank',
-                    'payment_status'                     => PaymentStatusEnum::Pending->value,
-                    'created_by'                         => Auth::id(),
-                    'updated_by'                         => Auth::id(),
+                    'basic_amount' => $basicAmount,
+                    'gross_amount' => round($grossAmount, 2),
+                    'deduction_amount' => round($deductionAmount, 2),
+                    'net_amount' => round($netAmount, 2),
+                    'payment_mode' => 'bank',
+                    'payment_status' => PaymentStatusEnum::Pending->value,
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
                 ]);
 
                 $batchEmployee->items()->createMany($itemsToCreate);
 
-                $totalBasic     += $basicAmount;
-                $totalGross     += $grossAmount;
+                $totalBasic += $basicAmount;
+                $totalGross += $grossAmount;
                 $totalDeduction += $deductionAmount;
-                $totalNet       += $netAmount;
+                $totalNet += $netAmount;
                 $employeeCount++;
             }
 
             $batch->update([
-                'total_basic'      => round($totalBasic, 2),
-                'total_gross'      => round($totalGross, 2),
-                'total_deduction'  => round($totalDeduction, 2),
-                'total_net'        => round($totalNet, 2),
-                'employee_count'   => $employeeCount,
+                'total_basic' => round($totalBasic, 2),
+                'total_gross' => round($totalGross, 2),
+                'total_deduction' => round($totalDeduction, 2),
+                'total_net' => round($totalNet, 2),
+                'employee_count' => $employeeCount,
             ]);
 
             return $batch;
@@ -125,7 +125,7 @@ class PayrollSalaryDisbursementBatchService extends CoreService
     {
         $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
         $batch->update([
-            'status'     => SalaryDisbursementBatchStatusEnum::Processed->value,
+            'status' => SalaryDisbursementBatchStatusEnum::Processed->value,
             'updated_by' => Auth::id(),
         ]);
 
@@ -136,10 +136,10 @@ class PayrollSalaryDisbursementBatchService extends CoreService
     {
         $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
         $batch->update([
-            'status'       => SalaryDisbursementBatchStatusEnum::SentForApproval->value,
+            'status' => SalaryDisbursementBatchStatusEnum::SentForApproval->value,
             'submitted_by' => Auth::id(),
             'submitted_at' => now(),
-            'updated_by'   => Auth::id(),
+            'updated_by' => Auth::id(),
         ]);
 
         return $batch;
@@ -149,7 +149,7 @@ class PayrollSalaryDisbursementBatchService extends CoreService
     {
         $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
         $batch->update([
-            'status'     => SalaryDisbursementBatchStatusEnum::RevertFromApproval->value,
+            'status' => SalaryDisbursementBatchStatusEnum::RevertFromApproval->value,
             'updated_by' => Auth::id(),
         ]);
 
@@ -160,10 +160,10 @@ class PayrollSalaryDisbursementBatchService extends CoreService
     {
         $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
         $batch->update([
-            'status'      => SalaryDisbursementBatchStatusEnum::SentForDisbursement->value,
+            'status' => SalaryDisbursementBatchStatusEnum::SentForDisbursement->value,
             'approved_by' => Auth::id(),
             'approved_at' => now(),
-            'updated_by'  => Auth::id(),
+            'updated_by' => Auth::id(),
         ]);
 
         return $batch;
@@ -174,18 +174,18 @@ class PayrollSalaryDisbursementBatchService extends CoreService
         return DB::transaction(function () use ($id, $disbursementDate) {
             $batch = PayrollSalaryDisbursementBatch::findOrFail($id);
             $batch->update([
-                'status'            => SalaryDisbursementBatchStatusEnum::Disbursed->value,
-                'disbursed_by'      => Auth::id(),
-                'disbursed_at'      => now(),
+                'status' => SalaryDisbursementBatchStatusEnum::Disbursed->value,
+                'disbursed_by' => Auth::id(),
+                'disbursed_at' => now(),
                 'disbursement_date' => $disbursementDate,
-                'updated_by'        => Auth::id(),
+                'updated_by' => Auth::id(),
             ]);
 
             PayrollSalaryDisbursementBatchEmployee::where('payroll_salary_disbursement_batch_id', $batch->id)
                 ->update([
                     'payment_status' => PaymentStatusEnum::Paid->value,
-                    'paid_at'        => now(),
-                    'updated_by'     => Auth::id(),
+                    'paid_at' => now(),
+                    'updated_by' => Auth::id(),
                 ]);
 
             return $batch;
@@ -201,16 +201,16 @@ class PayrollSalaryDisbursementBatchService extends CoreService
 
             $batchEmployee->items()->create([
                 'payroll_salary_head_id' => null,
-                'head_name'              => $data['head_name'],
-                'head_category'          => $data['head_category'],
-                'amount'                 => $data['amount'],
-                'is_adjustment'          => true,
-                'created_by'             => Auth::id(),
-                'updated_by'             => Auth::id(),
+                'head_name' => $data['head_name'],
+                'head_category' => $data['head_category'],
+                'amount' => $data['amount'],
+                'is_adjustment' => true,
+                'created_by' => Auth::id(),
+                'updated_by' => Auth::id(),
             ]);
 
             $category = $data['head_category'];
-            $amount   = (float) $data['amount'];
+            $amount = (float) $data['amount'];
 
             if (in_array($category, ['gross', 'benefit'])) {
                 $batchEmployee->increment('gross_amount', $amount);
@@ -223,10 +223,10 @@ class PayrollSalaryDisbursementBatchService extends CoreService
 
             $batch = $batchEmployee->batch;
             $batch->update([
-                'total_gross'      => $batch->employees()->sum('gross_amount'),
-                'total_deduction'  => $batch->employees()->sum('deduction_amount'),
-                'total_net'        => $batch->employees()->sum('net_amount'),
-                'updated_by'       => Auth::id(),
+                'total_gross' => $batch->employees()->sum('gross_amount'),
+                'total_deduction' => $batch->employees()->sum('deduction_amount'),
+                'total_net' => $batch->employees()->sum('net_amount'),
+                'updated_by' => Auth::id(),
             ]);
         });
     }

@@ -15,8 +15,8 @@ class StoreUnitRequest extends FormRequest
     {
         return [
             'company_id' => 'nullable|integer',
-            'name'       => 'required|string|max:255',
-            'code'       => 'nullable|string|max:100',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:100',
             'department_id' => 'nullable|integer|exists:departments,id',
             'description' => 'nullable|string',
         ];

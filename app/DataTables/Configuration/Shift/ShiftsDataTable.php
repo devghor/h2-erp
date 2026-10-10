@@ -16,8 +16,8 @@ class ShiftsDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('company', fn(Shift $shift) => $shift->company?->name ?? '')
-            ->editColumn('created_at', fn(Shift $shift) => $shift->created_at->format('Y-m-d H:i:s'))
+            ->addColumn('company', fn (Shift $shift) => $shift->company?->name ?? '')
+            ->editColumn('created_at', fn (Shift $shift) => $shift->created_at->format('Y-m-d H:i:s'))
             ->setRowId('id');
     }
 
@@ -57,11 +57,11 @@ class ShiftsDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'Shifts_' . date('YmdHis');
+        return 'Shifts_'.date('YmdHis');
     }
 }

@@ -23,6 +23,7 @@ class PermissionController extends Controller
     public function store(StorePermissionRequest $request)
     {
         $permission = $this->permissionService->create($request->validated());
+
         return inertia('uam/permissions/index', [
             'permission' => new PermissionResource($permission),
             'success' => 'Permission created successfully.',
@@ -32,6 +33,7 @@ class PermissionController extends Controller
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
         $this->permissionService->update($request->validated(), $permission->id);
+
         return redirect()->route('uam.permissions.index')->with([
             'success' => 'Permission updated successfully.',
         ]);
@@ -40,6 +42,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $this->permissionService->delete($permission->id);
+
         return redirect()->route('uam.permissions.index')->with([
             'success' => 'Permission deleted successfully.',
         ]);

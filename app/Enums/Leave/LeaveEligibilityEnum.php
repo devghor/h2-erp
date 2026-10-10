@@ -4,15 +4,15 @@ namespace App\Enums\Leave;
 
 enum LeaveEligibilityEnum: string
 {
-    case FromJoining                       = 'from_joining';
-    case AfterOneYearConfirmedService      = 'after_one_year_confirmed_service';
+    case FromJoining = 'from_joining';
+    case AfterOneYearConfirmedService = 'after_one_year_confirmed_service';
     case AfterConfirmationFromNextYearJanuary = 'after_confirmation_from_next_year_january';
 
     public function label(): string
     {
         return match ($this) {
-            self::FromJoining                        => 'From Joining',
-            self::AfterOneYearConfirmedService       => 'After One Year Confirmed Service',
+            self::FromJoining => 'From Joining',
+            self::AfterOneYearConfirmedService => 'After One Year Confirmed Service',
             self::AfterConfirmationFromNextYearJanuary => 'After Confirmation From Next Year January 1st',
         };
     }

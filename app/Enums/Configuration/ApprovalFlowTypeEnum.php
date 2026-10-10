@@ -4,13 +4,13 @@ namespace App\Enums\Configuration;
 
 enum ApprovalFlowTypeEnum: string
 {
-    case Leave      = 'Leave';
+    case Leave = 'Leave';
     case Attendance = 'Attendance';
 
     public function label(): string
     {
         return match ($this) {
-            self::Leave      => 'Leave',
+            self::Leave => 'Leave',
             self::Attendance => 'Attendance',
         };
     }

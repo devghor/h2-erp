@@ -13,7 +13,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollSalaryDisbursementBatchEmployee extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_salary_disbursement_batch_employees';
 
@@ -35,13 +35,13 @@ class PayrollSalaryDisbursementBatchEmployee extends Model
     ];
 
     protected $casts = [
-        'payment_mode'    => PaymentModeEnum::class,
-        'payment_status'  => PaymentStatusEnum::class,
-        'basic_amount'    => 'decimal:2',
-        'gross_amount'    => 'decimal:2',
+        'payment_mode' => PaymentModeEnum::class,
+        'payment_status' => PaymentStatusEnum::class,
+        'basic_amount' => 'decimal:2',
+        'gross_amount' => 'decimal:2',
         'deduction_amount' => 'decimal:2',
-        'net_amount'      => 'decimal:2',
-        'paid_at'         => 'datetime',
+        'net_amount' => 'decimal:2',
+        'paid_at' => 'datetime',
     ];
 
     public function batch(): BelongsTo

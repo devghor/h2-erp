@@ -8,7 +8,6 @@ use App\Http\Requests\Configuration\Shift\StoreShiftRequest;
 use App\Http\Requests\Configuration\Shift\UpdateShiftRequest;
 use App\Services\Configuration\Shift\ShiftService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class ShiftController extends Controller
 {
@@ -29,6 +28,7 @@ class ShiftController extends Controller
         $data['company_id'] = session(config('tenancy.company_id_session_key'));
 
         $this->shiftService->create($data);
+
         return redirect()->back()->with('success', 'Shift created successfully.');
     }
 
@@ -39,6 +39,7 @@ class ShiftController extends Controller
     public function update(UpdateShiftRequest $request, string $id)
     {
         $this->shiftService->update($request->validated(), $id);
+
         return redirect()->route('configuration.shifts.index')->with([
             'success' => __('Shift updated successfully.'),
         ]);
@@ -47,6 +48,7 @@ class ShiftController extends Controller
     public function destroy(string $id)
     {
         $this->shiftService->delete($id);
+
         return redirect()->route('configuration.shifts.index')->with([
             'success' => __('Shift deleted successfully.'),
         ]);

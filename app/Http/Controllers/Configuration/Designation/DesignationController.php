@@ -23,6 +23,7 @@ class DesignationController extends Controller
     public function store(StoreDesignationRequest $request)
     {
         $this->designationService->create($request->validated());
+
         return redirect()->back()->with('success', 'Designation created successfully.');
     }
 
@@ -39,6 +40,7 @@ class DesignationController extends Controller
     public function update(UpdateDesignationRequest $request, string $id)
     {
         $this->designationService->update($request->validated(), $id);
+
         return redirect()->route('configuration.designations.index')->with([
             'success' => __('Designation updated successfully.'),
         ]);
@@ -47,6 +49,7 @@ class DesignationController extends Controller
     public function destroy(string $id)
     {
         $this->designationService->delete($id);
+
         return redirect()->route('configuration.designations.index')->with([
             'success' => __('Designation deleted successfully.'),
         ]);

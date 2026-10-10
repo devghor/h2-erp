@@ -22,7 +22,7 @@ class Company extends Tenant
         return [
             'id',
             'name',
-            'short_name'
+            'short_name',
         ];
     }
 

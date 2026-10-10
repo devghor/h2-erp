@@ -5,13 +5,13 @@ namespace App\Enums\Payroll;
 enum SalaryHeadGlPrefixTypeEnum: string
 {
     case Dynamic = 'dynamic';
-    case Static  = 'static';
+    case Static = 'static';
 
     public function label(): string
     {
         return match ($this) {
             self::Dynamic => 'Dynamic',
-            self::Static  => 'Static',
+            self::Static => 'Static',
         };
     }
 

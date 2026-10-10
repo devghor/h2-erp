@@ -34,6 +34,7 @@ class PositionController extends Controller
     public function store(StorePositionRequest $request)
     {
         $this->positionService->create($request->validated());
+
         return redirect()->back()->with('success', 'Position created successfully.');
     }
 
@@ -50,6 +51,7 @@ class PositionController extends Controller
     public function update(UpdatePositionRequest $request, string $id)
     {
         $this->positionService->update($request->validated(), $id);
+
         return redirect()->route('configuration.positions.index')->with([
             'success' => __('Position updated successfully.'),
         ]);
@@ -58,6 +60,7 @@ class PositionController extends Controller
     public function destroy(string $id)
     {
         $this->positionService->delete($id);
+
         return redirect()->route('configuration.positions.index')->with([
             'success' => __('Position deleted successfully.'),
         ]);

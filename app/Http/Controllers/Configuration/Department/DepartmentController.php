@@ -28,6 +28,7 @@ class DepartmentController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         $this->departmentService->create($request->validated());
+
         return redirect()->back()->with('success', 'Department created successfully.');
     }
 
@@ -44,6 +45,7 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, string $id)
     {
         $this->departmentService->update($request->validated(), $id);
+
         return redirect()->route('configuration.departments.index')->with([
             'success' => __('Department updated successfully.'),
         ]);
@@ -52,6 +54,7 @@ class DepartmentController extends Controller
     public function destroy(string $id)
     {
         $this->departmentService->delete($id);
+
         return redirect()->route('configuration.departments.index')->with([
             'success' => __('Department deleted successfully.'),
         ]);

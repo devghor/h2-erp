@@ -24,9 +24,9 @@ class PayrollEmployeeSalaryProfileController extends Controller
         $data = $this->service->getSalaryDataForEmployee((int) $userId);
 
         return Inertia::render('payroll/employee-salary-profiles/show', [
-            'employee'        => $data['employee'],
-            'salaryHeads'     => $data['salaryHeads'],
-            'activeProfile'   => $data['activeProfile'],
+            'employee' => $data['employee'],
+            'salaryHeads' => $data['salaryHeads'],
+            'activeProfile' => $data['activeProfile'],
             'salaryStructure' => $data['salaryStructure'],
         ]);
     }

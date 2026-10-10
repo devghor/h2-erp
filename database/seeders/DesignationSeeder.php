@@ -11,7 +11,7 @@ class DesignationSeeder extends Seeder
     public function run(): void
     {
         $company = Company::first();
-        if (!$company) {
+        if (! $company) {
             return;
         }
 

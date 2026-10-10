@@ -11,7 +11,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PayrollSalaryDisbursementBatch extends Model
 {
-    use HasUlid, BelongsToTenant;
+    use BelongsToTenant, HasUlid;
 
     protected $table = 'payroll_salary_disbursement_batches';
 
@@ -39,15 +39,15 @@ class PayrollSalaryDisbursementBatch extends Model
     ];
 
     protected $casts = [
-        'type'             => SalaryDisbursementBatchTypeEnum::class,
-        'status'           => SalaryDisbursementBatchStatusEnum::class,
-        'total_basic'      => 'decimal:2',
-        'total_gross'      => 'decimal:2',
-        'total_deduction'  => 'decimal:2',
-        'total_net'        => 'decimal:2',
-        'submitted_at'     => 'datetime',
-        'approved_at'      => 'datetime',
-        'disbursed_at'     => 'datetime',
+        'type' => SalaryDisbursementBatchTypeEnum::class,
+        'status' => SalaryDisbursementBatchStatusEnum::class,
+        'total_basic' => 'decimal:2',
+        'total_gross' => 'decimal:2',
+        'total_deduction' => 'decimal:2',
+        'total_net' => 'decimal:2',
+        'submitted_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'disbursed_at' => 'datetime',
         'disbursement_date' => 'date',
     ];
 

@@ -5,13 +5,13 @@ namespace App\Enums\Payroll;
 enum SalaryDisbursementBatchTypeEnum: string
 {
     case MonthlySalary = 'monthly_salary';
-    case SpecialBatch  = 'special_batch';
+    case SpecialBatch = 'special_batch';
 
     public function label(): string
     {
         return match ($this) {
             self::MonthlySalary => 'Monthly Salary',
-            self::SpecialBatch  => 'Special Batch',
+            self::SpecialBatch => 'Special Batch',
         };
     }
 

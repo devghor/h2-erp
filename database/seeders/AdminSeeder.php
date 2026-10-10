@@ -67,10 +67,10 @@ class AdminSeeder extends Seeder
     {
         foreach ($this->users as $data) {
             $company = Company::where('name', $data['company_name'])->first();
-            if (!$company) {
+            if (! $company) {
                 $company = Company::create([
                     'name' => $data['company_name'],
-                    'short_name' => $data['short_name']
+                    'short_name' => $data['short_name'],
                 ]);
             }
 
@@ -80,7 +80,7 @@ class AdminSeeder extends Seeder
                     'name' => $data['user_name'],
                     'username' => $data['username'],
                     'password' => Hash::make('password'),
-                    'company_id' => $company->id
+                    'company_id' => $company->id,
                 ]
             );
 

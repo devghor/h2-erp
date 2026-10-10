@@ -28,6 +28,7 @@ class RoleController extends Controller
         $validated['company_id'] = tenant()?->id;
 
         $this->roleService->create($validated);
+
         return redirect()->back()->with('success', 'Role created successfully.');
     }
 
@@ -61,11 +62,12 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $input = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'description' => 'nullable|string',
             'permissions' => 'nullable|array',
         ]);
         $this->roleService->update($input, $role->id);
+
         return redirect()->back()->with('success', 'Role updated successfully.');
     }
 

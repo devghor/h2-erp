@@ -42,11 +42,11 @@ class UnitsDataTable extends BaseDataTable
     {
         return Pdf::loadView($this->printPreview, ['data' => $this->getDataForPrint()])
             ->setPaper('a4', 'landscape')
-            ->download($this->getFilename() . '.pdf');
+            ->download($this->getFilename().'.pdf');
     }
 
     protected function filename(): string
     {
-        return 'Units_' . date('YmdHis');
+        return 'Units_'.date('YmdHis');
     }
 }
