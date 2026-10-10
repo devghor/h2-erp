@@ -13,14 +13,17 @@ import {
     ChevronUp,
     Download,
     EyeOff,
+    FileDown,
     FileSpreadsheet,
     FileText,
     ListFilter,
     Loader2,
+    Printer,
     SlidersHorizontal,
     X,
 } from 'lucide-react';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Collapsible, CollapsibleContent } from '../ui/collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 function appendSearchParams(searchParams: URLSearchParams, params: Record<string, any>, prefix = '') {
@@ -382,7 +385,7 @@ const DataTable = forwardRef(function DataTable(
     // ── Export (via Yajra DataTable backend) ───────────────────────────────
     const [exportLoading, setExportLoading] = useState(false);
 
-    const handleExport = async (action: 'excel' | 'pdf', mimeType: string, ext: string) => {
+    const handleExport = async (action: 'excel' | 'csv' | 'pdf', mimeType: string, ext: string) => {
         setExportLoading(true);
         try {
             const response = await fetchWithAuth(
@@ -407,11 +410,16 @@ const DataTable = forwardRef(function DataTable(
                 throw new Error(`Export failed: ${response.status} ${response.statusText}`);
             }
 
+            // Prefer the filename the backend's filename() generated (Content-Disposition) over exportTitle
+            const disposition = response.headers.get('Content-Disposition');
+            const filenameMatch = disposition && /filename\*?=(?:UTF-8''|")?([^";]+)"?/i.exec(disposition);
+            const filename = filenameMatch ? decodeURIComponent(filenameMatch[1]) : `${exportTitle}.${ext}`;
+
             const blob = await response.blob();
             const url = URL.createObjectURL(new Blob([blob], { type: mimeType }));
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${exportTitle}.${ext}`;
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -424,7 +432,46 @@ const DataTable = forwardRef(function DataTable(
     };
 
     const handleExportExcel = () => handleExport('excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
+    const handleExportCsv = () => handleExport('csv', 'text/csv', 'csv');
     const handleExportPdf = () => handleExport('pdf', 'application/pdf', 'pdf');
+
+    const handlePrint = async () => {
+        setExportLoading(true);
+        try {
+            const response = await fetchWithAuth(
+                buildUrl(dataUrl, {
+                    draw: 1,
+                    start: 0,
+                    length: -1,
+                    action: 'print',
+                    order,
+                    columns: columns.map((col: ColumnDef) => ({
+                        data: col.accessorKey,
+                        name: col.accessorKey,
+                        searchable: col.searchable !== false,
+                        orderable: col.sortable !== false,
+                        search: { value: columnFilters[col.accessorKey] ?? '', regex: false },
+                    })),
+                    ...extraParamsRef.current,
+                }),
+            );
+
+            if (!response.ok) {
+                throw new Error(`Print preview failed: ${response.status} ${response.statusText}`);
+            }
+
+            const html = await response.text();
+            const printWindow = window.open('', '_blank');
+            if (printWindow) {
+                printWindow.document.write(html);
+                printWindow.document.close();
+            }
+        } catch (error) {
+            console.error('Failed to open print preview:', error);
+        } finally {
+            setExportLoading(false);
+        }
+    };
 
     return (
         <div className="w-full space-y-2">
@@ -474,9 +521,17 @@ const DataTable = forwardRef(function DataTable(
                                 <FileSpreadsheet className="mr-2 h-3.5 w-3.5" />
                                 Excel (.xlsx)
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleExportCsv}>
+                                <FileDown className="mr-2 h-3.5 w-3.5" />
+                                CSV (.csv)
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleExportPdf}>
                                 <FileText className="mr-2 h-3.5 w-3.5" />
-                                PDF (Print)
+                                PDF (.pdf)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handlePrint}>
+                                <Printer className="mr-2 h-3.5 w-3.5" />
+                                Print
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -513,68 +568,72 @@ const DataTable = forwardRef(function DataTable(
             </div>
 
             {/* Filter panel */}
-            {showFilters && hasFilters && (
-                <div className="flex flex-wrap gap-2 rounded-md border bg-muted/40 p-2">
-                    {filterableColumns.map((col) => (
-                        <div key={col.accessorKey} className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">{col.header}</label>
-                            {col.filterType === 'select' ? (
-                                <Select
-                                    value={columnFilters[col.accessorKey] ?? ''}
-                                    onValueChange={(v) =>
-                                        setColumnFilters((prev) => ({
-                                            ...prev,
-                                            [col.accessorKey]: v === '__all__' ? '' : v,
-                                        }))
-                                    }
-                                >
-                                    <SelectTrigger className="h-8 text-sm">
-                                        <SelectValue placeholder={`All ${col.header?.toLowerCase()}…`} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="__all__">All</SelectItem>
-                                        {col.filterOptions?.map((opt) => (
-                                            <SelectItem key={opt.value} value={opt.value}>
-                                                {opt.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            ) : (
-                                <div className="relative">
-                                    <Input
-                                        type={col.filterType === 'date' ? 'date' : 'text'}
-                                        placeholder={col.filterType === 'date' ? '' : `Search ${col.header?.toLowerCase()}…`}
-                                        value={columnFilters[col.accessorKey] ?? ''}
-                                        onChange={(e) =>
-                                            setColumnFilters((prev) => ({
-                                                ...prev,
-                                                [col.accessorKey]: e.target.value,
-                                            }))
-                                        }
-                                        className="h-8 pr-7 text-sm"
-                                    />
-                                    {columnFilters[col.accessorKey] && (
-                                        <button
-                                            type="button"
-                                            className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                            onClick={() =>
-                                                setColumnFilters((prev) => {
-                                                    const next = { ...prev };
-                                                    delete next[col.accessorKey];
-                                                    return next;
-                                                })
+            {hasFilters && (
+                <Collapsible open={showFilters}>
+                    <CollapsibleContent className="animation-duration-400 overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                        <div className="flex flex-wrap gap-2 rounded-md border bg-muted/40 pt-2 px-2 pb-4">
+                            {filterableColumns.map((col) => (
+                                <div key={col.accessorKey} className="flex min-w-[140px] flex-1 flex-col gap-1">
+                                    <label className="text-xs font-medium text-muted-foreground">{col.header}</label>
+                                    {col.filterType === 'select' ? (
+                                        <Select
+                                            value={columnFilters[col.accessorKey] ?? ''}
+                                            onValueChange={(v) =>
+                                                setColumnFilters((prev) => ({
+                                                    ...prev,
+                                                    [col.accessorKey]: v === '__all__' ? '' : v,
+                                                }))
                                             }
                                         >
-                                            <X className="h-3.5 w-3.5" />
-                                        </button>
+                                            <SelectTrigger className="h-8 text-sm">
+                                                <SelectValue placeholder={`All ${col.header?.toLowerCase()}…`} />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="__all__">All</SelectItem>
+                                                {col.filterOptions?.map((opt) => (
+                                                    <SelectItem key={opt.value} value={opt.value}>
+                                                        {opt.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    ) : (
+                                        <div className="relative">
+                                            <Input
+                                                type={col.filterType === 'date' ? 'date' : 'text'}
+                                                placeholder={col.filterType === 'date' ? '' : `Search ${col.header?.toLowerCase()}…`}
+                                                value={columnFilters[col.accessorKey] ?? ''}
+                                                onChange={(e) =>
+                                                    setColumnFilters((prev) => ({
+                                                        ...prev,
+                                                        [col.accessorKey]: e.target.value,
+                                                    }))
+                                                }
+                                                className="h-8 pr-7 text-sm"
+                                            />
+                                            {columnFilters[col.accessorKey] && (
+                                                <button
+                                                    type="button"
+                                                    className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                                    onClick={() =>
+                                                        setColumnFilters((prev) => {
+                                                            const next = { ...prev };
+                                                            delete next[col.accessorKey];
+                                                            return next;
+                                                        })
+                                                    }
+                                                >
+                                                    <X className="h-3.5 w-3.5" />
+                                                </button>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
-                            )}
+                            ))}
+                            {extraFilters}
                         </div>
-                    ))}
-                    {extraFilters}
-                </div>
+                    </CollapsibleContent>
+                </Collapsible>
             )}
 
             {/* Table */}
