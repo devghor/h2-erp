@@ -150,31 +150,4 @@ enum PermissionEnum: string
     case ReadLeaveLeaveType = 'READ_LEAVE_LEAVE_TYPE';
     case UpdateLeaveLeaveType = 'UPDATE_LEAVE_LEAVE_TYPE';
     case DeleteLeaveLeaveType = 'DELETE_LEAVE_LEAVE_TYPE';
-
-    /**
-     * Product Module
-     */
-        // Product > Category
-    case CreateProductCategory = 'CREATE_PRODUCT_CATEGORY';
-    case ReadProductCategory = 'READ_PRODUCT_CATEGORY';
-    case UpdateProductCategory = 'UPDATE_PRODUCT_CATEGORY';
-    case DeleteProductCategory = 'DELETE_PRODUCT_CATEGORY';
-
-        // Product > Brand
-    case CreateProductBrand = 'CREATE_PRODUCT_BRAND';
-    case ReadProductBrand = 'READ_PRODUCT_BRAND';
-    case UpdateProductBrand = 'UPDATE_PRODUCT_BRAND';
-    case DeleteProductBrand = 'DELETE_PRODUCT_BRAND';
-
-        // Product > Unit
-    case CreateProductUnit = 'CREATE_PRODUCT_UNIT';
-    case ReadProductUnit = 'READ_PRODUCT_UNIT';
-    case UpdateProductUnit = 'UPDATE_PRODUCT_UNIT';
-    case DeleteProductUnit = 'DELETE_PRODUCT_UNIT';
-
-        // Product > Product
-    case CreateProductProduct = 'CREATE_PRODUCT_PRODUCT';
-    case ReadProductProduct = 'READ_PRODUCT_PRODUCT';
-    case UpdateProductProduct = 'UPDATE_PRODUCT_PRODUCT';
-    case DeleteProductProduct = 'DELETE_PRODUCT_PRODUCT';
 }

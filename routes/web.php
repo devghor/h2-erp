@@ -21,10 +21,6 @@ use App\Http\Controllers\Employee\EmployeeEducation\EmployeeEducationController;
 use App\Http\Controllers\Employee\EmployeeExperience\EmployeeExperienceController;
 use App\Http\Controllers\Leave\LeaveType\LeaveTypeController;
 use App\Http\Controllers\Notification\NotificationController;
-use App\Http\Controllers\Product\Brand\BrandController;
-use App\Http\Controllers\Product\Category\CategoryController;
-use App\Http\Controllers\Product\Product\ProductController;
-use App\Http\Controllers\Product\Unit\UnitController as ProductUnitController;
 use App\Http\Controllers\Payroll\PayrollEmployeeSalaryProfileController;
 use App\Http\Controllers\Payroll\PayrollSalaryDisbursementBatchController;
 use App\Http\Controllers\Payroll\PayrollSalaryHeadController;
@@ -65,22 +61,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             Route::delete('{id}', [NotificationController::class, 'destroy'])->name('destroy');
         });
 
-
-    /**
-     * Product Module
-     */
-    Route::name('product.')
-        ->prefix('product')
-        ->group(function (): void {
-            Route::delete('categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
-            Route::resource('categories', CategoryController::class);
-            Route::delete('brands/bulk-delete', [BrandController::class, 'bulkDelete'])->name('brands.bulk-delete');
-            Route::resource('brands', BrandController::class);
-            Route::delete('units/bulk-delete', [ProductUnitController::class, 'bulkDelete'])->name('units.bulk-delete');
-            Route::resource('units', ProductUnitController::class);
-            Route::delete('products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulk-delete');
-            Route::resource('products', ProductController::class);
-        });
 
 
     /*

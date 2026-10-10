@@ -22,8 +22,4 @@ export const breadcrumbItems = {
     payrollEmployeeSalaryProfiles: { title: 'Employee Salary Profiles', href: route('payroll.employee-salary-profiles.index') },
     payrollSalaryDisbursementBatches: { title: 'Salary Disbursement', href: route('payroll.salary-disbursement-batches.index') },
     notificationIndex: { title: 'Notifications', href: route('notification.index') },
-    productCategories: { title: 'Categories', href: route('product.categories.index') },
-    productBrands: { title: 'Brands', href: route('product.brands.index') },
-    productUnits: { title: 'Units', href: route('product.units.index') },
-    productProducts: { title: 'Products', href: route('product.products.index') },
 };

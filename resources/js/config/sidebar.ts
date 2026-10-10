@@ -1,5 +1,4 @@
 import {
-    Award,
     Banknote,
     Briefcase,
     Building,
@@ -17,9 +16,6 @@ import {
     ListChecks,
     Lock,
     MonitorCog,
-    Package,
-    Ruler,
-    Tag,
     UserCog,
     UserRound,
     Users,
@@ -168,36 +164,6 @@ export const sidebarData: SidebarData = {
                     url: '/configuration/approval-flows',
                     icon: Workflow,
                     can: 'READ_CONFIGURATION_APPROVAL_FLOW',
-                },
-            ],
-        },
-        {
-            title: 'Product',
-            can: 'READ_PRODUCT',
-            items: [
-                {
-                    title: 'Categories',
-                    url: '/product/categories',
-                    icon: Tag,
-                    can: 'READ_PRODUCT_CATEGORY',
-                },
-                {
-                    title: 'Brands',
-                    url: '/product/brands',
-                    icon: Award,
-                    can: 'READ_PRODUCT_BRAND',
-                },
-                {
-                    title: 'Units',
-                    url: '/product/units',
-                    icon: Ruler,
-                    can: 'READ_PRODUCT_UNIT',
-                },
-                {
-                    title: 'Products',
-                    url: '/product/products',
-                    icon: Package,
-                    can: 'READ_PRODUCT_PRODUCT',
                 },
             ],
         },

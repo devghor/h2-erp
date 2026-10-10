@@ -177,34 +177,6 @@ class PermissionSeeder extends Seeder
             ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::UpdateLeaveLeaveType->value, 'display_name' => self::LABEL_UPDATE],
             ['module' => 'Leave', 'group' => 'Leave > Leave Type', 'name' => PermissionEnum::DeleteLeaveLeaveType->value, 'display_name' => self::LABEL_DELETE],
 
-            /**
-             * Product Module
-             */
-
-            // Category
-            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::CreateProductCategory->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::ReadProductCategory->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::UpdateProductCategory->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Product', 'group' => 'Product > Category', 'name' => PermissionEnum::DeleteProductCategory->value, 'display_name' => self::LABEL_DELETE],
-
-            // Brand
-            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::CreateProductBrand->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::ReadProductBrand->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::UpdateProductBrand->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Product', 'group' => 'Product > Brand', 'name' => PermissionEnum::DeleteProductBrand->value, 'display_name' => self::LABEL_DELETE],
-
-            // Unit
-            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::CreateProductUnit->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::ReadProductUnit->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::UpdateProductUnit->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Product', 'group' => 'Product > Unit', 'name' => PermissionEnum::DeleteProductUnit->value, 'display_name' => self::LABEL_DELETE],
-
-            // Product
-            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::CreateProductProduct->value, 'display_name' => self::LABEL_CREATE],
-            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::ReadProductProduct->value, 'display_name' => self::LABEL_READ],
-            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::UpdateProductProduct->value, 'display_name' => self::LABEL_UPDATE],
-            ['module' => 'Product', 'group' => 'Product > Product', 'name' => PermissionEnum::DeleteProductProduct->value, 'display_name' => self::LABEL_DELETE],
-
         ];
 
 

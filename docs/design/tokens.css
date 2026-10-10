@@ -1,0 +1,82 @@
+:root {
+  /* Brand */
+  --brand-50:  #FFF6F6;
+  --brand-100: #FFF1F1;   /* active nav row, selected menu row */
+  --brand-200: #FFE4E5;   /* initials avatar fill */
+  --brand-300: #FFCFD1;
+  --brand-400: #FF797D;
+  --brand-500: #FF4A50;   /* primary: buttons, active nav text, logo, step badges */
+  --brand-600: #E63A40;   /* hover */
+  --brand-700: #C72D33;   /* pressed */
+
+  /* Neutrals (Tailwind gray/slate) */
+  --bg-page:      #F8FAFC;
+  --bg-surface:   #FFFFFF;
+  --bg-subtle:    #FAFAFA;  /* table header row */
+  --bg-muted:     #F3F4F6;
+  --border:       #E5E7EB;
+  --border-strong:#D1D5DB;
+  --text:         #111827;
+  --text-body:    #374151;
+  --text-muted:   #6B7280;
+  --text-faint:   #9CA3AF;
+
+  /* Status (fill / text / border) */
+  --success-bg: #DCFCE7; --success-fg: #15803D; --success-bd: #BBF7D0;
+  --active-bg:  #ECFDF5; --active-fg:  #059669; --active-bd:  #A7F3D0;
+  --info-bg:    #CCFBF1; --info-fg:    #0F766E; --info-bd:    #99F6E4;
+  --warn-bg:    #FEF9C3; --warn-fg:    #A16207; --warn-bd:    #FDE68A;
+  --pending-bg: #FFFBEB; --pending-fg: #D97706; --pending-bd: #FDE68A;
+  --late-bg:    #FFEDD5; --late-fg:    #C2410C; --late-bd:    #FED7AA;
+  --danger-bg:  #FEF2F2; --danger-fg:  #DC2626; --danger-bd:  #FECACA;
+  --neutral-bg: #F3F4F6; --neutral-fg: #4B5563; --neutral-bd: #E5E7EB;
+
+  /* Charts (coral is never a chart colour). Slots from the validated reference palette. */
+  --chart-1: #2a78d6;   /* single series, "estimated", primary bars */
+  --chart-2: #eb6834;   /* second series, "logged" */
+  --chart-grid: #E5E7EB;
+
+  /* Type */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-xs: 12px;  --fs-sm: 13px;  --fs-base: 14px; --fs-md: 16px;
+  --fs-lg: 18px;  --fs-xl: 22px;  --fs-2xl: 28px;
+
+  /* Space (4px grid) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-10: 40px;
+
+  /* Radius */
+  --r-sm: 6px;    /* inputs, buttons, selects */
+  --r-md: 8px;    /* menus, popovers */
+  --r-lg: 12px;   /* cards, table containers */
+  --r-full: 999px;/* pills, avatars, step badges */
+
+  /* Elevation */
+  --shadow-xs: 0 1px 2px rgb(17 24 39 / 0.05);
+  --shadow-menu: 0 10px 30px -8px rgb(17 24 39 / 0.18), 0 2px 6px rgb(17 24 39 / 0.06);
+
+  /* Shell */
+  --sidebar-w: 272px;
+  --topbar-h: 68px;
+  --row-h: 56px;          /* comfortable table row; 44px compact */
+}
+
+.dark {
+  color-scheme: dark;
+  --brand-50:  #2A1416; --brand-100: #2E1517; --brand-200: #3D1A1D;
+  --brand-500: #FF5A60; --brand-600: #FF7277; --brand-700: #FF8A8E;
+  --bg-page: #0B0F17; --bg-surface: #111827; --bg-subtle: #151C2B; --bg-muted: #1F2937;
+  --border: #1F2937; --border-strong: #374151;
+  --text: #F3F4F6; --text-body: #D1D5DB; --text-muted: #9CA3AF; --text-faint: #6B7280;
+  --success-bg: #0F2A1C; --success-fg: #4ADE80; --success-bd: #14532D;
+  --active-bg:  #0B2620; --active-fg:  #34D399; --active-bd:  #065F46;
+  --info-bg:    #0A2725; --info-fg:    #2DD4BF; --info-bd:    #115E59;
+  --warn-bg:    #2A230A; --warn-fg:    #FACC15; --warn-bd:    #713F12;
+  --pending-bg: #2A1F0A; --pending-fg: #FBBF24; --pending-bd: #78350F;
+  --late-bg:    #2B1A0C; --late-fg:    #FB923C; --late-bd:    #7C2D12;
+  --danger-bg:  #2B1214; --danger-fg:  #F87171; --danger-bd:  #7F1D1D;
+  --neutral-bg: #1F2937; --neutral-fg: #D1D5DB; --neutral-bd: #374151;
+  --shadow-menu: 0 10px 30px -8px rgb(0 0 0 / 0.6);
+  --chart-1: #3987e5; --chart-2: #d95926; --chart-grid: #1F2937;
+}
