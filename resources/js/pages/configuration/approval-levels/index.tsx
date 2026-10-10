@@ -6,21 +6,32 @@ import { MultiCombobox } from '@/components/multi-combobox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationApprovalLevels];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.configurationApprovalLevels,
+];
 
 type TypeOption = { value: string; label: string };
 type Position = { id: number; name: string };
 type PositionGroup = { id: number; name: string };
-type Hrbp = { id: number; user: { id: number; name: string; email: string } | null };
+type Hrbp = {
+    id: number;
+    user: { id: number; name: string; email: string } | null;
+};
 
 export default function Index({
     typeOptions,
@@ -49,18 +60,48 @@ export default function Index({
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
-        { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
-        { accessorKey: 'type_label', header: 'Type', sortable: false, searchable: false },
-        { accessorKey: 'hrbp_names', header: 'HRBP', sortable: false, searchable: false },
-        { accessorKey: 'position_names', header: 'Positions', sortable: false, searchable: false },
-        { accessorKey: 'position_group_names', header: 'Position Groups', sortable: false, searchable: false },
+        {
+            accessorKey: 'name',
+            header: 'Name',
+            sortable: true,
+            searchable: true,
+        },
+        {
+            accessorKey: 'type_label',
+            header: 'Type',
+            sortable: false,
+            searchable: false,
+        },
+        {
+            accessorKey: 'hrbp_names',
+            header: 'HRBP',
+            sortable: false,
+            searchable: false,
+        },
+        {
+            accessorKey: 'position_names',
+            header: 'Positions',
+            sortable: false,
+            searchable: false,
+        },
+        {
+            accessorKey: 'position_group_names',
+            header: 'Position Groups',
+            sortable: false,
+            searchable: false,
+        },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -107,15 +148,18 @@ export default function Index({
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('configuration.approval-levels.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} approval level(s) deleted successfully`);
+        router.delete(route('configuration.approval-levels.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} approval level(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => {
+            },
+            onError: () => {
                 toast.error('Error deleting selected approval levels');
-            });
+            },
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +172,8 @@ export default function Index({
             ...prev,
             type,
             position_ids: type === 'Position' ? prev.position_ids : [],
-            position_group_ids: type === 'PositionGroup' ? prev.position_group_ids : [],
+            position_group_ids:
+                type === 'PositionGroup' ? prev.position_group_ids : [],
             hrbp_ids: type === 'HRBP' ? prev.hrbp_ids : [],
         }));
     };
@@ -149,13 +194,17 @@ export default function Index({
             data.hrbp_ids = form.hrbp_ids;
         }
         if (isEdit && form.id) {
-            router.put(route('configuration.approval-levels.update', form.id), data, {
-                onSuccess: () => {
-                    handleClose();
-                    tableRef.current?.refetch();
+            router.put(
+                route('configuration.approval-levels.update', form.id),
+                data,
+                {
+                    onSuccess: () => {
+                        handleClose();
+                        tableRef.current?.refetch();
+                    },
+                    onError: (errors) => setFormErrors(errors),
                 },
-                onError: (errors) => setFormErrors(errors),
-            });
+            );
         } else {
             router.post(route('configuration.approval-levels.store'), data, {
                 onSuccess: () => {
@@ -168,24 +217,43 @@ export default function Index({
     };
 
     const positionOptions = positions.map((p) => ({ id: p.id, label: p.name }));
-    const positionGroupOptions = positionGroups.map((pg) => ({ id: pg.id, label: pg.name }));
-    const hrbpOptions = hrbps.map((h) => ({ id: h.id, label: h.user ? `${h.user.name} (${h.user.email})` : `HRBP #${h.id}` }));
+    const positionGroupOptions = positionGroups.map((pg) => ({
+        id: pg.id,
+        label: pg.name,
+    }));
+    const hrbpOptions = hrbps.map((h) => ({
+        id: h.id,
+        label: h.user ? `${h.user.name} (${h.user.email})` : `HRBP #${h.id}`,
+    }));
 
     return (
-        <AppLayout title="Approval Levels" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Approval Level</Button>}>
+        <AppLayout
+            title="Approval Levels"
+            breadcrumbs={breadcrumbs}
+            actions={
+                <Button onClick={handleOpenAdd}>Add Approval Level</Button>
+            }
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('configuration.approval-levels.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
             />
             <BaseDialog
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Approval Level' : 'Add Approval Level'}
                 description={
-                    isEdit ? 'Update the details of the existing approval level.' : 'Fill in the details to create a new approval level.'
+                    isEdit
+                        ? 'Update the details of the existing approval level.'
+                        : 'Fill in the details to create a new approval level.'
                 }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
@@ -193,8 +261,17 @@ export default function Index({
             >
                 <div>
                     <Label htmlFor="name">Name</Label>
-                    <Input name="name" value={form.name} onChange={handleChange} required />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                    <Input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formErrors.name && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.name}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="type">Type</Label>
@@ -204,13 +281,20 @@ export default function Index({
                         </SelectTrigger>
                         <SelectContent>
                             {typeOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
+                                <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
                                     {option.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                    {formErrors.type && <p className="text-sm text-red-500">{formErrors.type}</p>}
+                    {formErrors.type && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.type}
+                        </p>
+                    )}
                 </div>
                 {form.type === 'Position' && (
                     <div>
@@ -218,11 +302,17 @@ export default function Index({
                         <MultiCombobox
                             options={positionOptions}
                             value={form.position_ids}
-                            onChange={(position_ids) => setForm((prev) => ({ ...prev, position_ids }))}
+                            onChange={(position_ids) =>
+                                setForm((prev) => ({ ...prev, position_ids }))
+                            }
                             placeholder="Select positions..."
                             searchPlaceholder="Search positions..."
                         />
-                        {formErrors.position_ids && <p className="text-sm text-red-500">{formErrors.position_ids}</p>}
+                        {formErrors.position_ids && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.position_ids}
+                            </p>
+                        )}
                     </div>
                 )}
                 {form.type === 'PositionGroup' && (
@@ -231,11 +321,20 @@ export default function Index({
                         <MultiCombobox
                             options={positionGroupOptions}
                             value={form.position_group_ids}
-                            onChange={(position_group_ids) => setForm((prev) => ({ ...prev, position_group_ids }))}
+                            onChange={(position_group_ids) =>
+                                setForm((prev) => ({
+                                    ...prev,
+                                    position_group_ids,
+                                }))
+                            }
                             placeholder="Select position groups..."
                             searchPlaceholder="Search position groups..."
                         />
-                        {formErrors.position_group_ids && <p className="text-sm text-red-500">{formErrors.position_group_ids}</p>}
+                        {formErrors.position_group_ids && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.position_group_ids}
+                            </p>
+                        )}
                     </div>
                 )}
                 {form.type === 'HRBP' && (
@@ -244,11 +343,17 @@ export default function Index({
                         <MultiCombobox
                             options={hrbpOptions}
                             value={form.hrbp_ids}
-                            onChange={(hrbp_ids) => setForm((prev) => ({ ...prev, hrbp_ids }))}
+                            onChange={(hrbp_ids) =>
+                                setForm((prev) => ({ ...prev, hrbp_ids }))
+                            }
                             placeholder="Select HRBPs..."
                             searchPlaceholder="Search HRBPs..."
                         />
-                        {formErrors.hrbp_ids && <p className="text-sm text-red-500">{formErrors.hrbp_ids}</p>}
+                        {formErrors.hrbp_ids && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.hrbp_ids}
+                            </p>
+                        )}
                     </div>
                 )}
             </BaseDialog>

@@ -85,6 +85,8 @@ class UserController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->userService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Users deleted successfully.']);
+        return redirect()->route('uam.users.index')->with([
+            'success' => 'Users deleted successfully.',
+        ]);
     }
 }

@@ -3,7 +3,13 @@ import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
@@ -14,7 +20,10 @@ import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.payrollSalaryDisbursementBatches];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.payrollSalaryDisbursementBatches,
+];
 
 const MONTHS = [
     { value: '1', label: 'January' },
@@ -63,7 +72,8 @@ export default function Index() {
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
     const autoName = () => {
-        const monthName = MONTHS.find((m) => m.value === form.month)?.label ?? '';
+        const monthName =
+            MONTHS.find((m) => m.value === form.month)?.label ?? '';
         return `${monthName} ${form.year} ${form.type === 'special_batch' ? 'Special Batch' : 'Monthly Salary'}`;
     };
 
@@ -82,7 +92,8 @@ export default function Index() {
         setForm((prev) => {
             const next = { ...prev, [field]: value };
             if (['month', 'year', 'type'].includes(field)) {
-                const monthName = MONTHS.find((m) => m.value === next.month)?.label ?? '';
+                const monthName =
+                    MONTHS.find((m) => m.value === next.month)?.label ?? '';
                 next.name = `${monthName} ${next.year} ${next.type === 'special_batch' ? 'Special Batch' : 'Monthly Salary'}`;
             }
             return next;
@@ -104,18 +115,26 @@ export default function Index() {
     };
 
     const handleDelete = (id: number) => {
-        router.delete(PayrollSalaryDisbursementBatchController.destroy.url(id), {
-            onSuccess: () => {
-                tableRef.current?.refetch();
-                toast.success('Batch deleted.');
+        router.delete(
+            PayrollSalaryDisbursementBatchController.destroy.url(id),
+            {
+                onSuccess: () => {
+                    tableRef.current?.refetch();
+                    toast.success('Batch deleted.');
+                },
+                onError: () => toast.error('Cannot delete this batch.'),
             },
-            onError: () => toast.error('Cannot delete this batch.'),
-        });
+        );
     };
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true },
-        { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
+        {
+            accessorKey: 'name',
+            header: 'Name',
+            sortable: true,
+            searchable: true,
+        },
         { accessorKey: 'period', header: 'Period', sortable: false },
         {
             accessorKey: 'type',
@@ -124,7 +143,13 @@ export default function Index() {
             cell: ({ row }: any) => {
                 const label: string = row.type ?? '';
                 const cls = TYPE_COLORS[label] ?? 'bg-gray-100 text-gray-600';
-                return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>{label}</span>;
+                return (
+                    <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
+                    >
+                        {label}
+                    </span>
+                );
             },
         },
         {
@@ -134,12 +159,22 @@ export default function Index() {
             cell: ({ row }: any) => {
                 const label: string = row.status ?? '';
                 const cls = STATUS_COLORS[label] ?? 'bg-gray-100 text-gray-600';
-                return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>{label}</span>;
+                return (
+                    <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}
+                    >
+                        {label}
+                    </span>
+                );
             },
         },
         { accessorKey: 'employee_count', header: 'Employees', sortable: true },
         { accessorKey: 'total_net', header: 'Net Total', sortable: true },
-        { accessorKey: 'disbursement_date', header: 'Disbursement Date', sortable: true },
+        {
+            accessorKey: 'disbursement_date',
+            header: 'Disbursement Date',
+            sortable: true,
+        },
         {
             accessorKey: 'actions',
             header: 'Actions',
@@ -149,7 +184,13 @@ export default function Index() {
                 <div className="flex items-center justify-center gap-1">
                     <button
                         className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs text-blue-600 hover:bg-blue-50"
-                        onClick={() => router.visit(PayrollSalaryDisbursementBatchController.show.url(row.id))}
+                        onClick={() =>
+                            router.visit(
+                                PayrollSalaryDisbursementBatchController.show.url(
+                                    row.id,
+                                ),
+                            )
+                        }
                         title="View"
                     >
                         <Eye className="h-3.5 w-3.5" />
@@ -159,7 +200,8 @@ export default function Index() {
                         <button
                             className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
                             onClick={() => {
-                                if (confirm('Delete this batch?')) handleDelete(row.id);
+                                if (confirm('Delete this batch?'))
+                                    handleDelete(row.id);
                             }}
                             title="Delete"
                         >
@@ -182,7 +224,11 @@ export default function Index() {
                 </Button>
             }
         >
-            <DataTable ref={tableRef} columns={columns} dataUrl={PayrollSalaryDisbursementBatchController.index.url()} />
+            <DataTable
+                ref={tableRef}
+                columns={columns}
+                dataUrl={PayrollSalaryDisbursementBatchController.index.url()}
+            />
 
             <BaseDialog
                 open={open}
@@ -197,7 +243,12 @@ export default function Index() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <Label>Year</Label>
-                            <Select value={form.year} onValueChange={(v) => handleFieldChange('year', v)}>
+                            <Select
+                                value={form.year}
+                                onValueChange={(v) =>
+                                    handleFieldChange('year', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue />
                                 </SelectTrigger>
@@ -212,13 +263,21 @@ export default function Index() {
                         </div>
                         <div className="space-y-1">
                             <Label>Month</Label>
-                            <Select value={form.month} onValueChange={(v) => handleFieldChange('month', v)}>
+                            <Select
+                                value={form.month}
+                                onValueChange={(v) =>
+                                    handleFieldChange('month', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {MONTHS.map((m) => (
-                                        <SelectItem key={m.value} value={m.value}>
+                                        <SelectItem
+                                            key={m.value}
+                                            value={m.value}
+                                        >
                                             {m.label}
                                         </SelectItem>
                                     ))}
@@ -229,28 +288,49 @@ export default function Index() {
 
                     <div className="space-y-1">
                         <Label>Type</Label>
-                        <Select value={form.type} onValueChange={(v) => handleFieldChange('type', v)}>
+                        <Select
+                            value={form.type}
+                            onValueChange={(v) => handleFieldChange('type', v)}
+                        >
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="monthly_salary">Monthly Salary</SelectItem>
-                                <SelectItem value="special_batch">Special Batch</SelectItem>
+                                <SelectItem value="monthly_salary">
+                                    Monthly Salary
+                                </SelectItem>
+                                <SelectItem value="special_batch">
+                                    Special Batch
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div className="space-y-1">
                         <Label>Name</Label>
-                        <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
-                        {formErrors.name && <p className="text-destructive text-xs">{formErrors.name}</p>}
+                        <Input
+                            value={form.name}
+                            onChange={(e) =>
+                                setForm((p) => ({ ...p, name: e.target.value }))
+                            }
+                        />
+                        {formErrors.name && (
+                            <p className="text-xs text-destructive">
+                                {formErrors.name}
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-1">
                         <Label>Remark</Label>
                         <Textarea
                             value={form.remark}
-                            onChange={(e) => setForm((p) => ({ ...p, remark: e.target.value }))}
+                            onChange={(e) =>
+                                setForm((p) => ({
+                                    ...p,
+                                    remark: e.target.value,
+                                }))
+                            }
                             rows={2}
                         />
                     </div>

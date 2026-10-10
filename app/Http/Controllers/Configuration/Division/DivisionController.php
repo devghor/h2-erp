@@ -60,6 +60,6 @@ class DivisionController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->divisionService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Divisions deleted successfully.']);
+        return back()->with('success', 'Divisions deleted successfully.');
     }
 }

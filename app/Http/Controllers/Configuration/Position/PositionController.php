@@ -68,6 +68,6 @@ class PositionController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->positionService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Positions deleted successfully.']);
+        return back()->with('success', 'Positions deleted successfully.');
     }
 }

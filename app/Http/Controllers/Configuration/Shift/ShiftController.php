@@ -57,6 +57,6 @@ class ShiftController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->shiftService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Shifts deleted successfully.']);
+        return back()->with('success', 'Shifts deleted successfully.');
     }
 }

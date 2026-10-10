@@ -9,11 +9,13 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.uamPermissions];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.uamPermissions,
+];
 
 interface Permission {
     id: number;
@@ -32,8 +34,20 @@ export default function Index() {
             header: 'ID',
             sortable: true,
             searchable: true,
-            searchComponent: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-                <Input type="number" className="w-50" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search ID" />
+            searchComponent: ({
+                value,
+                onChange,
+            }: {
+                value: string;
+                onChange: (v: string) => void;
+            }) => (
+                <Input
+                    type="number"
+                    className="w-50"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Search ID"
+                />
             ),
         },
         {
@@ -41,8 +55,20 @@ export default function Index() {
             header: 'Name',
             sortable: true,
             searchable: true,
-            searchComponent: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-                <Input type="text" className="w-50" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search Name" />
+            searchComponent: ({
+                value,
+                onChange,
+            }: {
+                value: string;
+                onChange: (v: string) => void;
+            }) => (
+                <Input
+                    type="text"
+                    className="w-50"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Search Name"
+                />
             ),
         },
         {
@@ -50,11 +76,29 @@ export default function Index() {
             header: 'Guard Name',
             sortable: true,
             searchable: true,
-            searchComponent: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-                <Input type="text" className="w-50" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search Guard Name" />
+            searchComponent: ({
+                value,
+                onChange,
+            }: {
+                value: string;
+                onChange: (v: string) => void;
+            }) => (
+                <Input
+                    type="text"
+                    className="w-50"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Search Guard Name"
+                />
             ),
         },
-        { accessorKey: 'created_at', header: 'Created At', sortable: true, searchable: true, filterType: 'date' as const },
+        {
+            accessorKey: 'created_at',
+            header: 'Created At',
+            sortable: true,
+            searchable: true,
+            filterType: 'date' as const,
+        },
         {
             accessorKey: 'actions',
             header: 'Actions',
@@ -62,7 +106,10 @@ export default function Index() {
             searchable: false,
             className: 'w-[60px] text-center',
             cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleOpenEdit(row as Permission)} onDelete={() => handleDelete(row.id)} />
+                <RowActions
+                    onEdit={() => handleOpenEdit(row as Permission)}
+                    onDelete={() => handleDelete(row.id)}
+                />
             ),
         },
     ];
@@ -141,11 +188,17 @@ export default function Index() {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios.delete(route('uam.permissions.bulk-delete'), { data: { ids: selectedIds } }).then(() => {
-            toast.success(`${selectedIds.length} permission(s) deleted successfully`);
-            tableRef.current?.refetch();
-        }).catch(() => {
-            toast.error('Error deleting selected permissions');
+        router.delete(route('uam.permissions.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} permission(s) deleted successfully`,
+                );
+                tableRef.current?.refetch();
+            },
+            onError: () => {
+                toast.error('Error deleting selected permissions');
+            },
         });
     };
 
@@ -162,7 +215,11 @@ export default function Index() {
     };
 
     return (
-        <AppLayout title="Permissions" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Permission</Button>}>
+        <AppLayout
+            title="Permissions"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add Permission</Button>}
+        >
             {/* Data table for permissions */}
             <DataTable
                 ref={tableRef}
@@ -170,7 +227,10 @@ export default function Index() {
                 dataUrl={route('uam.permissions.index')}
                 onSelectionChange={setSelectedIds}
                 extraActions={
-                    <BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
                 }
             />
 
@@ -179,17 +239,38 @@ export default function Index() {
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Permission' : 'Add Permission'}
-                description={isEdit ? 'Update the details of the existing permission.' : 'Fill in the details to create a new permission.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing permission.'
+                        : 'Fill in the details to create a new permission.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <Label htmlFor="name">Name</Label>
-                <Input type="text" name="name" value={form.name} onChange={handleChange()} placeholder="Name" required />
-                {formErrors.name && <p className="text-red-500">{formErrors.name}</p>}
+                <Input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange()}
+                    placeholder="Name"
+                    required
+                />
+                {formErrors.name && (
+                    <p className="text-red-500">{formErrors.name}</p>
+                )}
                 <Label htmlFor="guard_name">Guard Name</Label>
-                <Input type="text" name="guard_name" value={form.guard_name} onChange={handleChange()} placeholder="Guard Name" />
-                {formErrors.guard_name && <p className="text-red-500">{formErrors.guard_name}</p>}
+                <Input
+                    type="text"
+                    name="guard_name"
+                    value={form.guard_name}
+                    onChange={handleChange()}
+                    placeholder="Guard Name"
+                />
+                {formErrors.guard_name && (
+                    <p className="text-red-500">{formErrors.guard_name}</p>
+                )}
             </BaseDialog>
         </AppLayout>
     );

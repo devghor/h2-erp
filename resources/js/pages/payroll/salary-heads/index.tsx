@@ -6,16 +6,25 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
+import { http } from '@/lib/http';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.payrollSalaryHeads];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.payrollSalaryHeads,
+];
 
 type EnumOption = { value: string; label: string };
 
@@ -46,7 +55,13 @@ const defaultForm = {
     is_active: true,
 };
 
-export default function Index({ modes, glPrefixTypes, identificationTypes, categories, taxCalculationTypes }: Props) {
+export default function Index({
+    modes,
+    glPrefixTypes,
+    identificationTypes,
+    categories,
+    taxCalculationTypes,
+}: Props) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -56,8 +71,18 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true },
-        { accessorKey: 'name', header: 'Name', sortable: true, searchable: true },
-        { accessorKey: 'code', header: 'Code', sortable: true, searchable: true },
+        {
+            accessorKey: 'name',
+            header: 'Name',
+            sortable: true,
+            searchable: true,
+        },
+        {
+            accessorKey: 'code',
+            header: 'Code',
+            sortable: true,
+            searchable: true,
+        },
         {
             accessorKey: 'category',
             header: 'Category',
@@ -77,7 +102,10 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
             sortable: false,
             className: 'w-[60px] text-center',
             cell: ({ row }: any) => (
-                <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
             ),
         },
     ];
@@ -90,29 +118,32 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
     };
 
     const handleEdit = (row: any) => {
-        axios.get(route('payroll.salary-heads.show', row.id)).then(({ data }) => {
-            setForm({
-                id: data.id,
-                name: data.name ?? '',
-                code: data.code ?? '',
-                is_basic_linked: !!data.is_basic_linked,
-                basic_ratio: data.basic_ratio ?? '',
-                mode: data.mode ?? 'cash',
-                gl_account_code: data.gl_account_code ?? '',
-                gl_prefix_type: data.gl_prefix_type ?? 'dynamic',
-                identification_type: data.identification_type ?? 'other',
-                category: data.category ?? 'gross',
-                position: data.position ?? '',
-                is_variable: !!data.is_variable,
-                is_taxable: !!data.is_taxable,
-                tax_calculation_type: data.tax_calculation_type ?? 'none',
-                tax_value: data.tax_value ?? '',
-                is_active: data.is_active !== undefined ? !!data.is_active : true,
-            });
-            setIsEdit(true);
-            setOpen(true);
-            setFormErrors({});
-        });
+        http<any>('GET', route('payroll.salary-heads.show', row.id)).then(
+            (data) => {
+                setForm({
+                    id: data.id,
+                    name: data.name ?? '',
+                    code: data.code ?? '',
+                    is_basic_linked: !!data.is_basic_linked,
+                    basic_ratio: data.basic_ratio ?? '',
+                    mode: data.mode ?? 'cash',
+                    gl_account_code: data.gl_account_code ?? '',
+                    gl_prefix_type: data.gl_prefix_type ?? 'dynamic',
+                    identification_type: data.identification_type ?? 'other',
+                    category: data.category ?? 'gross',
+                    position: data.position ?? '',
+                    is_variable: !!data.is_variable,
+                    is_taxable: !!data.is_taxable,
+                    tax_calculation_type: data.tax_calculation_type ?? 'none',
+                    tax_value: data.tax_value ?? '',
+                    is_active:
+                        data.is_active !== undefined ? !!data.is_active : true,
+                });
+                setIsEdit(true);
+                setOpen(true);
+                setFormErrors({});
+            },
+        );
     };
 
     const handleClose = () => {
@@ -131,13 +162,18 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('payroll.salary-heads.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} salary head(s) deleted successfully`);
+        router.delete(route('payroll.salary-heads.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} salary head(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected salary heads'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected salary heads');
+            },
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +216,8 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                     handleClose();
                     tableRef.current?.refetch();
                 },
-                onError: (errors: Record<string, string>) => setFormErrors(errors),
+                onError: (errors: Record<string, string>) =>
+                    setFormErrors(errors),
             });
         } else {
             router.post(route('payroll.salary-heads.store'), data, {
@@ -189,7 +226,8 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                     handleClose();
                     tableRef.current?.refetch();
                 },
-                onError: (errors: Record<string, string>) => setFormErrors(errors),
+                onError: (errors: Record<string, string>) =>
+                    setFormErrors(errors),
             });
         }
     };
@@ -205,7 +243,12 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                 columns={columns}
                 dataUrl={route('payroll.salary-heads.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
             />
 
             <BaseDialog
@@ -225,131 +268,233 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <Label>Name *</Label>
-                        <Input name="name" value={form.name} onChange={handleChange} required />
-                        {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                        <Input
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {formErrors.name && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.name}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Code</Label>
-                        <Input name="code" value={form.code} onChange={handleChange} />
-                        {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                        <Input
+                            name="code"
+                            value={form.code}
+                            onChange={handleChange}
+                        />
+                        {formErrors.code && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.code}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Category *</Label>
-                        <Select value={form.category} onValueChange={(v) => handleSelect('category', v)}>
+                        <Select
+                            value={form.category}
+                            onValueChange={(v) => handleSelect('category', v)}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                             <SelectContent>
                                 {categories.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.category && <p className="text-sm text-red-500">{formErrors.category}</p>}
+                        {formErrors.category && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.category}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Identification Type *</Label>
-                        <Select value={form.identification_type} onValueChange={(v) => handleSelect('identification_type', v)}>
+                        <Select
+                            value={form.identification_type}
+                            onValueChange={(v) =>
+                                handleSelect('identification_type', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
                                 {identificationTypes.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {formErrors.identification_type && (
-                            <p className="text-sm text-red-500">{formErrors.identification_type}</p>
+                            <p className="text-sm text-red-500">
+                                {formErrors.identification_type}
+                            </p>
                         )}
                     </div>
 
                     <div>
                         <Label>Mode *</Label>
-                        <Select value={form.mode} onValueChange={(v) => handleSelect('mode', v)}>
+                        <Select
+                            value={form.mode}
+                            onValueChange={(v) => handleSelect('mode', v)}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select mode" />
                             </SelectTrigger>
                             <SelectContent>
                                 {modes.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.mode && <p className="text-sm text-red-500">{formErrors.mode}</p>}
+                        {formErrors.mode && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.mode}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>GL Prefix Type *</Label>
-                        <Select value={form.gl_prefix_type} onValueChange={(v) => handleSelect('gl_prefix_type', v)}>
+                        <Select
+                            value={form.gl_prefix_type}
+                            onValueChange={(v) =>
+                                handleSelect('gl_prefix_type', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select GL prefix type" />
                             </SelectTrigger>
                             <SelectContent>
                                 {glPrefixTypes.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {formErrors.gl_prefix_type && (
-                            <p className="text-sm text-red-500">{formErrors.gl_prefix_type}</p>
+                            <p className="text-sm text-red-500">
+                                {formErrors.gl_prefix_type}
+                            </p>
                         )}
                     </div>
 
                     <div>
                         <Label>GL Account Code</Label>
-                        <Input name="gl_account_code" value={form.gl_account_code} onChange={handleChange} />
+                        <Input
+                            name="gl_account_code"
+                            value={form.gl_account_code}
+                            onChange={handleChange}
+                        />
                         {formErrors.gl_account_code && (
-                            <p className="text-sm text-red-500">{formErrors.gl_account_code}</p>
+                            <p className="text-sm text-red-500">
+                                {formErrors.gl_account_code}
+                            </p>
                         )}
                     </div>
 
                     <div>
                         <Label>Position</Label>
-                        <Input name="position" type="number" value={form.position} onChange={handleChange} />
-                        {formErrors.position && <p className="text-sm text-red-500">{formErrors.position}</p>}
+                        <Input
+                            name="position"
+                            type="number"
+                            value={form.position}
+                            onChange={handleChange}
+                        />
+                        {formErrors.position && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.position}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Basic Ratio</Label>
-                        <Input name="basic_ratio" type="number" step="0.0001" value={form.basic_ratio} onChange={handleChange} />
-                        {formErrors.basic_ratio && <p className="text-sm text-red-500">{formErrors.basic_ratio}</p>}
+                        <Input
+                            name="basic_ratio"
+                            type="number"
+                            step="0.0001"
+                            value={form.basic_ratio}
+                            onChange={handleChange}
+                        />
+                        {formErrors.basic_ratio && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.basic_ratio}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Tax Calculation Type *</Label>
-                        <Select value={form.tax_calculation_type} onValueChange={(v) => handleSelect('tax_calculation_type', v)}>
+                        <Select
+                            value={form.tax_calculation_type}
+                            onValueChange={(v) =>
+                                handleSelect('tax_calculation_type', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select tax type" />
                             </SelectTrigger>
                             <SelectContent>
                                 {taxCalculationTypes.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                         {formErrors.tax_calculation_type && (
-                            <p className="text-sm text-red-500">{formErrors.tax_calculation_type}</p>
+                            <p className="text-sm text-red-500">
+                                {formErrors.tax_calculation_type}
+                            </p>
                         )}
                     </div>
 
                     <div>
                         <Label>Tax Value</Label>
-                        <Input name="tax_value" type="number" step="0.0001" value={form.tax_value} onChange={handleChange} />
-                        {formErrors.tax_value && <p className="text-sm text-red-500">{formErrors.tax_value}</p>}
+                        <Input
+                            name="tax_value"
+                            type="number"
+                            step="0.0001"
+                            value={form.tax_value}
+                            onChange={handleChange}
+                        />
+                        {formErrors.tax_value && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.tax_value}
+                            </p>
+                        )}
                     </div>
 
                     <div className="col-span-2 grid grid-cols-4 gap-4">
@@ -357,15 +502,21 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                             <Checkbox
                                 id="is_basic_linked"
                                 checked={form.is_basic_linked}
-                                onCheckedChange={(c) => handleCheckbox('is_basic_linked', !!c)}
+                                onCheckedChange={(c) =>
+                                    handleCheckbox('is_basic_linked', !!c)
+                                }
                             />
-                            <Label htmlFor="is_basic_linked">Basic Linked</Label>
+                            <Label htmlFor="is_basic_linked">
+                                Basic Linked
+                            </Label>
                         </div>
                         <div className="flex items-center gap-2">
                             <Checkbox
                                 id="is_variable"
                                 checked={form.is_variable}
-                                onCheckedChange={(c) => handleCheckbox('is_variable', !!c)}
+                                onCheckedChange={(c) =>
+                                    handleCheckbox('is_variable', !!c)
+                                }
                             />
                             <Label htmlFor="is_variable">Variable</Label>
                         </div>
@@ -373,7 +524,9 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                             <Checkbox
                                 id="is_taxable"
                                 checked={form.is_taxable}
-                                onCheckedChange={(c) => handleCheckbox('is_taxable', !!c)}
+                                onCheckedChange={(c) =>
+                                    handleCheckbox('is_taxable', !!c)
+                                }
                             />
                             <Label htmlFor="is_taxable">Taxable</Label>
                         </div>
@@ -381,7 +534,9 @@ export default function Index({ modes, glPrefixTypes, identificationTypes, categ
                             <Checkbox
                                 id="is_active"
                                 checked={form.is_active}
-                                onCheckedChange={(c) => handleCheckbox('is_active', !!c)}
+                                onCheckedChange={(c) =>
+                                    handleCheckbox('is_active', !!c)
+                                }
                             />
                             <Label htmlFor="is_active">Active</Label>
                         </div>

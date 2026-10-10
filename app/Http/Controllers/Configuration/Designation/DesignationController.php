@@ -57,6 +57,6 @@ class DesignationController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->designationService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Designations deleted successfully.']);
+        return back()->with('success', 'Designations deleted successfully.');
     }
 }

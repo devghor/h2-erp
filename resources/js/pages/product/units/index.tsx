@@ -9,11 +9,13 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.productUnits];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.productUnits,
+];
 
 const emptyForm = {
     id: undefined as number | undefined,
@@ -51,7 +53,12 @@ export default function Index() {
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -83,23 +90,31 @@ export default function Index() {
         e.preventDefault();
 
         if (isEdit && form.id) {
-            router.put(route('product.units.update', form.id), { name: form.name, code: form.code }, {
-                onSuccess: () => {
-                    toast.success('Unit updated successfully.');
-                    handleClose();
-                    tableRef.current?.refetch();
+            router.put(
+                route('product.units.update', form.id),
+                { name: form.name, code: form.code },
+                {
+                    onSuccess: () => {
+                        toast.success('Unit updated successfully.');
+                        handleClose();
+                        tableRef.current?.refetch();
+                    },
+                    onError: (errors) => setFormErrors(errors),
                 },
-                onError: (errors) => setFormErrors(errors),
-            });
+            );
         } else {
-            router.post(route('product.units.store'), { name: form.name, code: form.code }, {
-                onSuccess: () => {
-                    toast.success('Unit created successfully.');
-                    handleClose();
-                    tableRef.current?.refetch();
+            router.post(
+                route('product.units.store'),
+                { name: form.name, code: form.code },
+                {
+                    onSuccess: () => {
+                        toast.success('Unit created successfully.');
+                        handleClose();
+                        tableRef.current?.refetch();
+                    },
+                    onError: (errors) => setFormErrors(errors),
                 },
-                onError: (errors) => setFormErrors(errors),
-            });
+            );
         }
     };
 
@@ -114,25 +129,46 @@ export default function Index() {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('product.units.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} unit(s) deleted successfully.`);
+        router.delete(route('product.units.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} unit(s) deleted successfully.`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected units.'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected units.');
+            },
+        });
     };
 
     return (
-        <AppLayout title="Product Units" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Unit</Button>}>
+        <AppLayout
+            title="Product Units"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add Unit</Button>}
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('product.units.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
                 extraParams={extraParams}
-                extraFilterCount={[filterName, filterCode, filterDateFrom, filterDateTo].filter(Boolean).length}
+                extraFilterCount={
+                    [
+                        filterName,
+                        filterCode,
+                        filterDateFrom,
+                        filterDateTo,
+                    ].filter(Boolean).length
+                }
                 onClearExtraFilters={() => {
                     setFilterName('');
                     setFilterCode('');
@@ -142,7 +178,9 @@ export default function Index() {
                 extraFilters={
                     <>
                         <div className="flex min-w-[160px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Name</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Name
+                            </label>
                             <Input
                                 type="text"
                                 value={filterName}
@@ -152,7 +190,9 @@ export default function Index() {
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Code</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Code
+                            </label>
                             <Input
                                 type="text"
                                 value={filterCode}
@@ -162,20 +202,28 @@ export default function Index() {
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created From</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created From
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateFrom}
-                                onChange={(e) => setFilterDateFrom(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateFrom(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created To</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created To
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateTo}
-                                onChange={(e) => setFilterDateTo(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateTo(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
@@ -187,20 +235,42 @@ export default function Index() {
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Unit' : 'Add Unit'}
-                description={isEdit ? 'Update the details of the existing unit.' : 'Fill in the details to create a new unit.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing unit.'
+                        : 'Fill in the details to create a new unit.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <div>
                     <Label htmlFor="name">Name *</Label>
-                    <Input name="name" value={form.name} onChange={handleChange} required />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                    <Input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formErrors.name && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.name}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="code">Code *</Label>
-                    <Input name="code" value={form.code} onChange={handleChange} required />
-                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                    <Input
+                        name="code"
+                        value={form.code}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formErrors.code && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.code}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
         </AppLayout>

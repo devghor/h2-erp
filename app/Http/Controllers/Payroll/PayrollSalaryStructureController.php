@@ -57,6 +57,6 @@ class PayrollSalaryStructureController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->payrollSalaryStructureService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Salary structures deleted successfully.']);
+        return back()->with('success', 'Salary structures deleted successfully.');
     }
 }

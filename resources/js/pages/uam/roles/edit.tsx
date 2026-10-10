@@ -42,38 +42,50 @@ interface PermissionGroup {
     };
 }
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.uamRoles, { title: 'Edit Role', href: '' }];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.uamRoles,
+    { title: 'Edit Role', href: '' },
+];
 
 // Standard actions rendered first in this order; any extras appear after, sorted A-Z
 const PRIORITY_ORDER = ['Create', 'Read', 'Update', 'Delete'];
 
 // Color map — CRUD has specific colors; any unknown action falls back to violet
-const ACTION_COLORS: Record<string, { active: string; inactive: string; header: string }> = {
+const ACTION_COLORS: Record<
+    string,
+    { active: string; inactive: string; header: string }
+> = {
     Create: {
-        active:   'bg-blue-600 text-white border-blue-600 hover:bg-blue-700',
-        inactive: 'bg-white text-gray-300 border-gray-200 hover:border-blue-300 hover:text-blue-500',
-        header:   'text-blue-600',
+        active: 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700',
+        inactive:
+            'bg-white text-gray-300 border-gray-200 hover:border-blue-300 hover:text-blue-500',
+        header: 'text-blue-600',
     },
     Read: {
-        active:   'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700',
-        inactive: 'bg-white text-gray-300 border-gray-200 hover:border-emerald-300 hover:text-emerald-500',
-        header:   'text-emerald-600',
+        active: 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700',
+        inactive:
+            'bg-white text-gray-300 border-gray-200 hover:border-emerald-300 hover:text-emerald-500',
+        header: 'text-emerald-600',
     },
     Update: {
-        active:   'bg-amber-500 text-white border-amber-500 hover:bg-amber-600',
-        inactive: 'bg-white text-gray-300 border-gray-200 hover:border-amber-300 hover:text-amber-500',
-        header:   'text-amber-500',
+        active: 'bg-amber-500 text-white border-amber-500 hover:bg-amber-600',
+        inactive:
+            'bg-white text-gray-300 border-gray-200 hover:border-amber-300 hover:text-amber-500',
+        header: 'text-amber-500',
     },
     Delete: {
-        active:   'bg-red-600 text-white border-red-600 hover:bg-red-700',
-        inactive: 'bg-white text-gray-300 border-gray-200 hover:border-red-300 hover:text-red-500',
-        header:   'text-red-600',
+        active: 'bg-red-600 text-white border-red-600 hover:bg-red-700',
+        inactive:
+            'bg-white text-gray-300 border-gray-200 hover:border-red-300 hover:text-red-500',
+        header: 'text-red-600',
     },
     // Fallback for any custom action (Export, Approve, Publish, SuperAdmin, etc.)
     _custom: {
-        active:   'bg-violet-600 text-white border-violet-600 hover:bg-violet-700',
-        inactive: 'bg-white text-gray-300 border-gray-200 hover:border-violet-300 hover:text-violet-500',
-        header:   'text-violet-600',
+        active: 'bg-violet-600 text-white border-violet-600 hover:bg-violet-700',
+        inactive:
+            'bg-white text-gray-300 border-gray-200 hover:border-violet-300 hover:text-violet-500',
+        header: 'text-violet-600',
     },
 };
 
@@ -102,7 +114,13 @@ function transformPermissions(rawPermissions: RawPermission[]): Permission[] {
     });
 }
 
-export default function EditRole({ role, allPermissions: rawPermissions }: { role: Role; allPermissions: RawPermission[] }) {
+export default function EditRole({
+    role,
+    allPermissions: rawPermissions,
+}: {
+    role: Role;
+    allPermissions: RawPermission[];
+}) {
     const allPermissions: Permission[] = transformPermissions(rawPermissions);
 
     const [form, setForm] = useState({
@@ -116,7 +134,8 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
-        if (formErrors[name]) setFormErrors((prev) => ({ ...prev, [name]: '' }));
+        if (formErrors[name])
+            setFormErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
     const handlePermissionChange = (permissionId: number) => {
@@ -133,7 +152,9 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
         const allSelected = ids.every((id) => form.permissions.includes(id));
         setForm((prev) => ({
             ...prev,
-            permissions: allSelected ? prev.permissions.filter((id) => !ids.includes(id)) : [...new Set([...prev.permissions, ...ids])],
+            permissions: allSelected
+                ? prev.permissions.filter((id) => !ids.includes(id))
+                : [...new Set([...prev.permissions, ...ids])],
         }));
     };
 
@@ -142,14 +163,19 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
         const allSelected = ids.every((id) => form.permissions.includes(id));
         setForm((prev) => ({
             ...prev,
-            permissions: allSelected ? prev.permissions.filter((id) => !ids.includes(id)) : [...new Set([...prev.permissions, ...ids])],
+            permissions: allSelected
+                ? prev.permissions.filter((id) => !ids.includes(id))
+                : [...new Set([...prev.permissions, ...ids])],
         }));
     };
 
     const handleSelectAllPermissions = () => {
         const allIds = allPermissions.map((p) => p.id);
         const allSelected = allIds.every((id) => form.permissions.includes(id));
-        setForm((prev) => ({ ...prev, permissions: allSelected ? [] : allIds }));
+        setForm((prev) => ({
+            ...prev,
+            permissions: allSelected ? [] : allIds,
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -160,12 +186,14 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
         });
     };
 
-    const permissionsByModuleAndFeature = allPermissions.reduce<PermissionGroup>((acc, perm) => {
-        if (!acc[perm.module]) acc[perm.module] = {};
-        if (!acc[perm.module][perm.feature]) acc[perm.module][perm.feature] = [];
-        acc[perm.module][perm.feature].push(perm);
-        return acc;
-    }, {});
+    const permissionsByModuleAndFeature =
+        allPermissions.reduce<PermissionGroup>((acc, perm) => {
+            if (!acc[perm.module]) acc[perm.module] = {};
+            if (!acc[perm.module][perm.feature])
+                acc[perm.module][perm.feature] = [];
+            acc[perm.module][perm.feature].push(perm);
+            return acc;
+        }, {});
 
     const filteredPermissionsByModuleAndFeature = Object.fromEntries(
         Object.entries(permissionsByModuleAndFeature)
@@ -177,26 +205,42 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                             feature,
                             perms.filter(
                                 (p) =>
-                                    p.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                    p.feature.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                    p.module.toLowerCase().includes(searchTerm.toLowerCase()),
+                                    p.action
+                                        .toLowerCase()
+                                        .includes(searchTerm.toLowerCase()) ||
+                                    p.feature
+                                        .toLowerCase()
+                                        .includes(searchTerm.toLowerCase()) ||
+                                    p.module
+                                        .toLowerCase()
+                                        .includes(searchTerm.toLowerCase()),
                             ),
                         ])
-                        .filter(([_, perms]) => (perms as Permission[]).length > 0),
+                        .filter(
+                            ([_, perms]) => (perms as Permission[]).length > 0,
+                        ),
                 ),
             ])
-            .filter(([_, features]) => Object.keys(features as object).length > 0),
+            .filter(
+                ([_, features]) => Object.keys(features as object).length > 0,
+            ),
     );
 
-    const isFeatureFullySelected = (perms: Permission[]) => perms.every((p) => form.permissions.includes(p.id));
+    const isFeatureFullySelected = (perms: Permission[]) =>
+        perms.every((p) => form.permissions.includes(p.id));
     const isFeaturePartiallySelected = (perms: Permission[]) =>
-        perms.some((p) => form.permissions.includes(p.id)) && !isFeatureFullySelected(perms);
-    const isModuleFullySelected = (perms: Permission[]) => perms.every((p) => form.permissions.includes(p.id));
+        perms.some((p) => form.permissions.includes(p.id)) &&
+        !isFeatureFullySelected(perms);
+    const isModuleFullySelected = (perms: Permission[]) =>
+        perms.every((p) => form.permissions.includes(p.id));
     const isModulePartiallySelected = (perms: Permission[]) =>
-        perms.some((p) => form.permissions.includes(p.id)) && !isModuleFullySelected(perms);
+        perms.some((p) => form.permissions.includes(p.id)) &&
+        !isModuleFullySelected(perms);
 
     // All unique action types present in the full dataset (for the legend)
-    const globalActions = sortActions([...new Set(allPermissions.map((p) => p.action))]);
+    const globalActions = sortActions([
+        ...new Set(allPermissions.map((p) => p.action)),
+    ]);
 
     const selectedCount = form.permissions.length;
     const totalCount = allPermissions.length;
@@ -205,26 +249,49 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
     return (
         <AppLayout title="Edit Role" breadcrumbs={breadcrumbs}>
             <form onSubmit={handleSubmit} className="space-y-6">
-
                 {/* ── Sticky Toolbar ── */}
                 <div className="sticky top-0 z-20 -mx-4 border-b bg-background/95 px-4 py-3 shadow-sm backdrop-blur-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                             <ShieldCheck className="h-5 w-5 text-primary" />
-                            <span className="font-semibold text-foreground">Edit Role</span>
+                            <span className="font-semibold text-foreground">
+                                Edit Role
+                            </span>
                             <Separator orientation="vertical" className="h-4" />
-                            <Badge variant={selectedCount > 0 ? 'default' : 'secondary'} className="font-mono text-xs tabular-nums">
-                                {selectedCount} / {totalCount} permissions granted
+                            <Badge
+                                variant={
+                                    selectedCount > 0 ? 'default' : 'secondary'
+                                }
+                                className="font-mono text-xs tabular-nums"
+                            >
+                                {selectedCount} / {totalCount} permissions
+                                granted
                             </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button type="button" variant="ghost" size="sm" onClick={() => router.visit(route('uam.roles.index'))}>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                    router.visit(route('uam.roles.index'))
+                                }
+                            >
                                 Cancel
                             </Button>
-                            <Button type="button" variant="outline" size="sm" onClick={handleSelectAllPermissions}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={handleSelectAllPermissions}
+                            >
                                 {allSelected ? 'Revoke All' : 'Grant All'}
                             </Button>
-                            <Button type="submit" size="sm" className="min-w-[120px]">
+                            <Button
+                                type="submit"
+                                size="sm"
+                                className="min-w-[120px]"
+                            >
                                 Save Changes
                             </Button>
                         </div>
@@ -238,20 +305,42 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                             <ShieldCheck className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold leading-none text-foreground">Role Information</p>
-                            <p className="mt-1 text-xs text-muted-foreground">Define the role name and its purpose</p>
+                            <p className="text-sm leading-none font-semibold text-foreground">
+                                Role Information
+                            </p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                Define the role name and its purpose
+                            </p>
                         </div>
                     </div>
                     <CardContent className="grid grid-cols-1 gap-5 pt-5 md:grid-cols-2">
                         <div className="space-y-1.5">
-                            <Label htmlFor="name" className="text-sm font-medium">
-                                Role Name <span className="text-destructive">*</span>
+                            <Label
+                                htmlFor="name"
+                                className="text-sm font-medium"
+                            >
+                                Role Name{' '}
+                                <span className="text-destructive">*</span>
                             </Label>
-                            <Input id="name" name="name" value={form.name} onChange={handleChange} required placeholder="e.g. HR Manager" />
-                            {formErrors.name && <p className="text-xs text-destructive">{formErrors.name}</p>}
+                            <Input
+                                id="name"
+                                name="name"
+                                value={form.name}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g. HR Manager"
+                            />
+                            {formErrors.name && (
+                                <p className="text-xs text-destructive">
+                                    {formErrors.name}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-1.5">
-                            <Label htmlFor="description" className="text-sm font-medium">
+                            <Label
+                                htmlFor="description"
+                                className="text-sm font-medium"
+                            >
                                 Description
                             </Label>
                             <Input
@@ -261,7 +350,11 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                                 onChange={handleChange}
                                 placeholder="Briefly describe this role's purpose"
                             />
-                            {formErrors.description && <p className="text-xs text-destructive">{formErrors.description}</p>}
+                            {formErrors.description && (
+                                <p className="text-xs text-destructive">
+                                    {formErrors.description}
+                                </p>
+                            )}
                         </div>
                     </CardContent>
                 </Card>
@@ -270,13 +363,16 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                 <div className="space-y-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <h3 className="text-base font-semibold text-foreground">Access Permissions</h3>
+                            <h3 className="text-base font-semibold text-foreground">
+                                Access Permissions
+                            </h3>
                             <p className="text-sm text-muted-foreground">
-                                Configure what actions this role can perform across each module.
+                                Configure what actions this role can perform
+                                across each module.
                             </p>
                         </div>
                         <div className="relative w-full sm:w-64">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 placeholder="Search modules or features..."
                                 value={searchTerm}
@@ -288,34 +384,54 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
 
                     {/* Dynamic legend — reflects whatever action types exist in this dataset */}
                     <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed bg-muted/30 px-4 py-2.5 text-xs">
-                        <span className="font-medium text-muted-foreground">Available actions:</span>
+                        <span className="font-medium text-muted-foreground">
+                            Available actions:
+                        </span>
                         {globalActions.map((action) => {
                             const colors = getActionColor(action);
                             return (
-                                <span key={action} className={`rounded border px-2 py-0.5 font-medium ${colors.active}`}>
+                                <span
+                                    key={action}
+                                    className={`rounded border px-2 py-0.5 font-medium ${colors.active}`}
+                                >
                                     {action}
                                 </span>
                             );
                         })}
                         <span className="ml-1 text-muted-foreground">
-                            — click to toggle · row checkbox = all actions · module checkbox = entire module
+                            — click to toggle · row checkbox = all actions ·
+                            module checkbox = entire module
                         </span>
                     </div>
 
                     {/* Module Cards */}
                     <div className="space-y-4">
-                        {Object.entries(filteredPermissionsByModuleAndFeature).map(([module, features]: any) => {
-                            const allModulePermissions: Permission[] = Object.values(features).flat() as Permission[];
+                        {Object.entries(
+                            filteredPermissionsByModuleAndFeature,
+                        ).map(([module, features]: any) => {
+                            const allModulePermissions: Permission[] =
+                                Object.values(features).flat() as Permission[];
 
                             // Compute actions present in THIS module — may differ between modules
-                            const moduleActionSet = new Set<string>(allModulePermissions.map((p) => p.action));
-                            const moduleActions = sortActions([...moduleActionSet]);
-                            const hasCustomActions = moduleActions.some((a) => !PRIORITY_ORDER.includes(a));
+                            const moduleActionSet = new Set<string>(
+                                allModulePermissions.map((p) => p.action),
+                            );
+                            const moduleActions = sortActions([
+                                ...moduleActionSet,
+                            ]);
+                            const hasCustomActions = moduleActions.some(
+                                (a) => !PRIORITY_ORDER.includes(a),
+                            );
 
-                            const moduleFullySelected = isModuleFullySelected(allModulePermissions);
-                            const modulePartiallySelected = isModulePartiallySelected(allModulePermissions);
-                            const moduleSelectedCount = form.permissions.filter((id) =>
-                                allModulePermissions.map((p) => p.id).includes(id),
+                            const moduleFullySelected =
+                                isModuleFullySelected(allModulePermissions);
+                            const modulePartiallySelected =
+                                isModulePartiallySelected(allModulePermissions);
+                            const moduleSelectedCount = form.permissions.filter(
+                                (id) =>
+                                    allModulePermissions
+                                        .map((p) => p.id)
+                                        .includes(id),
                             ).length;
 
                             // Dynamic grid: sticky feature column (200px) + 88px per action
@@ -329,22 +445,38 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                                             <Checkbox
                                                 checked={moduleFullySelected}
                                                 ref={(el: any) => {
-                                                    if (el) el.indeterminate = modulePartiallySelected;
+                                                    if (el)
+                                                        el.indeterminate =
+                                                            modulePartiallySelected;
                                                 }}
-                                                onCheckedChange={() => handleSelectAllModule(allModulePermissions)}
+                                                onCheckedChange={() =>
+                                                    handleSelectAllModule(
+                                                        allModulePermissions,
+                                                    )
+                                                }
                                             />
-                                            <span className="text-sm font-semibold text-foreground">{module}</span>
+                                            <span className="text-sm font-semibold text-foreground">
+                                                {module}
+                                            </span>
                                             {hasCustomActions && (
-                                                <Badge variant="outline" className="text-xs text-violet-600 border-violet-300">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="border-violet-300 text-xs text-violet-600"
+                                                >
                                                     Custom actions
                                                 </Badge>
                                             )}
                                         </div>
                                         <Badge
-                                            variant={moduleSelectedCount > 0 ? 'default' : 'secondary'}
+                                            variant={
+                                                moduleSelectedCount > 0
+                                                    ? 'default'
+                                                    : 'secondary'
+                                            }
                                             className="font-mono text-xs tabular-nums"
                                         >
-                                            {moduleSelectedCount} / {allModulePermissions.length}
+                                            {moduleSelectedCount} /{' '}
+                                            {allModulePermissions.length}
                                         </Badge>
                                     </div>
 
@@ -353,13 +485,20 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
                                         {/* Column Headers */}
                                         <div
                                             className="grid items-center border-b bg-muted/20 px-4 py-2 text-xs font-medium text-muted-foreground"
-                                            style={{ gridTemplateColumns: gridTemplate }}
+                                            style={{
+                                                gridTemplateColumns:
+                                                    gridTemplate,
+                                            }}
                                         >
                                             <span>Feature</span>
                                             {moduleActions.map((action) => {
-                                                const colors = getActionColor(action);
+                                                const colors =
+                                                    getActionColor(action);
                                                 return (
-                                                    <span key={action} className={`text-center font-semibold ${colors.header}`}>
+                                                    <span
+                                                        key={action}
+                                                        className={`text-center font-semibold ${colors.header}`}
+                                                    >
                                                         {action}
                                                     </span>
                                                 );
@@ -368,74 +507,145 @@ export default function EditRole({ role, allPermissions: rawPermissions }: { rol
 
                                         {/* Feature Rows */}
                                         <CardContent className="p-0">
-                                            {Object.entries(features).map(([feature, permissions]: any, idx: number, arr: any[]) => {
-                                                const featureFullySelected = isFeatureFullySelected(permissions);
-                                                const featurePartiallySelected = isFeaturePartiallySelected(permissions);
-                                                const permByAction: Record<string, Permission> = {};
-                                                (permissions as Permission[]).forEach((p) => {
-                                                    permByAction[p.action] = p;
-                                                });
+                                            {Object.entries(features).map(
+                                                (
+                                                    [feature, permissions]: any,
+                                                    idx: number,
+                                                    arr: any[],
+                                                ) => {
+                                                    const featureFullySelected =
+                                                        isFeatureFullySelected(
+                                                            permissions,
+                                                        );
+                                                    const featurePartiallySelected =
+                                                        isFeaturePartiallySelected(
+                                                            permissions,
+                                                        );
+                                                    const permByAction: Record<
+                                                        string,
+                                                        Permission
+                                                    > = {};
+                                                    (
+                                                        permissions as Permission[]
+                                                    ).forEach((p) => {
+                                                        permByAction[p.action] =
+                                                            p;
+                                                    });
 
-                                                return (
-                                                    <div
-                                                        key={feature}
-                                                        className={`grid items-center px-4 py-2.5 transition-colors hover:bg-muted/25 ${
-                                                            idx < arr.length - 1 ? 'border-b border-border/60' : ''
-                                                        }`}
-                                                        style={{ gridTemplateColumns: gridTemplate }}
-                                                    >
-                                                        {/* Feature name + row checkbox */}
-                                                        <div className="flex min-w-0 items-center gap-3">
-                                                            <Checkbox
-                                                                checked={featureFullySelected}
-                                                                ref={(el: any) => {
-                                                                    if (el) el.indeterminate = featurePartiallySelected;
-                                                                }}
-                                                                onCheckedChange={() => handleSelectAllFeature(permissions)}
-                                                            />
-                                                            <span className="truncate text-sm font-medium text-foreground" title={feature}>
-                                                                {feature}
-                                                            </span>
-                                                        </div>
+                                                    return (
+                                                        <div
+                                                            key={feature}
+                                                            className={`grid items-center px-4 py-2.5 transition-colors hover:bg-muted/25 ${
+                                                                idx <
+                                                                arr.length - 1
+                                                                    ? 'border-b border-border/60'
+                                                                    : ''
+                                                            }`}
+                                                            style={{
+                                                                gridTemplateColumns:
+                                                                    gridTemplate,
+                                                            }}
+                                                        >
+                                                            {/* Feature name + row checkbox */}
+                                                            <div className="flex min-w-0 items-center gap-3">
+                                                                <Checkbox
+                                                                    checked={
+                                                                        featureFullySelected
+                                                                    }
+                                                                    ref={(
+                                                                        el: any,
+                                                                    ) => {
+                                                                        if (el)
+                                                                            el.indeterminate =
+                                                                                featurePartiallySelected;
+                                                                    }}
+                                                                    onCheckedChange={() =>
+                                                                        handleSelectAllFeature(
+                                                                            permissions,
+                                                                        )
+                                                                    }
+                                                                />
+                                                                <span
+                                                                    className="truncate text-sm font-medium text-foreground"
+                                                                    title={
+                                                                        feature
+                                                                    }
+                                                                >
+                                                                    {feature}
+                                                                </span>
+                                                            </div>
 
-                                                        {/* One cell per action — dash if this feature doesn't have that action */}
-                                                        {moduleActions.map((action) => {
-                                                            const perm = permByAction[action];
-                                                            const colors = getActionColor(action);
-                                                            const isActive = perm && form.permissions.includes(perm.id);
+                                                            {/* One cell per action — dash if this feature doesn't have that action */}
+                                                            {moduleActions.map(
+                                                                (action) => {
+                                                                    const perm =
+                                                                        permByAction[
+                                                                            action
+                                                                        ];
+                                                                    const colors =
+                                                                        getActionColor(
+                                                                            action,
+                                                                        );
+                                                                    const isActive =
+                                                                        perm &&
+                                                                        form.permissions.includes(
+                                                                            perm.id,
+                                                                        );
 
-                                                            return (
-                                                                <div key={action} className="flex justify-center">
-                                                                    {perm ? (
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handlePermissionChange(perm.id)}
-                                                                            className={`rounded border px-2.5 py-1 text-xs font-medium transition-all duration-150 ${
-                                                                                isActive ? colors.active : colors.inactive
-                                                                            }`}
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                action
+                                                                            }
+                                                                            className="flex justify-center"
                                                                         >
-                                                                            {action}
-                                                                        </button>
-                                                                    ) : (
-                                                                        <span className="text-xs text-muted-foreground/25">—</span>
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                );
-                                            })}
+                                                                            {perm ? (
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() =>
+                                                                                        handlePermissionChange(
+                                                                                            perm.id,
+                                                                                        )
+                                                                                    }
+                                                                                    className={`rounded border px-2.5 py-1 text-xs font-medium transition-all duration-150 ${
+                                                                                        isActive
+                                                                                            ? colors.active
+                                                                                            : colors.inactive
+                                                                                    }`}
+                                                                                >
+                                                                                    {
+                                                                                        action
+                                                                                    }
+                                                                                </button>
+                                                                            ) : (
+                                                                                <span className="text-xs text-muted-foreground/25">
+                                                                                    —
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    );
+                                                                },
+                                                            )}
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
                                         </CardContent>
                                     </div>
                                 </Card>
                             );
                         })}
 
-                        {Object.keys(filteredPermissionsByModuleAndFeature).length === 0 && (
+                        {Object.keys(filteredPermissionsByModuleAndFeature)
+                            .length === 0 && (
                             <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed py-12 text-center text-muted-foreground">
                                 <Search className="h-8 w-8 opacity-30" />
-                                <p className="text-sm font-medium">No permissions match your search</p>
-                                <p className="text-xs">Try a different module or feature name</p>
+                                <p className="text-sm font-medium">
+                                    No permissions match your search
+                                </p>
+                                <p className="text-xs">
+                                    Try a different module or feature name
+                                </p>
                             </div>
                         )}
                     </div>

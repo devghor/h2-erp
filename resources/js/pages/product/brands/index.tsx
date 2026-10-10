@@ -9,11 +9,13 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.productBrands];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.productBrands,
+];
 
 const emptyForm = {
     id: undefined as number | undefined,
@@ -47,15 +49,31 @@ export default function Index() {
             header: 'Logo',
             sortable: false,
             cell: ({ row }: any) =>
-                row.logo_url ? <img src={row.logo_url} alt={row.name} className="h-8 w-8 rounded object-cover" /> : null,
+                row.logo_url ? (
+                    <img
+                        src={row.logo_url}
+                        alt={row.name}
+                        className="h-8 w-8 rounded object-cover"
+                    />
+                ) : null,
         },
-        { accessorKey: 'created_at', header: 'Created At', sortable: true, filterType: 'date' as const },
+        {
+            accessorKey: 'created_at',
+            header: 'Created At',
+            sortable: true,
+            filterType: 'date' as const,
+        },
         {
             accessorKey: 'actions',
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -124,25 +142,42 @@ export default function Index() {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('product.brands.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} brand(s) deleted successfully.`);
+        router.delete(route('product.brands.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} brand(s) deleted successfully.`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected brands.'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected brands.');
+            },
+        });
     };
 
     return (
-        <AppLayout title="Product Brands" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Brand</Button>}>
+        <AppLayout
+            title="Product Brands"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add Brand</Button>}
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('product.brands.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
                 extraParams={extraParams}
-                extraFilterCount={[filterName, filterDateFrom, filterDateTo].filter(Boolean).length}
+                extraFilterCount={
+                    [filterName, filterDateFrom, filterDateTo].filter(Boolean)
+                        .length
+                }
                 onClearExtraFilters={() => {
                     setFilterName('');
                     setFilterDateFrom('');
@@ -151,7 +186,9 @@ export default function Index() {
                 extraFilters={
                     <>
                         <div className="flex min-w-[160px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Name</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Name
+                            </label>
                             <Input
                                 type="text"
                                 value={filterName}
@@ -161,20 +198,28 @@ export default function Index() {
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created From</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created From
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateFrom}
-                                onChange={(e) => setFilterDateFrom(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateFrom(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created To</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created To
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateTo}
-                                onChange={(e) => setFilterDateTo(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateTo(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
@@ -186,20 +231,42 @@ export default function Index() {
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Brand' : 'Add Brand'}
-                description={isEdit ? 'Update the details of the existing brand.' : 'Fill in the details to create a new brand.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing brand.'
+                        : 'Fill in the details to create a new brand.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <div>
                     <Label htmlFor="name">Name *</Label>
-                    <Input name="name" value={form.name} onChange={handleChange} required />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                    <Input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formErrors.name && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.name}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="logo">Logo</Label>
-                    <Input name="logo" type="file" accept="image/*" onChange={handleChange} />
-                    {formErrors.logo && <p className="text-sm text-red-500">{formErrors.logo}</p>}
+                    <Input
+                        name="logo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                    />
+                    {formErrors.logo && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.logo}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
         </AppLayout>

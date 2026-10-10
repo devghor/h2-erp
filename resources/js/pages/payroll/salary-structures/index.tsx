@@ -4,22 +4,42 @@ import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
+import { http } from '@/lib/http';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.payrollSalaryStructures];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.payrollSalaryStructures,
+];
 
 interface Designation {
     id: number;
@@ -69,10 +89,22 @@ export default function Index({ designations }: Props) {
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true },
-        { accessorKey: 'designation_name', header: 'Designation', sortable: true },
+        {
+            accessorKey: 'designation_name',
+            header: 'Designation',
+            sortable: true,
+        },
         { accessorKey: 'basic', header: 'Basic', sortable: true },
-        { accessorKey: 'annual_increment_percentage', header: 'Annual Increment %', sortable: true },
-        { accessorKey: 'effective_date', header: 'Effective Date', sortable: true },
+        {
+            accessorKey: 'annual_increment_percentage',
+            header: 'Annual Increment %',
+            sortable: true,
+        },
+        {
+            accessorKey: 'effective_date',
+            header: 'Effective Date',
+            sortable: true,
+        },
         { accessorKey: 'is_active', header: 'Status', sortable: true },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
@@ -80,7 +112,12 @@ export default function Index({ designations }: Props) {
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -92,25 +129,33 @@ export default function Index({ designations }: Props) {
     };
 
     const handleEdit = (row: any) => {
-        axios.get(route('payroll.salary-structures.show', row.id)).then(({ data }) => {
-            setForm({
-                id: data.id,
-                designation_id: data.designation_id ? String(data.designation_id) : '',
-                basic: data.basic ?? '',
-                annual_increment_percentage: data.annual_increment_percentage ?? '',
-                efficiency_bar: data.efficiency_bar ?? '',
-                home_loan_multiplier: data.home_loan_multiplier ?? '',
-                car_loan_max_amount: data.car_loan_max_amount ?? '',
-                car_maintenance_expense: data.car_maintenance_expense ?? '',
-                life_insurance_multiplier: data.life_insurance_multiplier ?? '',
-                hospitalization_insurance: data.hospitalization_insurance ?? '',
-                effective_date: data.effective_date ?? '',
-                is_active: data.is_active !== undefined ? !!data.is_active : true,
-            });
-            setIsEdit(true);
-            setOpen(true);
-            setFormErrors({});
-        });
+        http<any>('GET', route('payroll.salary-structures.show', row.id)).then(
+            (data) => {
+                setForm({
+                    id: data.id,
+                    designation_id: data.designation_id
+                        ? String(data.designation_id)
+                        : '',
+                    basic: data.basic ?? '',
+                    annual_increment_percentage:
+                        data.annual_increment_percentage ?? '',
+                    efficiency_bar: data.efficiency_bar ?? '',
+                    home_loan_multiplier: data.home_loan_multiplier ?? '',
+                    car_loan_max_amount: data.car_loan_max_amount ?? '',
+                    car_maintenance_expense: data.car_maintenance_expense ?? '',
+                    life_insurance_multiplier:
+                        data.life_insurance_multiplier ?? '',
+                    hospitalization_insurance:
+                        data.hospitalization_insurance ?? '',
+                    effective_date: data.effective_date ?? '',
+                    is_active:
+                        data.is_active !== undefined ? !!data.is_active : true,
+                });
+                setIsEdit(true);
+                setOpen(true);
+                setFormErrors({});
+            },
+        );
     };
 
     const handleClose = () => {
@@ -129,13 +174,18 @@ export default function Index({ designations }: Props) {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('payroll.salary-structures.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} salary structure(s) deleted successfully`);
+        router.delete(route('payroll.salary-structures.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} salary structure(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected salary structures'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected salary structures');
+            },
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,9 +209,12 @@ export default function Index({ designations }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const data = {
-            designation_id: form.designation_id ? Number(form.designation_id) : null,
+            designation_id: form.designation_id
+                ? Number(form.designation_id)
+                : null,
             basic: form.basic || null,
-            annual_increment_percentage: form.annual_increment_percentage || null,
+            annual_increment_percentage:
+                form.annual_increment_percentage || null,
             efficiency_bar: form.efficiency_bar || null,
             home_loan_multiplier: form.home_loan_multiplier || null,
             car_loan_max_amount: form.car_loan_max_amount || null,
@@ -173,14 +226,19 @@ export default function Index({ designations }: Props) {
         };
 
         if (isEdit && form.id) {
-            router.put(route('payroll.salary-structures.update', form.id), data, {
-                onSuccess: () => {
-                    toast.success('Salary structure updated successfully.');
-                    handleClose();
-                    tableRef.current?.refetch();
+            router.put(
+                route('payroll.salary-structures.update', form.id),
+                data,
+                {
+                    onSuccess: () => {
+                        toast.success('Salary structure updated successfully.');
+                        handleClose();
+                        tableRef.current?.refetch();
+                    },
+                    onError: (errors: Record<string, string>) =>
+                        setFormErrors(errors),
                 },
-                onError: (errors: Record<string, string>) => setFormErrors(errors),
-            });
+            );
         } else {
             router.post(route('payroll.salary-structures.store'), data, {
                 onSuccess: () => {
@@ -188,21 +246,40 @@ export default function Index({ designations }: Props) {
                     handleClose();
                     tableRef.current?.refetch();
                 },
-                onError: (errors: Record<string, string>) => setFormErrors(errors),
+                onError: (errors: Record<string, string>) =>
+                    setFormErrors(errors),
             });
         }
     };
 
     return (
-        <AppLayout title="Salary Structures" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Salary Structure</Button>}>
+        <AppLayout
+            title="Salary Structures"
+            breadcrumbs={breadcrumbs}
+            actions={
+                <Button onClick={handleOpenAdd}>Add Salary Structure</Button>
+            }
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('payroll.salary-structures.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
                 extraParams={extraParams}
-                extraFilterCount={[filterDesignationId, filterStatus, filterDateFrom, filterDateTo].filter(Boolean).length}
+                extraFilterCount={
+                    [
+                        filterDesignationId,
+                        filterStatus,
+                        filterDateFrom,
+                        filterDateTo,
+                    ].filter(Boolean).length
+                }
                 onClearExtraFilters={() => {
                     setFilterDesignationId('');
                     setFilterStatus('');
@@ -213,8 +290,13 @@ export default function Index({ designations }: Props) {
                     <>
                         {/* Designation searchable combobox */}
                         <div className="flex min-w-[160px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Designation</label>
-                            <Popover open={desigOpen} onOpenChange={setDesigOpen}>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Designation
+                            </label>
+                            <Popover
+                                open={desigOpen}
+                                onOpenChange={setDesigOpen}
+                            >
                                 <PopoverTrigger asChild>
                                     <Button
                                         variant="outline"
@@ -224,7 +306,11 @@ export default function Index({ designations }: Props) {
                                     >
                                         <span className="truncate">
                                             {filterDesignationId
-                                                ? designations.find((d) => String(d.id) === filterDesignationId)?.name
+                                                ? designations.find(
+                                                      (d) =>
+                                                          String(d.id) ===
+                                                          filterDesignationId,
+                                                  )?.name
                                                 : 'All designations…'}
                                         </span>
                                         <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
@@ -232,18 +318,32 @@ export default function Index({ designations }: Props) {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[220px] p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search designation…" className="h-8" />
+                                        <CommandInput
+                                            placeholder="Search designation…"
+                                            className="h-8"
+                                        />
                                         <CommandList>
-                                            <CommandEmpty>No designation found.</CommandEmpty>
+                                            <CommandEmpty>
+                                                No designation found.
+                                            </CommandEmpty>
                                             <CommandGroup>
                                                 <CommandItem
                                                     value="__all__"
                                                     onSelect={() => {
-                                                        setFilterDesignationId('');
+                                                        setFilterDesignationId(
+                                                            '',
+                                                        );
                                                         setDesigOpen(false);
                                                     }}
                                                 >
-                                                    <Check className={cn('mr-2 h-3.5 w-3.5', !filterDesignationId ? 'opacity-100' : 'opacity-0')} />
+                                                    <Check
+                                                        className={cn(
+                                                            'mr-2 h-3.5 w-3.5',
+                                                            !filterDesignationId
+                                                                ? 'opacity-100'
+                                                                : 'opacity-0',
+                                                        )}
+                                                    />
                                                     All
                                                 </CommandItem>
                                                 {designations.map((d) => (
@@ -251,14 +351,19 @@ export default function Index({ designations }: Props) {
                                                         key={d.id}
                                                         value={d.name}
                                                         onSelect={() => {
-                                                            setFilterDesignationId(String(d.id));
+                                                            setFilterDesignationId(
+                                                                String(d.id),
+                                                            );
                                                             setDesigOpen(false);
                                                         }}
                                                     >
                                                         <Check
                                                             className={cn(
                                                                 'mr-2 h-3.5 w-3.5',
-                                                                filterDesignationId === String(d.id) ? 'opacity-100' : 'opacity-0',
+                                                                filterDesignationId ===
+                                                                    String(d.id)
+                                                                    ? 'opacity-100'
+                                                                    : 'opacity-0',
                                                             )}
                                                         />
                                                         {d.name}
@@ -273,8 +378,15 @@ export default function Index({ designations }: Props) {
 
                         {/* Status filter */}
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Status</label>
-                            <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v === '__all__' ? '' : v)}>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Status
+                            </label>
+                            <Select
+                                value={filterStatus}
+                                onValueChange={(v) =>
+                                    setFilterStatus(v === '__all__' ? '' : v)
+                                }
+                            >
                                 <SelectTrigger className="h-8 text-sm">
                                     <SelectValue placeholder="All statuses…" />
                                 </SelectTrigger>
@@ -288,12 +400,30 @@ export default function Index({ designations }: Props) {
 
                         {/* Created at date range */}
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created From</label>
-                            <Input type="date" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} className="h-8 text-sm" />
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created From
+                            </label>
+                            <Input
+                                type="date"
+                                value={filterDateFrom}
+                                onChange={(e) =>
+                                    setFilterDateFrom(e.target.value)
+                                }
+                                className="h-8 text-sm"
+                            />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created To</label>
-                            <Input type="date" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} className="h-8 text-sm" />
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created To
+                            </label>
+                            <Input
+                                type="date"
+                                value={filterDateTo}
+                                onChange={(e) =>
+                                    setFilterDateTo(e.target.value)
+                                }
+                                className="h-8 text-sm"
+                            />
                         </div>
                     </>
                 }
@@ -302,9 +432,13 @@ export default function Index({ designations }: Props) {
             <BaseDialog
                 open={open}
                 onOpenChange={setOpen}
-                title={isEdit ? 'Edit Salary Structure' : 'Add Salary Structure'}
+                title={
+                    isEdit ? 'Edit Salary Structure' : 'Add Salary Structure'
+                }
                 description={
-                    isEdit ? 'Update the details of the existing salary structure.' : 'Fill in the details to create a new salary structure.'
+                    isEdit
+                        ? 'Update the details of the existing salary structure.'
+                        : 'Fill in the details to create a new salary structure.'
                 }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
@@ -314,7 +448,12 @@ export default function Index({ designations }: Props) {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
                         <Label>Designation *</Label>
-                        <Select value={form.designation_id} onValueChange={(v) => handleSelect('designation_id', v)}>
+                        <Select
+                            value={form.designation_id}
+                            onValueChange={(v) =>
+                                handleSelect('designation_id', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select designation" />
                             </SelectTrigger>
@@ -326,13 +465,29 @@ export default function Index({ designations }: Props) {
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.designation_id && <p className="text-sm text-red-500">{formErrors.designation_id}</p>}
+                        {formErrors.designation_id && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.designation_id}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Basic *</Label>
-                        <Input name="basic" type="number" step="0.01" min="0" value={form.basic} onChange={handleChange} required />
-                        {formErrors.basic && <p className="text-sm text-red-500">{formErrors.basic}</p>}
+                        <Input
+                            name="basic"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={form.basic}
+                            onChange={handleChange}
+                            required
+                        />
+                        {formErrors.basic && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.basic}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -347,13 +502,28 @@ export default function Index({ designations }: Props) {
                             onChange={handleChange}
                             required
                         />
-                        {formErrors.annual_increment_percentage && <p className="text-sm text-red-500">{formErrors.annual_increment_percentage}</p>}
+                        {formErrors.annual_increment_percentage && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.annual_increment_percentage}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Efficiency Bar</Label>
-                        <Input name="efficiency_bar" type="number" step="0.01" min="0" value={form.efficiency_bar} onChange={handleChange} />
-                        {formErrors.efficiency_bar && <p className="text-sm text-red-500">{formErrors.efficiency_bar}</p>}
+                        <Input
+                            name="efficiency_bar"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={form.efficiency_bar}
+                            onChange={handleChange}
+                        />
+                        {formErrors.efficiency_bar && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.efficiency_bar}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -366,7 +536,11 @@ export default function Index({ designations }: Props) {
                             value={form.home_loan_multiplier}
                             onChange={handleChange}
                         />
-                        {formErrors.home_loan_multiplier && <p className="text-sm text-red-500">{formErrors.home_loan_multiplier}</p>}
+                        {formErrors.home_loan_multiplier && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.home_loan_multiplier}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -379,7 +553,11 @@ export default function Index({ designations }: Props) {
                             value={form.car_loan_max_amount}
                             onChange={handleChange}
                         />
-                        {formErrors.car_loan_max_amount && <p className="text-sm text-red-500">{formErrors.car_loan_max_amount}</p>}
+                        {formErrors.car_loan_max_amount && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.car_loan_max_amount}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -392,7 +570,11 @@ export default function Index({ designations }: Props) {
                             value={form.car_maintenance_expense}
                             onChange={handleChange}
                         />
-                        {formErrors.car_maintenance_expense && <p className="text-sm text-red-500">{formErrors.car_maintenance_expense}</p>}
+                        {formErrors.car_maintenance_expense && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.car_maintenance_expense}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -405,7 +587,11 @@ export default function Index({ designations }: Props) {
                             value={form.life_insurance_multiplier}
                             onChange={handleChange}
                         />
-                        {formErrors.life_insurance_multiplier && <p className="text-sm text-red-500">{formErrors.life_insurance_multiplier}</p>}
+                        {formErrors.life_insurance_multiplier && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.life_insurance_multiplier}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -418,18 +604,38 @@ export default function Index({ designations }: Props) {
                             value={form.hospitalization_insurance}
                             onChange={handleChange}
                         />
-                        {formErrors.hospitalization_insurance && <p className="text-sm text-red-500">{formErrors.hospitalization_insurance}</p>}
+                        {formErrors.hospitalization_insurance && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.hospitalization_insurance}
+                            </p>
+                        )}
                     </div>
 
                     <div>
                         <Label>Effective Date *</Label>
-                        <Input name="effective_date" type="date" value={form.effective_date} onChange={handleChange} required />
-                        {formErrors.effective_date && <p className="text-sm text-red-500">{formErrors.effective_date}</p>}
+                        <Input
+                            name="effective_date"
+                            type="date"
+                            value={form.effective_date}
+                            onChange={handleChange}
+                            required
+                        />
+                        {formErrors.effective_date && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.effective_date}
+                            </p>
+                        )}
                     </div>
 
                     <div className="col-span-2">
                         <div className="flex items-center gap-2">
-                            <Checkbox id="is_active" checked={form.is_active} onCheckedChange={(c) => handleCheckbox('is_active', !!c)} />
+                            <Checkbox
+                                id="is_active"
+                                checked={form.is_active}
+                                onCheckedChange={(c) =>
+                                    handleCheckbox('is_active', !!c)
+                                }
+                            />
                             <Label htmlFor="is_active">Active</Label>
                         </div>
                     </div>

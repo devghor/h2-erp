@@ -60,6 +60,6 @@ class UnitController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->unitService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Units deleted successfully.']);
+        return back()->with('success', 'Units deleted successfully.');
     }
 }

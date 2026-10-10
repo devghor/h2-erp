@@ -9,11 +9,13 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationHrbps];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.configurationHrbps,
+];
 
 type User = { id: number; name: string; username: string; email: string };
 
@@ -30,14 +32,24 @@ export default function Index({ users }: { users: User[] }) {
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true, searchable: true },
-        { accessorKey: 'user_name', header: 'User', sortable: false, searchable: false },
+        {
+            accessorKey: 'user_name',
+            header: 'User',
+            sortable: false,
+            searchable: false,
+        },
         { accessorKey: 'created_at', header: 'Created At', sortable: true },
         {
             accessorKey: 'actions',
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -76,15 +88,18 @@ export default function Index({ users }: { users: User[] }) {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('configuration.hrbps.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} HRBP(s) deleted successfully`);
+        router.delete(route('configuration.hrbps.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} HRBP(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => {
+            },
+            onError: () => {
                 toast.error('Error deleting selected HRBPs');
-            });
+            },
+        });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -112,27 +127,50 @@ export default function Index({ users }: { users: User[] }) {
     };
 
     return (
-        <AppLayout title="HRBP" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add HRBP</Button>}>
+        <AppLayout
+            title="HRBP"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add HRBP</Button>}
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('configuration.hrbps.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
             />
             <BaseDialog
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit HRBP' : 'Add HRBP'}
-                description={isEdit ? 'Update the details of the existing HRBP.' : 'Fill in the details to create a new HRBP.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing HRBP.'
+                        : 'Fill in the details to create a new HRBP.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <div>
                     <Label>User</Label>
-                    <UserCombobox users={users} value={form.user_id} onChange={(user_id) => setForm((prev) => ({ ...prev, user_id }))} />
-                    {formErrors.user_id && <p className="text-sm text-red-500">{formErrors.user_id}</p>}
+                    <UserCombobox
+                        users={users}
+                        value={form.user_id}
+                        onChange={(user_id) =>
+                            setForm((prev) => ({ ...prev, user_id }))
+                        }
+                    />
+                    {formErrors.user_id && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.user_id}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
         </AppLayout>

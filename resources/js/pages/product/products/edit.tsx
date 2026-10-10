@@ -3,7 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -94,18 +100,32 @@ export default function Edit({
     profitMarginTypes,
     durationTypes,
 }: Props) {
-    const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.productProducts, { title: product.name, href: '#' }];
+    const breadcrumbs: BreadcrumbItem[] = [
+        breadcrumbItems.dashboard,
+        breadcrumbItems.productProducts,
+        { title: product.name, href: '#' },
+    ];
 
     const [form, setForm] = useState({
         name: product.name,
         type: product.type,
         code: product.code ?? '',
         barcode_symbology: product.barcode_symbology ?? '',
-        product_brand_id: product.product_brand_id ? String(product.product_brand_id) : '',
-        product_category_id: product.product_category_id ? String(product.product_category_id) : '',
-        product_unit_id: product.product_unit_id ? String(product.product_unit_id) : '',
-        product_sale_unit_id: product.product_sale_unit_id ? String(product.product_sale_unit_id) : '',
-        product_purchase_unit_id: product.product_purchase_unit_id ? String(product.product_purchase_unit_id) : '',
+        product_brand_id: product.product_brand_id
+            ? String(product.product_brand_id)
+            : '',
+        product_category_id: product.product_category_id
+            ? String(product.product_category_id)
+            : '',
+        product_unit_id: product.product_unit_id
+            ? String(product.product_unit_id)
+            : '',
+        product_sale_unit_id: product.product_sale_unit_id
+            ? String(product.product_sale_unit_id)
+            : '',
+        product_purchase_unit_id: product.product_purchase_unit_id
+            ? String(product.product_purchase_unit_id)
+            : '',
         product_cost: product.product_cost ?? '',
         profit_margin_type: product.profit_margin_type ?? '',
         profit_margin: product.profit_margin ?? '',
@@ -114,9 +134,13 @@ export default function Edit({
         daily_sale_objective: product.daily_sale_objective ?? '',
         product_tax: product.product_tax ?? '',
         tax_method: product.tax_method ?? '',
-        warranty_value: product.warranty_value ? String(product.warranty_value) : '',
+        warranty_value: product.warranty_value
+            ? String(product.warranty_value)
+            : '',
         warranty_duration_type: product.warranty_duration_type ?? '',
-        guarantee_value: product.guarantee_value ? String(product.guarantee_value) : '',
+        guarantee_value: product.guarantee_value
+            ? String(product.guarantee_value)
+            : '',
         guarantee_duration_type: product.guarantee_duration_type ?? '',
         is_featured: product.is_featured,
         has_batch_and_expire_date: product.has_batch_and_expire_date,
@@ -130,7 +154,8 @@ export default function Edit({
     const [comboItems, setComboItems] = useState<ComboItem[]>(
         product.combo_items.map((ci) => ({
             item_product_id: ci.item_product_id,
-            item_product_name: ci.item_product?.name ?? String(ci.item_product_id),
+            item_product_name:
+                ci.item_product?.name ?? String(ci.item_product_id),
             quantity: ci.quantity,
             unit_cost: ci.unit_cost ?? '0',
             unit_price: ci.unit_price ?? '0',
@@ -140,7 +165,9 @@ export default function Edit({
     const [comboSearch, setComboSearch] = useState('');
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
         const target = e.target as HTMLInputElement;
         const { name, value, type, files, checked } = target;
         if (type === 'file') {
@@ -162,7 +189,9 @@ export default function Edit({
     const handleToggleComboItem = (p: ProductOption) => {
         const exists = comboItems.find((i) => i.item_product_id === p.id);
         if (exists) {
-            setComboItems((prev) => prev.filter((i) => i.item_product_id !== p.id));
+            setComboItems((prev) =>
+                prev.filter((i) => i.item_product_id !== p.id),
+            );
         } else {
             setComboItems((prev) => [
                 ...prev,
@@ -178,8 +207,16 @@ export default function Edit({
         }
     };
 
-    const handleComboItemChange = (id: number, field: keyof Omit<ComboItem, 'item_product_id' | 'item_product_name'>, value: string) => {
-        setComboItems((prev) => prev.map((i) => (i.item_product_id === id ? { ...i, [field]: value } : i)));
+    const handleComboItemChange = (
+        id: number,
+        field: keyof Omit<ComboItem, 'item_product_id' | 'item_product_name'>,
+        value: string,
+    ) => {
+        setComboItems((prev) =>
+            prev.map((i) =>
+                i.item_product_id === id ? { ...i, [field]: value } : i,
+            ),
+        );
     };
 
     const computeSubTotal = (item: ComboItem) => {
@@ -189,7 +226,10 @@ export default function Edit({
     };
 
     const filteredProducts = allProducts.filter(
-        (p) => p.id !== product.id && p.name.toLowerCase().includes(comboSearch.toLowerCase()) && !comboItems.some((i) => i.item_product_id === p.id),
+        (p) =>
+            p.id !== product.id &&
+            p.name.toLowerCase().includes(comboSearch.toLowerCase()) &&
+            !comboItems.some((i) => i.item_product_id === p.id),
     );
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -209,11 +249,17 @@ export default function Edit({
         });
 
         comboItems.forEach((item, idx) => {
-            data.append(`combo_items[${idx}][item_product_id]`, String(item.item_product_id));
+            data.append(
+                `combo_items[${idx}][item_product_id]`,
+                String(item.item_product_id),
+            );
             data.append(`combo_items[${idx}][quantity]`, item.quantity);
             data.append(`combo_items[${idx}][unit_cost]`, item.unit_cost);
             data.append(`combo_items[${idx}][unit_price]`, item.unit_price);
-            data.append(`combo_items[${idx}][wastage_percent]`, item.wastage_percent);
+            data.append(
+                `combo_items[${idx}][wastage_percent]`,
+                item.wastage_percent,
+            );
         });
 
         router.post(route('product.products.update', product.id), data, {
@@ -228,7 +274,12 @@ export default function Edit({
             title={`Edit: ${product.name}`}
             breadcrumbs={breadcrumbs}
             actions={
-                <Button variant="outline" onClick={() => router.visit(route('product.products.index'))}>
+                <Button
+                    variant="outline"
+                    onClick={() =>
+                        router.visit(route('product.products.index'))
+                    }
+                >
                     Back to Products
                 </Button>
             }
@@ -242,39 +293,74 @@ export default function Edit({
                     <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="md:col-span-3">
                             <Label htmlFor="name">Name *</Label>
-                            <Input name="name" value={form.name} onChange={handleChange} required />
-                            {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                            <Input
+                                name="name"
+                                value={form.name}
+                                onChange={handleChange}
+                                required
+                            />
+                            {formErrors.name && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.name}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <Label>Type *</Label>
-                            <Select value={form.type} onValueChange={(v) => handleSelect('type', v)}>
+                            <Select
+                                value={form.type}
+                                onValueChange={(v) => handleSelect('type', v)}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {productTypes.map((t) => (
-                                        <SelectItem key={t.value} value={t.value}>
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
                                             {t.label}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {formErrors.type && <p className="text-sm text-red-500">{formErrors.type}</p>}
+                            {formErrors.type && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.type}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <Label htmlFor="code">Code</Label>
-                            <Input name="code" value={form.code} onChange={handleChange} />
-                            {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                            <Input
+                                name="code"
+                                value={form.code}
+                                onChange={handleChange}
+                            />
+                            {formErrors.code && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.code}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <Label>Barcode Symbology</Label>
-                            <Select value={form.barcode_symbology} onValueChange={(v) => handleSelect('barcode_symbology', v)}>
+                            <Select
+                                value={form.barcode_symbology}
+                                onValueChange={(v) =>
+                                    handleSelect('barcode_symbology', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select symbology" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {barcodeSymbologies.map((b) => (
-                                        <SelectItem key={b.value} value={b.value}>
+                                        <SelectItem
+                                            key={b.value}
+                                            value={b.value}
+                                        >
                                             {b.label}
                                         </SelectItem>
                                     ))}
@@ -293,7 +379,13 @@ export default function Edit({
                         <CardContent className="space-y-4">
                             <div>
                                 <Label>Search Products</Label>
-                                <Input value={comboSearch} onChange={(e) => setComboSearch(e.target.value)} placeholder="Search by product name…" />
+                                <Input
+                                    value={comboSearch}
+                                    onChange={(e) =>
+                                        setComboSearch(e.target.value)
+                                    }
+                                    placeholder="Search by product name…"
+                                />
                             </div>
                             {comboSearch && filteredProducts.length > 0 && (
                                 <div className="max-h-48 overflow-y-auto rounded border">
@@ -301,11 +393,17 @@ export default function Edit({
                                         <button
                                             key={p.id}
                                             type="button"
-                                            onClick={() => handleToggleComboItem(p)}
+                                            onClick={() =>
+                                                handleToggleComboItem(p)
+                                            }
                                             className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
                                         >
-                                            <span className="flex-1">{p.name}</span>
-                                            <span className="text-muted-foreground">Cost: {p.product_cost ?? '—'}</span>
+                                            <span className="flex-1">
+                                                {p.name}
+                                            </span>
+                                            <span className="text-muted-foreground">
+                                                Cost: {p.product_cost ?? '—'}
+                                            </span>
                                         </button>
                                     ))}
                                 </div>
@@ -316,26 +414,52 @@ export default function Edit({
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b text-left text-muted-foreground">
-                                                <th className="pr-3 pb-2 font-medium">Product</th>
-                                                <th className="pr-3 pb-2 font-medium">Qty</th>
-                                                <th className="pr-3 pb-2 font-medium">Unit Cost</th>
-                                                <th className="pr-3 pb-2 font-medium">Unit Price</th>
-                                                <th className="pr-3 pb-2 font-medium">Wastage %</th>
-                                                <th className="pr-3 pb-2 font-medium">Sub Total</th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Product
+                                                </th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Qty
+                                                </th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Unit Cost
+                                                </th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Unit Price
+                                                </th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Wastage %
+                                                </th>
+                                                <th className="pr-3 pb-2 font-medium">
+                                                    Sub Total
+                                                </th>
                                                 <th className="pb-2 font-medium"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {comboItems.map((item) => (
-                                                <tr key={item.item_product_id} className="border-b">
-                                                    <td className="py-2 pr-3">{item.item_product_name}</td>
+                                                <tr
+                                                    key={item.item_product_id}
+                                                    className="border-b"
+                                                >
+                                                    <td className="py-2 pr-3">
+                                                        {item.item_product_name}
+                                                    </td>
                                                     <td className="py-2 pr-3">
                                                         <Input
                                                             type="number"
                                                             step="0.0001"
                                                             min="0.0001"
-                                                            value={item.quantity}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'quantity', e.target.value)}
+                                                            value={
+                                                                item.quantity
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleComboItemChange(
+                                                                    item.item_product_id,
+                                                                    'quantity',
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
                                                             className="h-7 w-20 text-sm"
                                                         />
                                                     </td>
@@ -344,8 +468,17 @@ export default function Edit({
                                                             type="number"
                                                             step="0.0001"
                                                             min="0"
-                                                            value={item.unit_cost}
-                                                            onChange={(e) => handleComboItemChange(item.item_product_id, 'unit_cost', e.target.value)}
+                                                            value={
+                                                                item.unit_cost
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleComboItemChange(
+                                                                    item.item_product_id,
+                                                                    'unit_cost',
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
                                                             className="h-7 w-24 text-sm"
                                                         />
                                                     </td>
@@ -354,9 +487,16 @@ export default function Edit({
                                                             type="number"
                                                             step="0.0001"
                                                             min="0"
-                                                            value={item.unit_price}
+                                                            value={
+                                                                item.unit_price
+                                                            }
                                                             onChange={(e) =>
-                                                                handleComboItemChange(item.item_product_id, 'unit_price', e.target.value)
+                                                                handleComboItemChange(
+                                                                    item.item_product_id,
+                                                                    'unit_price',
+                                                                    e.target
+                                                                        .value,
+                                                                )
                                                             }
                                                             className="h-7 w-24 text-sm"
                                                         />
@@ -367,20 +507,36 @@ export default function Edit({
                                                             step="0.01"
                                                             min="0"
                                                             max="100"
-                                                            value={item.wastage_percent}
+                                                            value={
+                                                                item.wastage_percent
+                                                            }
                                                             onChange={(e) =>
-                                                                handleComboItemChange(item.item_product_id, 'wastage_percent', e.target.value)
+                                                                handleComboItemChange(
+                                                                    item.item_product_id,
+                                                                    'wastage_percent',
+                                                                    e.target
+                                                                        .value,
+                                                                )
                                                             }
                                                             className="h-7 w-20 text-sm"
                                                         />
                                                     </td>
-                                                    <td className="py-2 pr-3 text-muted-foreground">{computeSubTotal(item)}</td>
+                                                    <td className="py-2 pr-3 text-muted-foreground">
+                                                        {computeSubTotal(item)}
+                                                    </td>
                                                     <td className="py-2">
                                                         <button
                                                             type="button"
                                                             onClick={() =>
-                                                                setComboItems((prev) =>
-                                                                    prev.filter((i) => i.item_product_id !== item.item_product_id),
+                                                                setComboItems(
+                                                                    (prev) =>
+                                                                        prev.filter(
+                                                                            (
+                                                                                i,
+                                                                            ) =>
+                                                                                i.item_product_id !==
+                                                                                item.item_product_id,
+                                                                        ),
                                                                 )
                                                             }
                                                             className="text-muted-foreground hover:text-red-500"
@@ -394,7 +550,11 @@ export default function Edit({
                                     </table>
                                 </div>
                             )}
-                            {formErrors['combo_items'] && <p className="text-sm text-red-500">{formErrors['combo_items']}</p>}
+                            {formErrors['combo_items'] && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors['combo_items']}
+                                </p>
+                            )}
                         </CardContent>
                     </Card>
                 )}
@@ -407,13 +567,21 @@ export default function Edit({
                     <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
                             <Label>Category</Label>
-                            <Select value={form.product_category_id} onValueChange={(v) => handleSelect('product_category_id', v)}>
+                            <Select
+                                value={form.product_category_id}
+                                onValueChange={(v) =>
+                                    handleSelect('product_category_id', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((c) => (
-                                        <SelectItem key={c.id} value={String(c.id)}>
+                                        <SelectItem
+                                            key={c.id}
+                                            value={String(c.id)}
+                                        >
                                             {c.name}
                                         </SelectItem>
                                     ))}
@@ -422,13 +590,21 @@ export default function Edit({
                         </div>
                         <div>
                             <Label>Brand</Label>
-                            <Select value={form.product_brand_id} onValueChange={(v) => handleSelect('product_brand_id', v)}>
+                            <Select
+                                value={form.product_brand_id}
+                                onValueChange={(v) =>
+                                    handleSelect('product_brand_id', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select brand" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {brands.map((b) => (
-                                        <SelectItem key={b.id} value={String(b.id)}>
+                                        <SelectItem
+                                            key={b.id}
+                                            value={String(b.id)}
+                                        >
                                             {b.name}
                                         </SelectItem>
                                     ))}
@@ -437,13 +613,21 @@ export default function Edit({
                         </div>
                         <div>
                             <Label>Base Unit</Label>
-                            <Select value={form.product_unit_id} onValueChange={(v) => handleSelect('product_unit_id', v)}>
+                            <Select
+                                value={form.product_unit_id}
+                                onValueChange={(v) =>
+                                    handleSelect('product_unit_id', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select unit" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {units.map((u) => (
-                                        <SelectItem key={u.id} value={String(u.id)}>
+                                        <SelectItem
+                                            key={u.id}
+                                            value={String(u.id)}
+                                        >
                                             {u.name}
                                         </SelectItem>
                                     ))}
@@ -452,13 +636,21 @@ export default function Edit({
                         </div>
                         <div>
                             <Label>Sale Unit</Label>
-                            <Select value={form.product_sale_unit_id} onValueChange={(v) => handleSelect('product_sale_unit_id', v)}>
+                            <Select
+                                value={form.product_sale_unit_id}
+                                onValueChange={(v) =>
+                                    handleSelect('product_sale_unit_id', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select sale unit" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {units.map((u) => (
-                                        <SelectItem key={u.id} value={String(u.id)}>
+                                        <SelectItem
+                                            key={u.id}
+                                            value={String(u.id)}
+                                        >
                                             {u.name}
                                         </SelectItem>
                                     ))}
@@ -467,13 +659,21 @@ export default function Edit({
                         </div>
                         <div>
                             <Label>Purchase Unit</Label>
-                            <Select value={form.product_purchase_unit_id} onValueChange={(v) => handleSelect('product_purchase_unit_id', v)}>
+                            <Select
+                                value={form.product_purchase_unit_id}
+                                onValueChange={(v) =>
+                                    handleSelect('product_purchase_unit_id', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select purchase unit" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {units.map((u) => (
-                                        <SelectItem key={u.id} value={String(u.id)}>
+                                        <SelectItem
+                                            key={u.id}
+                                            value={String(u.id)}
+                                        >
                                             {u.name}
                                         </SelectItem>
                                     ))}
@@ -491,18 +691,37 @@ export default function Edit({
                     <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
                             <Label htmlFor="product_cost">Cost</Label>
-                            <Input name="product_cost" type="number" step="0.0001" min="0" value={form.product_cost} onChange={handleChange} />
-                            {formErrors.product_cost && <p className="text-sm text-red-500">{formErrors.product_cost}</p>}
+                            <Input
+                                name="product_cost"
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                value={form.product_cost}
+                                onChange={handleChange}
+                            />
+                            {formErrors.product_cost && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.product_cost}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <Label>Profit Margin Type</Label>
-                            <Select value={form.profit_margin_type} onValueChange={(v) => handleSelect('profit_margin_type', v)}>
+                            <Select
+                                value={form.profit_margin_type}
+                                onValueChange={(v) =>
+                                    handleSelect('profit_margin_type', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {profitMarginTypes.map((t) => (
-                                        <SelectItem key={t.value} value={t.value}>
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
                                             {t.label}
                                         </SelectItem>
                                     ))}
@@ -511,19 +730,48 @@ export default function Edit({
                         </div>
                         <div>
                             <Label htmlFor="profit_margin">Profit Margin</Label>
-                            <Input name="profit_margin" type="number" step="0.0001" min="0" value={form.profit_margin} onChange={handleChange} />
+                            <Input
+                                name="profit_margin"
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                value={form.profit_margin}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div>
                             <Label htmlFor="product_price">Selling Price</Label>
-                            <Input name="product_price" type="number" step="0.0001" min="0" value={form.product_price} onChange={handleChange} />
-                            {formErrors.product_price && <p className="text-sm text-red-500">{formErrors.product_price}</p>}
+                            <Input
+                                name="product_price"
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                value={form.product_price}
+                                onChange={handleChange}
+                            />
+                            {formErrors.product_price && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.product_price}
+                                </p>
+                            )}
                         </div>
                         <div>
-                            <Label htmlFor="wholesale_price">Wholesale Price</Label>
-                            <Input name="wholesale_price" type="number" step="0.0001" min="0" value={form.wholesale_price} onChange={handleChange} />
+                            <Label htmlFor="wholesale_price">
+                                Wholesale Price
+                            </Label>
+                            <Input
+                                name="wholesale_price"
+                                type="number"
+                                step="0.0001"
+                                min="0"
+                                value={form.wholesale_price}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div>
-                            <Label htmlFor="daily_sale_objective">Daily Sale Objective</Label>
+                            <Label htmlFor="daily_sale_objective">
+                                Daily Sale Objective
+                            </Label>
                             <Input
                                 name="daily_sale_objective"
                                 type="number"
@@ -544,13 +792,21 @@ export default function Edit({
                     <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <Label>Product Tax</Label>
-                            <Select value={form.product_tax} onValueChange={(v) => handleSelect('product_tax', v)}>
+                            <Select
+                                value={form.product_tax}
+                                onValueChange={(v) =>
+                                    handleSelect('product_tax', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select tax" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {productTaxes.map((t) => (
-                                        <SelectItem key={t.value} value={t.value}>
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
                                             {t.label}
                                         </SelectItem>
                                     ))}
@@ -559,13 +815,21 @@ export default function Edit({
                         </div>
                         <div>
                             <Label>Tax Method</Label>
-                            <Select value={form.tax_method} onValueChange={(v) => handleSelect('tax_method', v)}>
+                            <Select
+                                value={form.tax_method}
+                                onValueChange={(v) =>
+                                    handleSelect('tax_method', v)
+                                }
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select method" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {taxMethods.map((t) => (
-                                        <SelectItem key={t.value} value={t.value}>
+                                        <SelectItem
+                                            key={t.value}
+                                            value={t.value}
+                                        >
                                             {t.label}
                                         </SelectItem>
                                     ))}
@@ -594,13 +858,24 @@ export default function Edit({
                                 />
                             </div>
                             <div className="w-32">
-                                <Select value={form.warranty_duration_type} onValueChange={(v) => handleSelect('warranty_duration_type', v)}>
+                                <Select
+                                    value={form.warranty_duration_type}
+                                    onValueChange={(v) =>
+                                        handleSelect(
+                                            'warranty_duration_type',
+                                            v,
+                                        )
+                                    }
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Unit" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {durationTypes.map((d) => (
-                                            <SelectItem key={d.value} value={d.value}>
+                                            <SelectItem
+                                                key={d.value}
+                                                value={d.value}
+                                            >
                                                 {d.label}
                                             </SelectItem>
                                         ))}
@@ -610,7 +885,9 @@ export default function Edit({
                         </div>
                         <div className="flex items-end gap-2">
                             <div className="flex-1">
-                                <Label htmlFor="guarantee_value">Guarantee</Label>
+                                <Label htmlFor="guarantee_value">
+                                    Guarantee
+                                </Label>
                                 <Input
                                     name="guarantee_value"
                                     type="number"
@@ -621,13 +898,24 @@ export default function Edit({
                                 />
                             </div>
                             <div className="w-32">
-                                <Select value={form.guarantee_duration_type} onValueChange={(v) => handleSelect('guarantee_duration_type', v)}>
+                                <Select
+                                    value={form.guarantee_duration_type}
+                                    onValueChange={(v) =>
+                                        handleSelect(
+                                            'guarantee_duration_type',
+                                            v,
+                                        )
+                                    }
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Unit" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {durationTypes.map((d) => (
-                                            <SelectItem key={d.value} value={d.value}>
+                                            <SelectItem
+                                                key={d.value}
+                                                value={d.value}
+                                            >
                                                 {d.label}
                                             </SelectItem>
                                         ))}
@@ -647,16 +935,30 @@ export default function Edit({
                         {(
                             [
                                 { name: 'is_featured', label: 'Featured' },
-                                { name: 'has_batch_and_expire_date', label: 'Batch & Expiry' },
-                                { name: 'has_imei_or_serial_no', label: 'IMEI / Serial No' },
-                                { name: 'has_promotional_price', label: 'Promotional Price' },
+                                {
+                                    name: 'has_batch_and_expire_date',
+                                    label: 'Batch & Expiry',
+                                },
+                                {
+                                    name: 'has_imei_or_serial_no',
+                                    label: 'IMEI / Serial No',
+                                },
+                                {
+                                    name: 'has_promotional_price',
+                                    label: 'Promotional Price',
+                                },
                             ] as const
                         ).map(({ name, label }) => (
                             <div key={name} className="flex items-center gap-2">
                                 <Checkbox
                                     id={name}
                                     checked={form[name]}
-                                    onCheckedChange={(checked) => setForm((prev) => ({ ...prev, [name]: !!checked }))}
+                                    onCheckedChange={(checked) =>
+                                        setForm((prev) => ({
+                                            ...prev,
+                                            [name]: !!checked,
+                                        }))
+                                    }
                                 />
                                 <Label htmlFor={name}>{label}</Label>
                             </div>
@@ -673,20 +975,44 @@ export default function Edit({
                         {product.image_url && (
                             <div>
                                 <Label>Current Image</Label>
-                                <img src={product.image_url} alt={product.name} className="mt-1 h-20 w-20 rounded object-cover" />
+                                <img
+                                    src={product.image_url}
+                                    alt={product.name}
+                                    className="mt-1 h-20 w-20 rounded object-cover"
+                                />
                             </div>
                         )}
                         <div>
-                            <Label htmlFor="product_image">Product Image {product.image_url ? '(replace)' : ''}</Label>
-                            <Input name="product_image" type="file" accept="image/*" onChange={handleChange} />
-                            {formErrors.product_image && <p className="text-sm text-red-500">{formErrors.product_image}</p>}
+                            <Label htmlFor="product_image">
+                                Product Image{' '}
+                                {product.image_url ? '(replace)' : ''}
+                            </Label>
+                            <Input
+                                name="product_image"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleChange}
+                            />
+                            {formErrors.product_image && (
+                                <p className="text-sm text-red-500">
+                                    {formErrors.product_image}
+                                </p>
+                            )}
                         </div>
                         <div>
-                            <Label htmlFor="embedded_barcode">Embedded Barcode</Label>
-                            <Input name="embedded_barcode" value={form.embedded_barcode} onChange={handleChange} />
+                            <Label htmlFor="embedded_barcode">
+                                Embedded Barcode
+                            </Label>
+                            <Input
+                                name="embedded_barcode"
+                                value={form.embedded_barcode}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div>
-                            <Label htmlFor="product_details">Product Details</Label>
+                            <Label htmlFor="product_details">
+                                Product Details
+                            </Label>
                             <textarea
                                 name="product_details"
                                 value={form.product_details}
@@ -699,7 +1025,13 @@ export default function Edit({
                 </Card>
 
                 <div className="flex justify-end gap-3 pb-6">
-                    <Button type="button" variant="outline" onClick={() => router.visit(route('product.products.index'))}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                            router.visit(route('product.products.index'))
+                        }
+                    >
                         Cancel
                     </Button>
                     <Button type="submit">Update Product</Button>

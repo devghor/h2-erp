@@ -4,19 +4,27 @@ import { RowActions } from '@/components/data-table/row-actions';
 import { BaseDialog } from '@/components/dialog/base-dialog';
 import { DeleteConfirmDialog } from '@/components/dialog/delete-confirmation-dialog';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import { MoreHorizontal, Pencil, Trash2, UserRoundCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.uamUsers];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.uamUsers,
+];
 
 function UserActionsMenu({
     row,
@@ -26,7 +34,7 @@ function UserActionsMenu({
     onImpersonate,
 }: {
     row: User;
-    currentUserId: number;
+    currentUserId: number | null;
     onEdit: () => void;
     onDelete: () => void;
     onImpersonate: () => void;
@@ -55,13 +63,20 @@ function UserActionsMenu({
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => setDeleteOpen(true)}
+                    >
                         <Trash2 className="mr-2 h-3.5 w-3.5" />
                         Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <DeleteConfirmDialog onConfirm={onDelete} open={deleteOpen} onOpenChange={setDeleteOpen} />
+            <DeleteConfirmDialog
+                onConfirm={onDelete}
+                open={deleteOpen}
+                onOpenChange={setDeleteOpen}
+            />
         </>
     );
 }
@@ -79,7 +94,7 @@ interface User {
 export default function Index() {
     const { auth } = usePage<SharedData>().props;
     const tableRef = useRef<{ refetch: () => void }>(null);
-    const canImpersonate = auth.user.is_super_admin && !auth.impersonating;
+    const canImpersonate = auth.user?.is_super_admin && !auth.impersonating;
 
     const columns = [
         {
@@ -87,8 +102,20 @@ export default function Index() {
             header: 'ID',
             sortable: true,
             searchable: true,
-            searchComponent: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-                <Input type="number" className="w-50" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search ID" />
+            searchComponent: ({
+                value,
+                onChange,
+            }: {
+                value: string;
+                onChange: (v: string) => void;
+            }) => (
+                <Input
+                    type="number"
+                    className="w-50"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Search ID"
+                />
             ),
         },
         {
@@ -96,8 +123,20 @@ export default function Index() {
             header: 'Name',
             sortable: true,
             searchable: true,
-            searchComponent: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-                <Input type="text" className="w-50" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Search Name" />
+            searchComponent: ({
+                value,
+                onChange,
+            }: {
+                value: string;
+                onChange: (v: string) => void;
+            }) => (
+                <Input
+                    type="text"
+                    className="w-50"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="Search Name"
+                />
             ),
         },
         {
@@ -112,7 +151,13 @@ export default function Index() {
             sortable: true,
             searchable: true,
         },
-        { accessorKey: 'created_at', header: 'Created At', sortable: true, searchable: true, filterType: 'date' as const },
+        {
+            accessorKey: 'created_at',
+            header: 'Created At',
+            sortable: true,
+            searchable: true,
+            filterType: 'date' as const,
+        },
         {
             accessorKey: 'actions',
             header: 'Actions',
@@ -123,18 +168,27 @@ export default function Index() {
                 canImpersonate ? (
                     <UserActionsMenu
                         row={row as User}
-                        currentUserId={auth.user.id}
+                        currentUserId={auth?.user?.id}
                         onEdit={() => handleOpenEdit(row as User)}
                         onDelete={() => handleDelete(row.id)}
                         onImpersonate={() => handleImpersonate(row.id)}
                     />
                 ) : (
-                    <RowActions onEdit={() => handleOpenEdit(row as User)} onDelete={() => handleDelete(row.id)} />
+                    <RowActions
+                        onEdit={() => handleOpenEdit(row as User)}
+                        onDelete={() => handleDelete(row.id)}
+                    />
                 ),
         },
     ];
 
-    const emptyForm = { name: '', username: '', email: '', password: '', password_confirmation: '' };
+    const emptyForm = {
+        name: '',
+        username: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+    };
 
     type FormState = typeof emptyForm & { id?: number };
 
@@ -233,26 +287,38 @@ export default function Index() {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('uam.users.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} user(s) deleted successfully`);
+        router.delete(route('uam.users.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} user(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => {
+            },
+            onError: () => {
                 toast.error('Error deleting selected users');
-            });
+            },
+        });
     };
 
     return (
-        <AppLayout title="Users" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add User</Button>}>
+        <AppLayout
+            title="Users"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add User</Button>}
+        >
             {/* Data table for users */}
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('uam.users.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
             />
 
             {/* Dialog for adding/editing user */}
@@ -260,20 +326,51 @@ export default function Index() {
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit User' : 'Add User'}
-                description={isEdit ? 'Update the details of the existing user.' : 'Fill in the details to create a new user.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing user.'
+                        : 'Fill in the details to create a new user.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <Label htmlFor="name">Name</Label>
-                <Input type="text" name="name" value={form.name} onChange={handleChange()} placeholder="Name" required />
-                {formErrors.name && <p className="text-red-500">{formErrors.name}</p>}
+                <Input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange()}
+                    placeholder="Name"
+                    required
+                />
+                {formErrors.name && (
+                    <p className="text-red-500">{formErrors.name}</p>
+                )}
                 <Label htmlFor="username">Username</Label>
-                <Input type="text" name="username" value={form.username} onChange={handleChange()} placeholder="Username" required />
-                {formErrors.username && <p className="text-red-500">{formErrors.username}</p>}
+                <Input
+                    type="text"
+                    name="username"
+                    value={form.username}
+                    onChange={handleChange()}
+                    placeholder="Username"
+                    required
+                />
+                {formErrors.username && (
+                    <p className="text-red-500">{formErrors.username}</p>
+                )}
                 <Label htmlFor="email">Email</Label>
-                <Input type="email" name="email" value={form.email} onChange={handleChange()} placeholder="Email" required />
-                {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
+                <Input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange()}
+                    placeholder="Email"
+                    required
+                />
+                {formErrors.email && (
+                    <p className="text-red-500">{formErrors.email}</p>
+                )}
                 <Label htmlFor="password">Password</Label>
                 <Input
                     type="password"
@@ -284,7 +381,9 @@ export default function Index() {
                     required={!isEdit}
                     autoComplete="new-password"
                 />
-                {formErrors.password && <p className="text-red-500">{formErrors.password}</p>}
+                {formErrors.password && (
+                    <p className="text-red-500">{formErrors.password}</p>
+                )}
                 <Label htmlFor="password_confirmation">Confirm Password</Label>
                 <Input
                     type="password"

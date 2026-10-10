@@ -3,7 +3,15 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { AlertTriangle, ArrowLeft, Bell, CheckCircle, CreditCard, MessageSquare, Trash2 } from 'lucide-react';
+import {
+    AlertTriangle,
+    ArrowLeft,
+    Bell,
+    CheckCircle,
+    CreditCard,
+    MessageSquare,
+    Trash2,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 interface NotificationItem {
@@ -64,7 +72,11 @@ export default function Show({ notification }: Props) {
                             Back
                         </Button>
                     </Link>
-                    <Button variant="destructive" size="sm" onClick={handleDelete}>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleDelete}
+                    >
                         <Trash2 className="mr-1.5 h-4 w-4" />
                         Delete
                     </Button>
@@ -76,7 +88,9 @@ export default function Show({ notification }: Props) {
                     <div className="mb-4 flex items-center gap-3">
                         {getIcon(notification.type)}
                         <div>
-                            <h2 className="text-lg font-semibold">{notification.title}</h2>
+                            <h2 className="text-lg font-semibold">
+                                {notification.title}
+                            </h2>
                             <p className="text-xs text-muted-foreground">
                                 {notification.type} &middot; {notification.time}
                             </p>
@@ -84,7 +98,9 @@ export default function Show({ notification }: Props) {
                     </div>
 
                     {notification.message ? (
-                        <p className="text-sm leading-relaxed">{notification.message}</p>
+                        <p className="text-sm leading-relaxed">
+                            {notification.message}
+                        </p>
                     ) : (
                         <div className="flex flex-col items-center py-8 text-muted-foreground">
                             <Bell className="mb-2 h-8 w-8 opacity-30" />
@@ -93,7 +109,8 @@ export default function Show({ notification }: Props) {
                     )}
 
                     <div className="mt-6 border-t pt-4 text-xs text-muted-foreground">
-                        Received: {new Date(notification.created_at).toLocaleString()}
+                        Received:{' '}
+                        {new Date(notification.created_at).toLocaleString()}
                     </div>
                 </div>
             </div>

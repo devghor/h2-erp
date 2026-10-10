@@ -62,6 +62,6 @@ class DepartmentController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->departmentService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Departments deleted successfully.']);
+        return back()->with('success', 'Departments deleted successfully.');
     }
 }

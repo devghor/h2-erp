@@ -59,6 +59,6 @@ class CategoryController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->categoryService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Categories deleted successfully.']);
+        return back()->with('success', 'Categories deleted successfully.');
     }
 }

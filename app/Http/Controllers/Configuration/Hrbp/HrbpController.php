@@ -60,6 +60,6 @@ class HrbpController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->hrbpService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Hrbps deleted successfully.']);
+        return back()->with('success', 'Hrbps deleted successfully.');
     }
 }

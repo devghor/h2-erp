@@ -54,6 +54,6 @@ class PositionGroupController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->positionGroupService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Position groups deleted successfully.']);
+        return back()->with('success', 'Position groups deleted successfully.');
     }
 }

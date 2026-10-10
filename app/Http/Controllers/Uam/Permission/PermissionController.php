@@ -50,6 +50,6 @@ class PermissionController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->permissionService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Permissions deleted successfully.']);
+        return back()->with('success', 'Permissions deleted successfully.');
     }
 }

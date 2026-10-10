@@ -56,6 +56,6 @@ class BrandController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->brandService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Brands deleted successfully.']);
+        return back()->with('success', 'Brands deleted successfully.');
     }
 }

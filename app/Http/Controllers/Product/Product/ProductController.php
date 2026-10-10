@@ -81,7 +81,7 @@ class ProductController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->productService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Products deleted successfully.']);
+        return back()->with('success', 'Products deleted successfully.');
     }
 
     private function formProps(): array

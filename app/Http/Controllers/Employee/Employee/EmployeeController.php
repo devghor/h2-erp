@@ -78,6 +78,6 @@ class EmployeeController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->employeeService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Employees deleted successfully.']);
+        return back()->with('success', 'Employees deleted successfully.');
     }
 }

@@ -66,6 +66,6 @@ class ApprovalLevelController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->approvalLevelService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Approval levels deleted successfully.']);
+        return back()->with('success', 'Approval levels deleted successfully.');
     }
 }

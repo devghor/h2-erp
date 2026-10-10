@@ -86,6 +86,6 @@ class RoleController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->roleService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Roles deleted successfully.']);
+        return back()->with('success', 'Roles deleted successfully.');
     }
 }

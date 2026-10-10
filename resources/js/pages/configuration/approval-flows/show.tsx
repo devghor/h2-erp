@@ -3,8 +3,21 @@ import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
@@ -21,7 +34,12 @@ interface ApprovalFlowGroupItem {
     approval_flow_group_id: number;
     approval_level_id: number;
     sequence: number;
-    approval_level: { id: number; name: string; type: string; hrbp: { id: number; name: string } | null };
+    approval_level: {
+        id: number;
+        name: string;
+        type: string;
+        hrbp: { id: number; name: string } | null;
+    };
 }
 
 interface ApprovalFlowGroup {
@@ -48,20 +66,36 @@ interface Props {
 
 type ItemRow = { approval_level_id: number | undefined; sequence: number };
 
-export default function Show({ flow, positionGroups, approvalLevels, typeOptions }: Props) {
-    const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.configurationApprovalFlows, { title: flow.name, href: '#' }];
+export default function Show({
+    flow,
+    positionGroups,
+    approvalLevels,
+    typeOptions,
+}: Props) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        breadcrumbItems.dashboard,
+        breadcrumbItems.configurationApprovalFlows,
+        { title: flow.name, href: '#' },
+    ];
 
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(null);
 
     // ── Flow name/type edit dialog ──────────────────────────────────────────
     const [flowOpen, setFlowOpen] = useState(false);
-    const [flowForm, setFlowForm] = useState({ name: flow.name, type: flow.type });
+    const [flowForm, setFlowForm] = useState({
+        name: flow.name,
+        type: flow.type,
+    });
     const [flowErrors, setFlowErrors] = useState<Record<string, string>>({});
 
     // ── Group add/edit dialog (position group + dynamic list of levels) ────
     const [groupOpen, setGroupOpen] = useState(false);
     const [groupEdit, setGroupEdit] = useState(false);
-    const [groupForm, setGroupForm] = useState<{ id?: number; position_group_id: number | undefined; items: ItemRow[] }>({
+    const [groupForm, setGroupForm] = useState<{
+        id?: number;
+        position_group_id: number | undefined;
+        items: ItemRow[];
+    }>({
         id: undefined,
         position_group_id: undefined,
         items: [{ approval_level_id: undefined, sequence: 1 }],
@@ -81,18 +115,26 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
 
     const handleFlowSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        router.put(route('configuration.approval-flows.update', flow.id), flowForm, {
-            onSuccess: () => {
-                setFlowOpen(false);
-                router.reload({ only: ['flow'] });
+        router.put(
+            route('configuration.approval-flows.update', flow.id),
+            flowForm,
+            {
+                onSuccess: () => {
+                    setFlowOpen(false);
+                    router.reload({ only: ['flow'] });
+                },
+                onError: (errors) => setFlowErrors(errors),
             },
-            onError: (errors) => setFlowErrors(errors),
-        });
+        );
     };
 
     // ── Group handlers ──────────────────────────────────────────────────────
     const handleGroupAdd = () => {
-        setGroupForm({ id: undefined, position_group_id: undefined, items: [{ approval_level_id: undefined, sequence: 1 }] });
+        setGroupForm({
+            id: undefined,
+            position_group_id: undefined,
+            items: [{ approval_level_id: undefined, sequence: 1 }],
+        });
         setGroupEdit(false);
         setGroupOpen(true);
         setGroupErrors({});
@@ -104,7 +146,10 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
             position_group_id: group.position_group_id,
             items: [...group.items]
                 .sort((a, b) => a.sequence - b.sequence)
-                .map((item) => ({ approval_level_id: item.approval_level_id, sequence: item.sequence })),
+                .map((item) => ({
+                    approval_level_id: item.approval_level_id,
+                    sequence: item.sequence,
+                })),
         });
         setGroupEdit(true);
         setGroupOpen(true);
@@ -114,24 +159,38 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
     const addItemRow = () => {
         setGroupForm((prev) => ({
             ...prev,
-            items: [...prev.items, { approval_level_id: undefined, sequence: prev.items.length + 1 }],
+            items: [
+                ...prev.items,
+                {
+                    approval_level_id: undefined,
+                    sequence: prev.items.length + 1,
+                },
+            ],
         }));
     };
 
     const removeItemRow = (index: number) => {
-        setGroupForm((prev) => ({ ...prev, items: prev.items.filter((_, i) => i !== index) }));
+        setGroupForm((prev) => ({
+            ...prev,
+            items: prev.items.filter((_, i) => i !== index),
+        }));
     };
 
     const updateItemRow = (index: number, changes: Partial<ItemRow>) => {
         setGroupForm((prev) => ({
             ...prev,
-            items: prev.items.map((item, i) => (i === index ? { ...item, ...changes } : item)),
+            items: prev.items.map((item, i) =>
+                i === index ? { ...item, ...changes } : item,
+            ),
         }));
     };
 
     const handleGroupSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = { position_group_id: groupForm.position_group_id, items: groupForm.items };
+        const data = {
+            position_group_id: groupForm.position_group_id,
+            items: groupForm.items,
+        };
         const opts = {
             onSuccess: () => {
                 setGroupOpen(false);
@@ -140,9 +199,20 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
             onError: (errors: any) => setGroupErrors(errors),
         };
         if (groupEdit && groupForm.id) {
-            router.put(route('configuration.approval-flow-groups.update', groupForm.id), data, opts);
+            router.put(
+                route(
+                    'configuration.approval-flow-groups.update',
+                    groupForm.id,
+                ),
+                data,
+                opts,
+            );
         } else {
-            router.post(route('configuration.approval-flow-groups.store'), { approval_flow_id: flow.id, ...data }, opts);
+            router.post(
+                route('configuration.approval-flow-groups.store'),
+                { approval_flow_id: flow.id, ...data },
+                opts,
+            );
         }
     };
 
@@ -158,15 +228,23 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                 <div className="mb-4 flex items-start justify-between">
                     <div className="grid grid-cols-2 gap-x-8 gap-y-3 md:grid-cols-3">
                         <div>
-                            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">Name</p>
+                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                Name
+                            </p>
                             <p className="mt-1 font-semibold">{flow.name}</p>
                         </div>
                         <div>
-                            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">Type</p>
+                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                Type
+                            </p>
                             <p className="mt-1">{flow.type}</p>
                         </div>
                     </div>
-                    <Button variant="outline" size="sm" onClick={handleFlowEditOpen}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleFlowEditOpen}
+                    >
                         <Pencil className="mr-2 h-3.5 w-3.5" />
                         Edit
                     </Button>
@@ -186,13 +264,18 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                         <TableHead className="w-[40px]" />
                         <TableHead>Position Group</TableHead>
                         <TableHead>Steps</TableHead>
-                        <TableHead className="w-[60px] text-center">Actions</TableHead>
+                        <TableHead className="w-[60px] text-center">
+                            Actions
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {flow.groups.length === 0 && (
                         <TableRow>
-                            <TableCell colSpan={4} className="text-center text-muted-foreground">
+                            <TableCell
+                                colSpan={4}
+                                className="text-center text-muted-foreground"
+                            >
                                 No groups added yet.
                             </TableCell>
                         </TableRow>
@@ -201,36 +284,81 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                         <Fragment key={group.id}>
                             <TableRow>
                                 <TableCell>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toggleExpand(group.id)}>
-                                        {expandedGroupId === group.id ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7"
+                                        onClick={() => toggleExpand(group.id)}
+                                    >
+                                        {expandedGroupId === group.id ? (
+                                            <ChevronDown className="h-4 w-4" />
+                                        ) : (
+                                            <ChevronRight className="h-4 w-4" />
+                                        )}
                                     </Button>
                                 </TableCell>
-                                <TableCell>{group.position_group.name}</TableCell>
-                                <TableCell>{group.items.length} step(s)</TableCell>
+                                <TableCell>
+                                    {group.position_group.name}
+                                </TableCell>
+                                <TableCell>
+                                    {group.items.length} step(s)
+                                </TableCell>
                                 <TableCell className="text-center">
-                                    <RowActions onEdit={() => handleGroupEdit(group)} onDelete={() => handleGroupDelete(group.id)} />
+                                    <RowActions
+                                        onEdit={() => handleGroupEdit(group)}
+                                        onDelete={() =>
+                                            handleGroupDelete(group.id)
+                                        }
+                                    />
                                 </TableCell>
                             </TableRow>
                             {expandedGroupId === group.id && (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="bg-muted/30 p-4">
-                                        <span className="mb-2 block text-sm font-medium">Approval Steps</span>
+                                    <TableCell
+                                        colSpan={4}
+                                        className="bg-muted/30 p-4"
+                                    >
+                                        <span className="mb-2 block text-sm font-medium">
+                                            Approval Steps
+                                        </span>
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
-                                                    <TableHead>Sequence</TableHead>
-                                                    <TableHead>Approval Level</TableHead>
+                                                    <TableHead>
+                                                        Sequence
+                                                    </TableHead>
+                                                    <TableHead>
+                                                        Approval Level
+                                                    </TableHead>
                                                     <TableHead>Type</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {[...group.items]
-                                                    .sort((a, b) => a.sequence - b.sequence)
+                                                    .sort(
+                                                        (a, b) =>
+                                                            a.sequence -
+                                                            b.sequence,
+                                                    )
                                                     .map((item) => (
                                                         <TableRow key={item.id}>
-                                                            <TableCell>{item.sequence}</TableCell>
-                                                            <TableCell>{item.approval_level.name}</TableCell>
-                                                            <TableCell>{item.approval_level.type}</TableCell>
+                                                            <TableCell>
+                                                                {item.sequence}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {
+                                                                    item
+                                                                        .approval_level
+                                                                        .name
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {
+                                                                    item
+                                                                        .approval_level
+                                                                        .type
+                                                                }
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
@@ -257,26 +385,47 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                     <Input
                         name="name"
                         value={flowForm.name}
-                        onChange={(e) => setFlowForm((prev) => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) =>
+                            setFlowForm((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                            }))
+                        }
                         required
                     />
-                    {flowErrors.name && <p className="text-sm text-red-500">{flowErrors.name}</p>}
+                    {flowErrors.name && (
+                        <p className="text-sm text-red-500">
+                            {flowErrors.name}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="type">Type</Label>
-                    <Select value={flowForm.type} onValueChange={(value) => setFlowForm((prev) => ({ ...prev, type: value }))}>
+                    <Select
+                        value={flowForm.type}
+                        onValueChange={(value) =>
+                            setFlowForm((prev) => ({ ...prev, type: value }))
+                        }
+                    >
                         <SelectTrigger>
                             <SelectValue placeholder="Select a type" />
                         </SelectTrigger>
                         <SelectContent>
                             {typeOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
+                                <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
                                     {option.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                    {flowErrors.type && <p className="text-sm text-red-500">{flowErrors.type}</p>}
+                    {flowErrors.type && (
+                        <p className="text-sm text-red-500">
+                            {flowErrors.type}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
 
@@ -284,7 +433,11 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
             <BaseDialog
                 open={groupOpen}
                 onOpenChange={setGroupOpen}
-                title={groupEdit ? 'Edit Approval Flow Group' : 'Add Approval Flow Group'}
+                title={
+                    groupEdit
+                        ? 'Edit Approval Flow Group'
+                        : 'Add Approval Flow Group'
+                }
                 onSubmit={handleGroupSubmit}
                 onCancel={() => setGroupOpen(false)}
                 submitLabel={groupEdit ? 'Update' : 'Create'}
@@ -293,8 +446,17 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                 <div>
                     <Label htmlFor="position_group_id">Position Group</Label>
                     <Select
-                        value={groupForm.position_group_id ? String(groupForm.position_group_id) : ''}
-                        onValueChange={(value) => setGroupForm((prev) => ({ ...prev, position_group_id: Number(value) }))}
+                        value={
+                            groupForm.position_group_id
+                                ? String(groupForm.position_group_id)
+                                : ''
+                        }
+                        onValueChange={(value) =>
+                            setGroupForm((prev) => ({
+                                ...prev,
+                                position_group_id: Number(value),
+                            }))
+                        }
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="Select a position group" />
@@ -307,13 +469,22 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                             ))}
                         </SelectContent>
                     </Select>
-                    {groupErrors.position_group_id && <p className="text-sm text-red-500">{groupErrors.position_group_id}</p>}
+                    {groupErrors.position_group_id && (
+                        <p className="text-sm text-red-500">
+                            {groupErrors.position_group_id}
+                        </p>
+                    )}
                 </div>
 
                 <div>
                     <div className="mb-2 flex items-center justify-between">
                         <Label>Approval Levels</Label>
-                        <Button type="button" size="sm" variant="outline" onClick={addItemRow}>
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={addItemRow}
+                        >
                             <Plus className="mr-1 h-3.5 w-3.5" />
                             Add Level
                         </Button>
@@ -326,21 +497,39 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                                         type="number"
                                         min={1}
                                         value={item.sequence}
-                                        onChange={(e) => updateItemRow(index, { sequence: Number(e.target.value) })}
+                                        onChange={(e) =>
+                                            updateItemRow(index, {
+                                                sequence: Number(
+                                                    e.target.value,
+                                                ),
+                                            })
+                                        }
                                         placeholder="Seq"
                                     />
                                 </div>
                                 <div className="flex-1">
                                     <Select
-                                        value={item.approval_level_id ? String(item.approval_level_id) : ''}
-                                        onValueChange={(value) => updateItemRow(index, { approval_level_id: Number(value) })}
+                                        value={
+                                            item.approval_level_id
+                                                ? String(item.approval_level_id)
+                                                : ''
+                                        }
+                                        onValueChange={(value) =>
+                                            updateItemRow(index, {
+                                                approval_level_id:
+                                                    Number(value),
+                                            })
+                                        }
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select an approval level" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {approvalLevels.map((level) => (
-                                                <SelectItem key={level.id} value={String(level.id)}>
+                                                <SelectItem
+                                                    key={level.id}
+                                                    value={String(level.id)}
+                                                >
                                                     {level.name} ({level.type})
                                                 </SelectItem>
                                             ))}
@@ -359,7 +548,11 @@ export default function Show({ flow, positionGroups, approvalLevels, typeOptions
                             </div>
                         ))}
                     </div>
-                    {groupErrors.items && <p className="text-sm text-red-500">{groupErrors.items}</p>}
+                    {groupErrors.items && (
+                        <p className="text-sm text-red-500">
+                            {groupErrors.items}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
         </AppLayout>

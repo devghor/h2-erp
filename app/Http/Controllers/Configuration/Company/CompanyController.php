@@ -89,6 +89,6 @@ class CompanyController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->companyService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Companies deleted successfully.']);
+        return back()->with('success', 'Companies deleted successfully.');
     }
 }

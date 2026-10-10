@@ -5,16 +5,24 @@ import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.productCategories];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.productCategories,
+];
 
 interface Category {
     id: number;
@@ -56,21 +64,41 @@ export default function Index({ categories }: Props) {
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true },
         { accessorKey: 'name', header: 'Name', sortable: true },
-        { accessorKey: 'parent_name', header: 'Parent Category', sortable: true },
+        {
+            accessorKey: 'parent_name',
+            header: 'Parent Category',
+            sortable: true,
+        },
         {
             accessorKey: 'image_url',
             header: 'Image',
             sortable: false,
             cell: ({ row }: any) =>
-                row.image_url ? <img src={row.image_url} alt={row.name} className="h-8 w-8 rounded object-cover" /> : null,
+                row.image_url ? (
+                    <img
+                        src={row.image_url}
+                        alt={row.name}
+                        className="h-8 w-8 rounded object-cover"
+                    />
+                ) : null,
         },
-        { accessorKey: 'created_at', header: 'Created At', sortable: true, filterType: 'date' as const },
+        {
+            accessorKey: 'created_at',
+            header: 'Created At',
+            sortable: true,
+            filterType: 'date' as const,
+        },
         {
             accessorKey: 'actions',
             header: 'Actions',
             sortable: false,
             className: 'w-[60px] text-center',
-            cell: ({ row }: any) => <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />,
+            cell: ({ row }: any) => (
+                <RowActions
+                    onEdit={() => handleEdit(row)}
+                    onDelete={() => handleDelete(row.id)}
+                />
+            ),
         },
     ];
 
@@ -82,7 +110,12 @@ export default function Index({ categories }: Props) {
     };
 
     const handleEdit = (row: any) => {
-        setForm({ id: row.id, name: row.name, parent_id: row.parent_id ? String(row.parent_id) : '', image: null });
+        setForm({
+            id: row.id,
+            name: row.name,
+            parent_id: row.parent_id ? String(row.parent_id) : '',
+            image: null,
+        });
         setIsEdit(true);
         setOpen(true);
         setFormErrors({});
@@ -140,27 +173,50 @@ export default function Index({ categories }: Props) {
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('product.categories.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} category/categories deleted successfully.`);
+        router.delete(route('product.categories.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} category/categories deleted successfully.`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected categories.'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected categories.');
+            },
+        });
     };
 
-    const parentOptions = isEdit ? categories.filter((c) => c.id !== form.id) : categories;
+    const parentOptions = isEdit
+        ? categories.filter((c) => c.id !== form.id)
+        : categories;
 
     return (
-        <AppLayout title="Product Categories" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Category</Button>}>
+        <AppLayout
+            title="Product Categories"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add Category</Button>}
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('product.categories.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
                 extraParams={extraParams}
-                extraFilterCount={[filterName, filterParentName, filterDateFrom, filterDateTo].filter(Boolean).length}
+                extraFilterCount={
+                    [
+                        filterName,
+                        filterParentName,
+                        filterDateFrom,
+                        filterDateTo,
+                    ].filter(Boolean).length
+                }
                 onClearExtraFilters={() => {
                     setFilterName('');
                     setFilterParentName('');
@@ -170,7 +226,9 @@ export default function Index({ categories }: Props) {
                 extraFilters={
                     <>
                         <div className="flex min-w-[160px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Name</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Name
+                            </label>
                             <Input
                                 type="text"
                                 value={filterName}
@@ -180,30 +238,42 @@ export default function Index({ categories }: Props) {
                             />
                         </div>
                         <div className="flex min-w-[160px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Parent Category</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Parent Category
+                            </label>
                             <Input
                                 type="text"
                                 value={filterParentName}
-                                onChange={(e) => setFilterParentName(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterParentName(e.target.value)
+                                }
                                 placeholder="Filter by parent…"
                                 className="h-8 text-sm"
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created From</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created From
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateFrom}
-                                onChange={(e) => setFilterDateFrom(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateFrom(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
                         <div className="flex min-w-[140px] flex-1 flex-col gap-1">
-                            <label className="text-xs font-medium text-muted-foreground">Created To</label>
+                            <label className="text-xs font-medium text-muted-foreground">
+                                Created To
+                            </label>
                             <Input
                                 type="date"
                                 value={filterDateTo}
-                                onChange={(e) => setFilterDateTo(e.target.value)}
+                                onChange={(e) =>
+                                    setFilterDateTo(e.target.value)
+                                }
                                 className="h-8 text-sm"
                             />
                         </div>
@@ -215,24 +285,47 @@ export default function Index({ categories }: Props) {
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Category' : 'Add Category'}
-                description={isEdit ? 'Update the details of the existing category.' : 'Fill in the details to create a new category.'}
+                description={
+                    isEdit
+                        ? 'Update the details of the existing category.'
+                        : 'Fill in the details to create a new category.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
             >
                 <div>
                     <Label htmlFor="name">Name *</Label>
-                    <Input name="name" value={form.name} onChange={handleChange} required />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                    <Input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formErrors.name && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.name}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="parent_id">Parent Category</Label>
-                    <Select value={form.parent_id} onValueChange={(v) => setForm((prev) => ({ ...prev, parent_id: v === '__none__' ? '' : v }))}>
+                    <Select
+                        value={form.parent_id}
+                        onValueChange={(v) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                parent_id: v === '__none__' ? '' : v,
+                            }))
+                        }
+                    >
                         <SelectTrigger>
                             <SelectValue placeholder="None (top-level)" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="__none__">None (top-level)</SelectItem>
+                            <SelectItem value="__none__">
+                                None (top-level)
+                            </SelectItem>
                             {parentOptions.map((c) => (
                                 <SelectItem key={c.id} value={String(c.id)}>
                                     {c.name}
@@ -240,12 +333,25 @@ export default function Index({ categories }: Props) {
                             ))}
                         </SelectContent>
                     </Select>
-                    {formErrors.parent_id && <p className="text-sm text-red-500">{formErrors.parent_id}</p>}
+                    {formErrors.parent_id && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.parent_id}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <Label htmlFor="image">Image</Label>
-                    <Input name="image" type="file" accept="image/*" onChange={handleChange} />
-                    {formErrors.image && <p className="text-sm text-red-500">{formErrors.image}</p>}
+                    <Input
+                        name="image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                    />
+                    {formErrors.image && (
+                        <p className="text-sm text-red-500">
+                            {formErrors.image}
+                        </p>
+                    )}
                 </div>
             </BaseDialog>
         </AppLayout>

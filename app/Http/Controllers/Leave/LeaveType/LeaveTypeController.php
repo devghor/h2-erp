@@ -66,6 +66,6 @@ class LeaveTypeController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->leaveTypeService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Leave types deleted successfully.']);
+        return back()->with('success', 'Leave types deleted successfully.');
     }
 }

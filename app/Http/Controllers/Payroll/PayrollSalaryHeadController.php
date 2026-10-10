@@ -60,6 +60,6 @@ class PayrollSalaryHeadController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->payrollSalaryHeadService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Salary heads deleted successfully.']);
+        return back()->with('success', 'Salary heads deleted successfully.');
     }
 }

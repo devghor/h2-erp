@@ -4,11 +4,22 @@ import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { AlertTriangle, Bell, Check, CheckCircle, CreditCard, MessageSquare, Trash2 } from 'lucide-react';
+import {
+    AlertTriangle,
+    Bell,
+    Check,
+    CheckCircle,
+    CreditCard,
+    MessageSquare,
+    Trash2,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.notificationIndex];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.notificationIndex,
+];
 
 interface NotificationItem {
     id: string;
@@ -60,7 +71,11 @@ export default function Index({ notifications }: Props) {
     const hasUnread = notifications.data.some((n) => !n.is_read);
 
     const handleMarkAsRead = (id: string) => {
-        router.patch(route('notification.read', id), {}, { preserveScroll: true });
+        router.patch(
+            route('notification.read', id),
+            {},
+            { preserveScroll: true },
+        );
     };
 
     const handleMarkAllAsRead = () => {
@@ -69,7 +84,8 @@ export default function Index({ notifications }: Props) {
             {},
             {
                 preserveScroll: true,
-                onSuccess: () => toast.success('All notifications marked as read'),
+                onSuccess: () =>
+                    toast.success('All notifications marked as read'),
             },
         );
     };
@@ -89,7 +105,11 @@ export default function Index({ notifications }: Props) {
             breadcrumbs={breadcrumbs}
             actions={
                 hasUnread ? (
-                    <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleMarkAllAsRead}
+                    >
                         <Check className="mr-1.5 h-4 w-4" />
                         Mark all as read
                     </Button>
@@ -108,29 +128,52 @@ export default function Index({ notifications }: Props) {
                             key={n.id}
                             className={`flex items-start gap-3 border-b px-4 py-3 last:border-b-0 ${!n.is_read ? 'bg-muted/40' : ''}`}
                         >
-                            <div className="mt-0.5 shrink-0">{getIcon(n.type)}</div>
+                            <div className="mt-0.5 shrink-0">
+                                {getIcon(n.type)}
+                            </div>
 
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
-                                    <p className="text-sm font-medium">{n.title}</p>
+                                    <p className="text-sm font-medium">
+                                        {n.title}
+                                    </p>
                                     {!n.is_read && (
-                                        <Badge variant="destructive" className="px-1.5 py-0 text-[10px]">
+                                        <Badge
+                                            variant="destructive"
+                                            className="px-1.5 py-0 text-[10px]"
+                                        >
                                             New
                                         </Badge>
                                     )}
                                 </div>
-                                {n.message && <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{n.message}</p>}
-                                <p className="mt-1 text-xs text-muted-foreground">{n.time}</p>
+                                {n.message && (
+                                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                                        {n.message}
+                                    </p>
+                                )}
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {n.time}
+                                </p>
                             </div>
 
                             <div className="flex shrink-0 items-center gap-1">
                                 {!n.is_read && (
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="Mark as read" onClick={() => handleMarkAsRead(n.id)}>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7"
+                                        title="Mark as read"
+                                        onClick={() => handleMarkAsRead(n.id)}
+                                    >
                                         <Check className="h-3.5 w-3.5" />
                                     </Button>
                                 )}
                                 <Link href={route('notification.show', n.id)}>
-                                    <Button variant="ghost" size="sm" className="h-7 text-xs text-blue-600">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-7 text-xs text-blue-600"
+                                    >
                                         View
                                     </Button>
                                 </Link>

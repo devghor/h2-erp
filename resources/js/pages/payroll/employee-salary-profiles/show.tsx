@@ -67,12 +67,20 @@ function calcTotals(items: SalaryProfileItem[], salaryHeads: SalaryHead[]) {
     let deductionAmount = 0;
 
     items.forEach((item) => {
-        const head = salaryHeads.find((h) => h.id === item.payroll_salary_head_id);
+        const head = salaryHeads.find(
+            (h) => h.id === item.payroll_salary_head_id,
+        );
         if (!head) return;
         const amount = parseFloat(item.amount) || 0;
-        const cat = typeof head.category === 'string' ? head.category : ((head.category as any)?.value ?? '');
+        const cat =
+            typeof head.category === 'string'
+                ? head.category
+                : ((head.category as any)?.value ?? '');
 
-        if (head.identification_type === 'basic' || (head.identification_type as any)?.value === 'basic') {
+        if (
+            head.identification_type === 'basic' ||
+            (head.identification_type as any)?.value === 'basic'
+        ) {
             basicAmount = amount;
         }
         if (GROSS_CATEGORIES.includes(cat)) {
@@ -88,8 +96,11 @@ function calcTotals(items: SalaryProfileItem[], salaryHeads: SalaryHead[]) {
     return { basicAmount, grossAmount, deductionAmount, netAmount };
 }
 
-function getCategoryLabel(category: string | { value: string; label?: string }): string {
-    if (typeof category === 'object') return category.label ?? category.value ?? '';
+function getCategoryLabel(
+    category: string | { value: string; label?: string },
+): string {
+    if (typeof category === 'object')
+        return category.label ?? category.value ?? '';
     return category;
 }
 
@@ -109,31 +120,66 @@ function getCategoryColor(category: string | { value: string }): string {
     }
 }
 
-export default function Show({ employee, salaryHeads, activeProfile, salaryStructure }: Props) {
-    const employeeName = employee.full_name || `${employee.first_name} ${employee.last_name}`;
+export default function Show({
+    employee,
+    salaryHeads,
+    activeProfile,
+    salaryStructure,
+}: Props) {
+    const employeeName =
+        employee.full_name || `${employee.first_name} ${employee.last_name}`;
 
     const breadcrumbs: BreadcrumbItem[] = [
         breadcrumbItems.dashboard,
         breadcrumbItems.payrollEmployeeSalaryProfiles,
-        { title: employeeName, href: route('payroll.employee-salary-profiles.show', employee.user_id) },
+        {
+            title: employeeName,
+            href: route(
+                'payroll.employee-salary-profiles.show',
+                employee.user_id,
+            ),
+        },
     ];
 
     const isBasicIdentType = (head: SalaryHead) =>
-        head.identification_type === 'basic' || (head.identification_type as any)?.value === 'basic';
+        head.identification_type === 'basic' ||
+        (head.identification_type as any)?.value === 'basic';
 
     const buildInitialItems = (): SalaryProfileItem[] => {
         return salaryHeads.map((head) => {
-            const existing = activeProfile?.items.find((i) => i.payroll_salary_head_id === head.id);
+            const existing = activeProfile?.items.find(
+                (i) => i.payroll_salary_head_id === head.id,
+            );
             if (existing) {
-                return { payroll_salary_head_id: head.id, amount: existing.amount };
+                return {
+                    payroll_salary_head_id: head.id,
+                    amount: existing.amount,
+                };
             }
             // No active profile: seed basic head from salary structure
-            if (!activeProfile && isBasicIdentType(head) && salaryStructure?.basic) {
-                return { payroll_salary_head_id: head.id, amount: parseFloat(salaryStructure.basic).toFixed(2) };
+            if (
+                !activeProfile &&
+                isBasicIdentType(head) &&
+                salaryStructure?.basic
+            ) {
+                return {
+                    payroll_salary_head_id: head.id,
+                    amount: parseFloat(salaryStructure.basic).toFixed(2),
+                };
             }
-            if (head.is_basic_linked && head.basic_ratio && salaryStructure?.basic) {
-                const computed = (parseFloat(head.basic_ratio) * parseFloat(salaryStructure.basic)) / 100;
-                return { payroll_salary_head_id: head.id, amount: computed.toFixed(2) };
+            if (
+                head.is_basic_linked &&
+                head.basic_ratio &&
+                salaryStructure?.basic
+            ) {
+                const computed =
+                    (parseFloat(head.basic_ratio) *
+                        parseFloat(salaryStructure.basic)) /
+                    100;
+                return {
+                    payroll_salary_head_id: head.id,
+                    amount: computed.toFixed(2),
+                };
             }
             return { payroll_salary_head_id: head.id, amount: '0.00' };
         });
@@ -155,10 +201,13 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
                 }
                 // Recalculate basic-linked heads in real time when basic changes
                 if (changingBasic) {
-                    const head = salaryHeads.find((h) => h.id === item.payroll_salary_head_id);
+                    const head = salaryHeads.find(
+                        (h) => h.id === item.payroll_salary_head_id,
+                    );
                     if (head?.is_basic_linked && head.basic_ratio) {
                         const newBasic = parseFloat(value) || 0;
-                        const computed = (parseFloat(head.basic_ratio) * newBasic) / 100;
+                        const computed =
+                            (parseFloat(head.basic_ratio) * newBasic) / 100;
                         return { ...item, amount: computed.toFixed(2) };
                     }
                 }
@@ -207,23 +256,45 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Employee Info */}
                 <div className="rounded-lg border bg-card p-4">
-                    <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted-foreground uppercase">Employee Information</h2>
+                    <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+                        Employee Information
+                    </h2>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                         <div>
-                            <p className="text-xs text-muted-foreground">Name</p>
+                            <p className="text-xs text-muted-foreground">
+                                Name
+                            </p>
                             <p className="font-medium">{employeeName}</p>
                         </div>
                         <div>
-                            <p className="text-xs text-muted-foreground">Employee Code</p>
-                            <p className="font-medium">{employee.employee_code ?? '—'}</p>
+                            <p className="text-xs text-muted-foreground">
+                                Employee Code
+                            </p>
+                            <p className="font-medium">
+                                {employee.employee_code ?? '—'}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-muted-foreground">Designation Basic</p>
-                            <p className="font-medium">{salaryStructure ? parseFloat(salaryStructure.basic).toLocaleString() : '—'}</p>
+                            <p className="text-xs text-muted-foreground">
+                                Designation Basic
+                            </p>
+                            <p className="font-medium">
+                                {salaryStructure
+                                    ? parseFloat(
+                                          salaryStructure.basic,
+                                      ).toLocaleString()
+                                    : '—'}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-muted-foreground">Profile Status</p>
-                            <p className="font-medium">{activeProfile ? 'Active Profile' : 'No Profile'}</p>
+                            <p className="text-xs text-muted-foreground">
+                                Profile Status
+                            </p>
+                            <p className="font-medium">
+                                {activeProfile
+                                    ? 'Active Profile'
+                                    : 'No Profile'}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -231,9 +302,12 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
                 {/* Salary Heads Table */}
                 <div className="rounded-lg border bg-card">
                     <div className="border-b px-4 py-3">
-                        <h2 className="text-sm font-semibold">Salary Head Amounts</h2>
+                        <h2 className="text-sm font-semibold">
+                            Salary Head Amounts
+                        </h2>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                            Basic-linked heads are pre-calculated from the designation structure. Adjust amounts as needed.
+                            Basic-linked heads are pre-calculated from the
+                            designation structure. Adjust amounts as needed.
                         </p>
                     </div>
 
@@ -241,20 +315,39 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
                         <table className="w-full text-sm">
                             <thead className="border-b bg-muted/40">
                                 <tr>
-                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">#</th>
-                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Salary Head</th>
-                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Code</th>
-                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Category</th>
-                                    <th className="w-44 px-4 py-2.5 text-right font-medium text-muted-foreground">Amount</th>
+                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                                        #
+                                    </th>
+                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                                        Salary Head
+                                    </th>
+                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                                        Code
+                                    </th>
+                                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                                        Category
+                                    </th>
+                                    <th className="w-44 px-4 py-2.5 text-right font-medium text-muted-foreground">
+                                        Amount
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y">
                                 {salaryHeads.map((head, index) => {
-                                    const item = items.find((i) => i.payroll_salary_head_id === head.id);
+                                    const item = items.find(
+                                        (i) =>
+                                            i.payroll_salary_head_id ===
+                                            head.id,
+                                    );
                                     const errKey = `items.${index}.amount`;
                                     return (
-                                        <tr key={head.id} className="hover:bg-muted/20">
-                                            <td className="px-4 py-2 text-muted-foreground">{index + 1}</td>
+                                        <tr
+                                            key={head.id}
+                                            className="hover:bg-muted/20"
+                                        >
+                                            <td className="px-4 py-2 text-muted-foreground">
+                                                {index + 1}
+                                            </td>
                                             <td className="px-4 py-2 font-medium">
                                                 {head.name}
                                                 {head.is_basic_linked && (
@@ -263,12 +356,16 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-2 text-muted-foreground">{head.code ?? '—'}</td>
+                                            <td className="px-4 py-2 text-muted-foreground">
+                                                {head.code ?? '—'}
+                                            </td>
                                             <td className="px-4 py-2">
                                                 <span
                                                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getCategoryColor(head.category)}`}
                                                 >
-                                                    {getCategoryLabel(head.category)}
+                                                    {getCategoryLabel(
+                                                        head.category,
+                                                    )}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-2 text-right">
@@ -277,10 +374,21 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
                                                     step="0.01"
                                                     min="0"
                                                     className="ml-auto h-8 w-36 text-right"
-                                                    value={item?.amount ?? '0.00'}
-                                                    onChange={(e) => handleAmountChange(head.id, e.target.value)}
+                                                    value={
+                                                        item?.amount ?? '0.00'
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleAmountChange(
+                                                            head.id,
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                 />
-                                                {formErrors[errKey] && <p className="mt-0.5 text-xs text-red-500">{formErrors[errKey]}</p>}
+                                                {formErrors[errKey] && (
+                                                    <p className="mt-0.5 text-xs text-red-500">
+                                                        {formErrors[errKey]}
+                                                    </p>
+                                                )}
                                             </td>
                                         </tr>
                                     );
@@ -292,34 +400,59 @@ export default function Show({ employee, salaryHeads, activeProfile, salaryStruc
 
                 {/* Totals Summary */}
                 <div className="rounded-lg border bg-card p-4">
-                    <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted-foreground uppercase">Summary</h2>
+                    <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+                        Summary
+                    </h2>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                         <div className="rounded-lg bg-muted/40 p-3 text-center">
-                            <p className="text-xs text-muted-foreground">Basic Amount</p>
-                            <p className="text-lg font-semibold">{totals.basicAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                            <p className="text-xs text-muted-foreground">
+                                Basic Amount
+                            </p>
+                            <p className="text-lg font-semibold">
+                                {totals.basicAmount.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                })}
+                            </p>
                         </div>
                         <div className="rounded-lg bg-green-50 p-3 text-center">
-                            <p className="text-xs text-green-600">Gross Amount</p>
+                            <p className="text-xs text-green-600">
+                                Gross Amount
+                            </p>
                             <p className="text-lg font-semibold text-green-700">
-                                {totals.grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                {totals.grossAmount.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                })}
                             </p>
                         </div>
                         <div className="rounded-lg bg-red-50 p-3 text-center">
-                            <p className="text-xs text-red-600">Deduction Amount</p>
+                            <p className="text-xs text-red-600">
+                                Deduction Amount
+                            </p>
                             <p className="text-lg font-semibold text-red-700">
-                                {totals.deductionAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                {totals.deductionAmount.toLocaleString(
+                                    undefined,
+                                    { minimumFractionDigits: 2 },
+                                )}
                             </p>
                         </div>
                         <div className="rounded-lg bg-blue-50 p-3 text-center">
                             <p className="text-xs text-blue-600">Net Amount</p>
                             <p className="text-lg font-semibold text-blue-700">
-                                {totals.netAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                {totals.netAmount.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                })}
                             </p>
                         </div>
                     </div>
-                    {(formErrors['basic_amount'] || formErrors['gross_amount'] || formErrors['deduction_amount'] || formErrors['net_amount']) && (
+                    {(formErrors['basic_amount'] ||
+                        formErrors['gross_amount'] ||
+                        formErrors['deduction_amount'] ||
+                        formErrors['net_amount']) && (
                         <p className="mt-2 text-sm text-red-500">
-                            {formErrors['basic_amount'] || formErrors['gross_amount'] || formErrors['deduction_amount'] || formErrors['net_amount']}
+                            {formErrors['basic_amount'] ||
+                                formErrors['gross_amount'] ||
+                                formErrors['deduction_amount'] ||
+                                formErrors['net_amount']}
                         </p>
                     )}
                 </div>

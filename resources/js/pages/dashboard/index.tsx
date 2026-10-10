@@ -2,7 +2,13 @@ import { SectionHeader } from '@/components/dashboard/section-header';
 import { Sparkline } from '@/components/dashboard/sparkline';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -75,12 +81,26 @@ function formatDate() {
     }).format(new Date());
 }
 
-export default function Dashboard({ employee, organization, user, leave }: DashboardStats) {
+export default function Dashboard({
+    employee,
+    organization,
+    user,
+    leave,
+}: DashboardStats) {
     const hasLeaveTrends = leave.leave_trends_monthly.length > 0;
-    const lastLeaveTrend = hasLeaveTrends ? leave.leave_trends_monthly[leave.leave_trends_monthly.length - 1] : 0;
+    const lastLeaveTrend = hasLeaveTrends
+        ? leave.leave_trends_monthly[leave.leave_trends_monthly.length - 1]
+        : 0;
     const previousLeaveTrend =
-        hasLeaveTrends && leave.leave_trends_monthly.length > 1 ? leave.leave_trends_monthly[leave.leave_trends_monthly.length - 2] : 0;
-    const leaveTrendDirection = lastLeaveTrend > previousLeaveTrend ? 'up' : lastLeaveTrend < previousLeaveTrend ? 'down' : 'neutral';
+        hasLeaveTrends && leave.leave_trends_monthly.length > 1
+            ? leave.leave_trends_monthly[leave.leave_trends_monthly.length - 2]
+            : 0;
+    const leaveTrendDirection =
+        lastLeaveTrend > previousLeaveTrend
+            ? 'up'
+            : lastLeaveTrend < previousLeaveTrend
+              ? 'down'
+              : 'neutral';
 
     return (
         <AppLayout title="">
@@ -88,13 +108,20 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Dashboard</h1>
-                        <p className="text-sm text-muted-foreground">{formatDate()}</p>
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                            Dashboard
+                        </h1>
+                        <p className="text-sm text-muted-foreground">
+                            {formatDate()}
+                        </p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button variant="outline" size="sm">
                             View Reports
-                            <ArrowUpRight data-icon="inline-end" className="size-4" />
+                            <ArrowUpRight
+                                data-icon="inline-end"
+                                className="size-4"
+                            />
                         </Button>
                         <Button size="sm">
                             <Plus data-icon="inline-start" className="size-4" />
@@ -105,7 +132,11 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
 
                 {/* Employee Section */}
                 <section className="flex flex-col gap-4">
-                    <SectionHeader title="Employees" description="Workforce overview and status" icon={Users} />
+                    <SectionHeader
+                        title="Employees"
+                        description="Workforce overview and status"
+                        icon={Users}
+                    />
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                         <StatCard
                             title="Total Employees"
@@ -113,8 +144,16 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                             icon={Users}
                             description="Across all companies"
                             accent="blue"
-                            trend={employee.new_joiners_this_month > 0 ? 'up' : 'neutral'}
-                            trendLabel={employee.new_joiners_this_month > 0 ? `${employee.new_joiners_this_month} new this month` : 'No new joiners'}
+                            trend={
+                                employee.new_joiners_this_month > 0
+                                    ? 'up'
+                                    : 'neutral'
+                            }
+                            trendLabel={
+                                employee.new_joiners_this_month > 0
+                                    ? `${employee.new_joiners_this_month} new this month`
+                                    : 'No new joiners'
+                            }
                         />
                         <StatCard
                             title="Active Employees"
@@ -154,7 +193,11 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                     {/* Organization Section */}
                     <section className="xl:col-span-2">
                         <div className="flex flex-col gap-4">
-                            <SectionHeader title="Organization" description="Structure and open positions" icon={Building2} />
+                            <SectionHeader
+                                title="Organization"
+                                description="Structure and open positions"
+                                icon={Building2}
+                            />
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                 <StatCard
                                     title="Departments"
@@ -183,8 +226,16 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                                     icon={Briefcase}
                                     description="Hiring pipeline"
                                     accent="amber"
-                                    trend={organization.open_positions > 0 ? 'up' : 'neutral'}
-                                    trendLabel={organization.open_positions > 0 ? 'Active hiring' : 'No openings'}
+                                    trend={
+                                        organization.open_positions > 0
+                                            ? 'up'
+                                            : 'neutral'
+                                    }
+                                    trendLabel={
+                                        organization.open_positions > 0
+                                            ? 'Active hiring'
+                                            : 'No openings'
+                                    }
                                 />
                             </div>
                         </div>
@@ -193,17 +244,33 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                     {/* Users Section */}
                     <section>
                         <div className="flex flex-col gap-4">
-                            <SectionHeader title="Users" description="System access status" icon={UserX} />
+                            <SectionHeader
+                                title="Users"
+                                description="System access status"
+                                icon={UserX}
+                            />
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-1">
-                                <StatCard title="Total Users" value={user.total_users} icon={UserX} description="Registered accounts" accent="blue" />
+                                <StatCard
+                                    title="Total Users"
+                                    value={user.total_users}
+                                    icon={UserX}
+                                    description="Registered accounts"
+                                    accent="blue"
+                                />
                                 <StatCard
                                     title="Active Users"
                                     value={user.active_users}
                                     icon={ShieldCheck}
                                     description="Currently enabled"
                                     accent="emerald"
-                                    trend={user.active_users > 0 ? 'up' : 'neutral'}
-                                    trendLabel={user.active_users > 0 ? 'Operational' : 'No active users'}
+                                    trend={
+                                        user.active_users > 0 ? 'up' : 'neutral'
+                                    }
+                                    trendLabel={
+                                        user.active_users > 0
+                                            ? 'Operational'
+                                            : 'No active users'
+                                    }
                                 />
                             </div>
                         </div>
@@ -214,7 +281,11 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
 
                 {/* Leave Management Section */}
                 <section className="flex flex-col gap-4">
-                    <SectionHeader title="Leave Management" description="Requests, balances, and trends" icon={CalendarDays} />
+                    <SectionHeader
+                        title="Leave Management"
+                        description="Requests, balances, and trends"
+                        icon={CalendarDays}
+                    />
                     <div className="grid gap-4 lg:grid-cols-3">
                         <div className="lg:col-span-2">
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -224,8 +295,16 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                                     icon={FileText}
                                     description="Awaiting approval"
                                     accent="amber"
-                                    trend={leave.pending_leave_requests > 0 ? 'up' : 'neutral'}
-                                    trendLabel={leave.pending_leave_requests > 0 ? 'Needs review' : 'All caught up'}
+                                    trend={
+                                        leave.pending_leave_requests > 0
+                                            ? 'up'
+                                            : 'neutral'
+                                    }
+                                    trendLabel={
+                                        leave.pending_leave_requests > 0
+                                            ? 'Needs review'
+                                            : 'All caught up'
+                                    }
                                 />
                                 <StatCard
                                     title="Today's Leave"
@@ -270,8 +349,12 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                             <CardHeader>
                                 <div className="flex items-start justify-between">
                                     <div className="flex flex-col gap-1">
-                                        <CardTitle className="text-base">Leave Trends</CardTitle>
-                                        <CardDescription>Monthly leave requests</CardDescription>
+                                        <CardTitle className="text-base">
+                                            Leave Trends
+                                        </CardTitle>
+                                        <CardDescription>
+                                            Monthly leave requests
+                                        </CardDescription>
                                     </div>
                                     <div className="flex size-8 items-center justify-center rounded-md bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
                                         <TrendingUp className="size-4" />
@@ -282,12 +365,18 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                                 {hasLeaveTrends ? (
                                     <>
                                         <div className="flex items-baseline gap-2">
-                                            <span className="text-3xl font-bold tracking-tight">{lastLeaveTrend}</span>
-                                            <span className="text-xs text-muted-foreground">this month</span>
+                                            <span className="text-3xl font-bold tracking-tight">
+                                                {lastLeaveTrend}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground">
+                                                this month
+                                            </span>
                                         </div>
                                         <div className="h-24 w-full sm:h-32">
                                             <Sparkline
-                                                data={leave.leave_trends_monthly}
+                                                data={
+                                                    leave.leave_trends_monthly
+                                                }
                                                 strokeClassName="stroke-emerald-500 dark:stroke-emerald-400"
                                                 fillClassName="fill-emerald-500/10 dark:fill-emerald-400/10"
                                             />
@@ -297,17 +386,24 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                                                 className={
                                                     leaveTrendDirection === 'up'
                                                         ? 'text-emerald-600 dark:text-emerald-400'
-                                                        : leaveTrendDirection === 'down'
+                                                        : leaveTrendDirection ===
+                                                            'down'
                                                           ? 'text-rose-600 dark:text-rose-400'
                                                           : 'text-muted-foreground'
                                                 }
                                             >
-                                                {leaveTrendDirection === 'up' ? '↑' : leaveTrendDirection === 'down' ? '↓' : '—'}
+                                                {leaveTrendDirection === 'up'
+                                                    ? '↑'
+                                                    : leaveTrendDirection ===
+                                                        'down'
+                                                      ? '↓'
+                                                      : '—'}
                                             </span>
                                             <span className="text-xs text-muted-foreground">
                                                 {leaveTrendDirection === 'up'
                                                     ? 'Increasing from last month'
-                                                    : leaveTrendDirection === 'down'
+                                                    : leaveTrendDirection ===
+                                                        'down'
                                                       ? 'Decreasing from last month'
                                                       : 'Stable from last month'}
                                             </span>
@@ -316,7 +412,9 @@ export default function Dashboard({ employee, organization, user, leave }: Dashb
                                 ) : (
                                     <div className="flex flex-1 flex-col items-center justify-center gap-2 text-muted-foreground">
                                         <TrendingUp className="size-8 opacity-40" />
-                                        <p className="text-sm">No leave trend data available</p>
+                                        <p className="text-sm">
+                                            No leave trend data available
+                                        </p>
                                     </div>
                                 )}
                             </CardContent>

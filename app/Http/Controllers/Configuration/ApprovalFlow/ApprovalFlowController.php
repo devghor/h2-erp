@@ -70,6 +70,6 @@ class ApprovalFlowController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->approvalFlowService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Approval flows deleted successfully.']);
+        return back()->with('success', 'Approval flows deleted successfully.');
     }
 }

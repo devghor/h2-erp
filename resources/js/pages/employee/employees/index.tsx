@@ -5,16 +5,24 @@ import { BaseDialog } from '@/components/dialog/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { breadcrumbItems } from '@/config/breadcrumbs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-const breadcrumbs: BreadcrumbItem[] = [breadcrumbItems.dashboard, breadcrumbItems.employeeEmployees];
+const breadcrumbs: BreadcrumbItem[] = [
+    breadcrumbItems.dashboard,
+    breadcrumbItems.employeeEmployees,
+];
 
 type Option = { id: number; name: string };
 type EnumOption = { value: number; label: string };
@@ -47,7 +55,13 @@ const defaultForm = {
     country: '',
 };
 
-export default function Index({ departments, designations, managers, employeeTypes, employeeStatuses }: Props) {
+export default function Index({
+    departments,
+    designations,
+    managers,
+    employeeTypes,
+    employeeStatuses,
+}: Props) {
     const tableRef = useRef<{ refetch: () => void }>(null);
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -57,9 +71,24 @@ export default function Index({ departments, designations, managers, employeeTyp
 
     const columns = [
         { accessorKey: 'id', header: 'ID', sortable: true },
-        { accessorKey: 'employee_code', header: 'Code', sortable: true, searchable: true },
-        { accessorKey: 'full_name', header: 'Name', sortable: true, searchable: true },
-        { accessorKey: 'email', header: 'Email', sortable: true, searchable: true },
+        {
+            accessorKey: 'employee_code',
+            header: 'Code',
+            sortable: true,
+            searchable: true,
+        },
+        {
+            accessorKey: 'full_name',
+            header: 'Name',
+            sortable: true,
+            searchable: true,
+        },
+        {
+            accessorKey: 'email',
+            header: 'Email',
+            sortable: true,
+            searchable: true,
+        },
         { accessorKey: 'phone', header: 'Phone', sortable: true },
         { accessorKey: 'department', header: 'Department', sortable: true },
         { accessorKey: 'designation', header: 'Designation', sortable: true },
@@ -77,11 +106,18 @@ export default function Index({ departments, designations, managers, employeeTyp
                         variant="ghost"
                         size="sm"
                         className="h-7 px-2 text-xs"
-                        onClick={() => router.visit(route('employee.employees.show', row.id))}
+                        onClick={() =>
+                            router.visit(
+                                route('employee.employees.show', row.id),
+                            )
+                        }
                     >
                         View
                     </Button>
-                    <RowActions onEdit={() => handleEdit(row)} onDelete={() => handleDelete(row.id)} />
+                    <RowActions
+                        onEdit={() => handleEdit(row)}
+                        onDelete={() => handleDelete(row.id)}
+                    />
                 </div>
             ),
         },
@@ -108,7 +144,9 @@ export default function Index({ departments, designations, managers, employeeTyp
             employee_type: row.employee_type ?? 1,
             employee_status: row.employee_status ?? 1,
             department_id: row.department_id ? String(row.department_id) : '',
-            designation_id: row.designation_id ? String(row.designation_id) : '',
+            designation_id: row.designation_id
+                ? String(row.designation_id)
+                : '',
             manager_id: row.manager_id ? String(row.manager_id) : '',
             address: row.address ?? '',
             city: row.city ?? '',
@@ -132,16 +170,23 @@ export default function Index({ departments, designations, managers, employeeTyp
 
     const handleBulkDelete = () => {
         if (selectedIds.length === 0) return;
-        axios
-            .delete(route('employee.employees.bulk-delete'), { data: { ids: selectedIds } })
-            .then(() => {
-                toast.success(`${selectedIds.length} employee(s) deleted successfully`);
+        router.delete(route('employee.employees.bulk-delete'), {
+            data: { ids: selectedIds },
+            onSuccess: () => {
+                toast.success(
+                    `${selectedIds.length} employee(s) deleted successfully`,
+                );
                 tableRef.current?.refetch();
-            })
-            .catch(() => toast.error('Error deleting selected employees'));
+            },
+            onError: () => {
+                toast.error('Error deleting selected employees');
+            },
+        });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
@@ -180,26 +225,43 @@ export default function Index({ departments, designations, managers, employeeTyp
         };
 
         if (isEdit && form.id) {
-            router.put(route('employee.employees.update', form.id), data, options);
+            router.put(
+                route('employee.employees.update', form.id),
+                data,
+                options,
+            );
         } else {
             router.post(route('employee.employees.store'), data, options);
         }
     };
 
     return (
-        <AppLayout title="Employees" breadcrumbs={breadcrumbs} actions={<Button onClick={handleOpenAdd}>Add Employee</Button>}>
+        <AppLayout
+            title="Employees"
+            breadcrumbs={breadcrumbs}
+            actions={<Button onClick={handleOpenAdd}>Add Employee</Button>}
+        >
             <DataTable
                 ref={tableRef}
                 columns={columns}
                 dataUrl={route('employee.employees.index')}
                 onSelectionChange={setSelectedIds}
-                extraActions={<BulkDeleteButton selectedCount={selectedIds.length} onDelete={handleBulkDelete} />}
+                extraActions={
+                    <BulkDeleteButton
+                        selectedCount={selectedIds.length}
+                        onDelete={handleBulkDelete}
+                    />
+                }
             />
             <BaseDialog
                 open={open}
                 onOpenChange={setOpen}
                 title={isEdit ? 'Edit Employee' : 'Add Employee'}
-                description={isEdit ? 'Update the employee details.' : 'Fill in the details to create a new employee.'}
+                description={
+                    isEdit
+                        ? 'Update the employee details.'
+                        : 'Fill in the details to create a new employee.'
+                }
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
                 submitLabel={isEdit ? 'Update' : 'Create'}
@@ -207,37 +269,93 @@ export default function Index({ departments, designations, managers, employeeTyp
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <Label>First Name *</Label>
-                        <Input name="first_name" value={form.first_name} onChange={handleChange} required />
-                        {formErrors.first_name && <p className="text-sm text-red-500">{formErrors.first_name}</p>}
+                        <Input
+                            name="first_name"
+                            value={form.first_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {formErrors.first_name && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.first_name}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Last Name *</Label>
-                        <Input name="last_name" value={form.last_name} onChange={handleChange} required />
-                        {formErrors.last_name && <p className="text-sm text-red-500">{formErrors.last_name}</p>}
+                        <Input
+                            name="last_name"
+                            value={form.last_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {formErrors.last_name && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.last_name}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Employee Code</Label>
-                        <Input name="employee_code" value={form.employee_code} onChange={handleChange} />
-                        {formErrors.employee_code && <p className="text-sm text-red-500">{formErrors.employee_code}</p>}
+                        <Input
+                            name="employee_code"
+                            value={form.employee_code}
+                            onChange={handleChange}
+                        />
+                        {formErrors.employee_code && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.employee_code}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Email {!isEdit && '*'}</Label>
-                        <Input name="email" type="email" value={form.email} onChange={handleChange} required={!isEdit} />
-                        {formErrors.email && <p className="text-sm text-red-500">{formErrors.email}</p>}
+                        <Input
+                            name="email"
+                            type="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required={!isEdit}
+                        />
+                        {formErrors.email && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.email}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Phone</Label>
-                        <Input name="phone" value={form.phone} onChange={handleChange} />
-                        {formErrors.phone && <p className="text-sm text-red-500">{formErrors.phone}</p>}
+                        <Input
+                            name="phone"
+                            value={form.phone}
+                            onChange={handleChange}
+                        />
+                        {formErrors.phone && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.phone}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Date of Birth</Label>
-                        <Input name="date_of_birth" type="date" value={form.date_of_birth} onChange={handleChange} />
-                        {formErrors.date_of_birth && <p className="text-sm text-red-500">{formErrors.date_of_birth}</p>}
+                        <Input
+                            name="date_of_birth"
+                            type="date"
+                            value={form.date_of_birth}
+                            onChange={handleChange}
+                        />
+                        {formErrors.date_of_birth && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.date_of_birth}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Gender</Label>
-                        <Select value={form.gender} onValueChange={(v) => handleSelect('gender', v)}>
+                        <Select
+                            value={form.gender}
+                            onValueChange={(v) => handleSelect('gender', v)}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
@@ -247,51 +365,96 @@ export default function Index({ departments, designations, managers, employeeTyp
                                 <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                         </Select>
-                        {formErrors.gender && <p className="text-sm text-red-500">{formErrors.gender}</p>}
+                        {formErrors.gender && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.gender}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Hire Date</Label>
-                        <Input name="hire_date" type="date" value={form.hire_date} onChange={handleChange} />
-                        {formErrors.hire_date && <p className="text-sm text-red-500">{formErrors.hire_date}</p>}
+                        <Input
+                            name="hire_date"
+                            type="date"
+                            value={form.hire_date}
+                            onChange={handleChange}
+                        />
+                        {formErrors.hire_date && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.hire_date}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Employee Type</Label>
-                        <Select value={String(form.employee_type)} onValueChange={(v) => setForm((prev) => ({ ...prev, employee_type: Number(v) }))}>
+                        <Select
+                            value={String(form.employee_type)}
+                            onValueChange={(v) =>
+                                setForm((prev) => ({
+                                    ...prev,
+                                    employee_type: Number(v),
+                                }))
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
                                 {employeeTypes.map((t) => (
-                                    <SelectItem key={t.value} value={String(t.value)}>
+                                    <SelectItem
+                                        key={t.value}
+                                        value={String(t.value)}
+                                    >
                                         {t.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.employee_type && <p className="text-sm text-red-500">{formErrors.employee_type}</p>}
+                        {formErrors.employee_type && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.employee_type}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Employee Status</Label>
                         <Select
                             value={String(form.employee_status)}
-                            onValueChange={(v) => setForm((prev) => ({ ...prev, employee_status: Number(v) }))}
+                            onValueChange={(v) =>
+                                setForm((prev) => ({
+                                    ...prev,
+                                    employee_status: Number(v),
+                                }))
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
                                 {employeeStatuses.map((s) => (
-                                    <SelectItem key={s.value} value={String(s.value)}>
+                                    <SelectItem
+                                        key={s.value}
+                                        value={String(s.value)}
+                                    >
                                         {s.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.employee_status && <p className="text-sm text-red-500">{formErrors.employee_status}</p>}
+                        {formErrors.employee_status && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.employee_status}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Department</Label>
-                        <Select value={form.department_id} onValueChange={(v) => handleSelect('department_id', v)}>
+                        <Select
+                            value={form.department_id}
+                            onValueChange={(v) =>
+                                handleSelect('department_id', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select department" />
                             </SelectTrigger>
@@ -303,11 +466,20 @@ export default function Index({ departments, designations, managers, employeeTyp
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.department_id && <p className="text-sm text-red-500">{formErrors.department_id}</p>}
+                        {formErrors.department_id && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.department_id}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Designation</Label>
-                        <Select value={form.designation_id} onValueChange={(v) => handleSelect('designation_id', v)}>
+                        <Select
+                            value={form.designation_id}
+                            onValueChange={(v) =>
+                                handleSelect('designation_id', v)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select designation" />
                             </SelectTrigger>
@@ -319,11 +491,18 @@ export default function Index({ departments, designations, managers, employeeTyp
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.designation_id && <p className="text-sm text-red-500">{formErrors.designation_id}</p>}
+                        {formErrors.designation_id && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.designation_id}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Manager</Label>
-                        <Select value={form.manager_id} onValueChange={(v) => handleSelect('manager_id', v)}>
+                        <Select
+                            value={form.manager_id}
+                            onValueChange={(v) => handleSelect('manager_id', v)}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select manager" />
                             </SelectTrigger>
@@ -335,22 +514,50 @@ export default function Index({ departments, designations, managers, employeeTyp
                                 ))}
                             </SelectContent>
                         </Select>
-                        {formErrors.manager_id && <p className="text-sm text-red-500">{formErrors.manager_id}</p>}
+                        {formErrors.manager_id && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.manager_id}
+                            </p>
+                        )}
                     </div>
                     <div className="col-span-2">
                         <Label>Address</Label>
-                        <Input name="address" value={form.address} onChange={handleChange} />
-                        {formErrors.address && <p className="text-sm text-red-500">{formErrors.address}</p>}
+                        <Input
+                            name="address"
+                            value={form.address}
+                            onChange={handleChange}
+                        />
+                        {formErrors.address && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.address}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>City</Label>
-                        <Input name="city" value={form.city} onChange={handleChange} />
-                        {formErrors.city && <p className="text-sm text-red-500">{formErrors.city}</p>}
+                        <Input
+                            name="city"
+                            value={form.city}
+                            onChange={handleChange}
+                        />
+                        {formErrors.city && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.city}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <Label>Country</Label>
-                        <Input name="country" value={form.country} onChange={handleChange} />
-                        {formErrors.country && <p className="text-sm text-red-500">{formErrors.country}</p>}
+                        <Input
+                            name="country"
+                            value={form.country}
+                            onChange={handleChange}
+                        />
+                        {formErrors.country && (
+                            <p className="text-sm text-red-500">
+                                {formErrors.country}
+                            </p>
+                        )}
                     </div>
                 </div>
             </BaseDialog>

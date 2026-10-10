@@ -57,6 +57,6 @@ class BranchController extends Controller
         $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'required'])['ids'];
         $this->branchService->bulkDelete($ids);
 
-        return response()->json(['message' => 'Branches deleted successfully.']);
+        return back()->with('success', 'Branches deleted successfully.');
     }
 }
